@@ -10,22 +10,11 @@ using System.Windows.Forms;
 
 namespace RealChess
 {
-    public partial class MainPage : Form
+    public partial class ChessForm : Form
     {
-        public MainPage()
+        public ChessForm()
         {
-
             InitializeComponent();
-
-
-        } 
-
-        private void button_play_Click(object sender, EventArgs e)
-        {
-            ChessForm frms2 = new ChessForm();
-            frms2.Show();
-            this.Hide();
-
         }
     }
 }
