@@ -33,8 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,38 +47,56 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChessForm.cs">
+    <Compile Include="Controller\BoardController.cs" />
+    <Compile Include="Model\ChessPieces\Bishop.cs" />
+    <Compile Include="Model\ChessPieces\King.cs" />
+    <Compile Include="Model\ChessPieces\Rook.cs" />
+    <Compile Include="Model\ChessPieces\Queen.cs" />
+    <Compile Include="Model\ChessPieces\Knight.cs" />
+    <Compile Include="Model\ChessPieces\Pawn.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\ChessPieceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Controls\ChessPieceControl.Designer.cs">
+      <DependentUpon>ChessPieceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ChessPieces\ChessPiece.cs" />
+    <Compile Include="View\Forms\ChessForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChessForm.Designer.cs">
+    <Compile Include="View\Forms\ChessForm.Designer.cs">
       <DependentUpon>ChessForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.cs">
+    <Compile Include="View\Forms\MainPage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainPage.Designer.cs">
+    <Compile Include="View\Forms\MainPage.Designer.cs">
       <DependentUpon>MainPage.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ChessForm.resx">
+    <EmbeddedResource Include="View\Controls\ChessPieceControl.resx">
+      <DependentUpon>ChessPieceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\ChessForm.resx">
       <DependentUpon>ChessForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainPage.resx">
+    <EmbeddedResource Include="View\Forms\MainPage.resx">
       <DependentUpon>MainPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -96,12 +117,46 @@
     <None Include="Resources\REALCHESS2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controller\" />
-    <Folder Include="Model\" />
-    <Folder Include="View\" />
+    <Resource Include="Resources\homeIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\homeIcon.png" />
+    <None Include="Resources\white_bishop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\white_king.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\white_knight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\white_pawn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\white_queen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\white_rook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="View\BoardGraphics\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black_bishop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black_king.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black_knight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black_pawn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black_queen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black_rook.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
