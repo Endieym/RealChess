@@ -1,4 +1,4 @@
-﻿using RealChess.View.Forms.BoardGraphics;
+﻿using RealChess.Model.ChessPieces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,15 +22,21 @@ namespace RealChess.View
         public void SetPiece(ChessPiece piece)
         {
             Piece = piece;
-            pictureBox1.Image = LoadPieceImage(piece);
+            Image image = LoadPieceImage(piece);
+            piecePic.Image = image;
         }
 
         private Image LoadPieceImage(ChessPiece piece)
         {
-            string imageName = $"{piece.Color.ToString().ToLower()}_{piece.Type.ToString().ToLower()}.png";
-            return Properties.Resources.ResourceManager.GetObject(imageName) as Image;
-
+            string imageName = $"{piece.Color.ToString().ToLower()}_{piece.Type.ToString().ToLower()}";
             
+            return Properties.Resources.ResourceManager.GetObject(imageName) as Image;
+            
+        }
+
+        private void piecePic_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Clicked");
         }
     }
 }

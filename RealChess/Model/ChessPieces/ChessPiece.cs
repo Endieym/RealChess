@@ -4,12 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RealChess.View.Forms.BoardGraphics
+namespace RealChess.Model.ChessPieces
 {
-    public class ChessPiece
+    public abstract class ChessPiece
     {
         public ChessPiece()
         {
+        }
+
+        public ChessPiece(int row, int col)
+        {
+            
         }
 
         public enum PieceColor { WHITE, BLACK }
@@ -19,5 +24,5 @@ namespace RealChess.View.Forms.BoardGraphics
         public PieceType Type{ get; set; }
         
     
-}
+        }
     }
