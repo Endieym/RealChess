@@ -18,6 +18,12 @@ namespace RealChess
         // class member array of Panels to track chessboard tiles
         private Panel[,] _chessBoardPanels;
 
+        // current chess piece clicked
+        private ChessPieceControl _currentPieceClicked = null;
+
+        // current panel in the panel board clicked
+        private Panel _currentPanelClicked = null;
+
         public ChessForm()
         {
             InitializeComponent();
@@ -59,6 +65,10 @@ namespace RealChess
                     };
                     // add to Form's Controls so that they show up
                     Controls.Add(newPanel);
+
+                    // Add the click event handler to the panel
+                    newPanel.Click += new EventHandler(Panel_Click);
+
                     // add to our 2d array of panels for future use
                     _chessBoardPanels[row, col] = newPanel;
 
@@ -77,9 +87,12 @@ namespace RealChess
                         ChessPiece piece = GetPieceForSquare(row, col);
                         pieceControl.SetPiece(piece);
 
+                        // Add an event listener to the UserControl
+                        pieceControl.Controls["piecePic"].Click += new EventHandler(PieceControl_Click);
+
                         // Adds the ChessPieceControl to the panel
                         newPanel.Controls.Add(pieceControl);
-                        
+
                         
 
                     }
@@ -87,7 +100,60 @@ namespace RealChess
             }
         }
 
-        
+        // Event handler for when the piece control is clicked
+        private void PieceControl_Click(object sender, EventArgs e)
+        {
+            // Get the clicked piece
+            PictureBox piecePic = sender as PictureBox;
+
+            ChessPieceControl myPiece = (ChessPieceControl)piecePic.Parent;
+
+
+            // Check if a piece was already clicked, if not, set currentPiece to it
+            if (_currentPieceClicked is null)
+            {
+                MessageBox.Show("Source");
+                _currentPieceClicked = myPiece;
+                myPiece.BackColor = Color.Yellow;
+
+
+            }
+
+            else
+            {
+                MessageBox.Show("Target");
+
+                // If a piece is already selected, move the current piece to the clicked panel
+                Panel targetPanel = (Panel)_currentPieceClicked.Parent;
+
+                // Trigger the Click event of the target panel
+                Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+            }
+        }
+
+        // Event handler for a panel is clicked
+        private void Panel_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Target");
+
+            if (_currentPieceClicked is null)
+                return;
+            
+            // Get the clicked panel
+            Panel myPanel = sender as Panel;
+
+            myPanel.Controls.Clear();
+            // Move the selected ChessPieceControl to the target panel
+            myPanel.Controls.Add(_currentPieceClicked);
+
+            _currentPieceClicked.Parent.Controls.Remove(_currentPieceClicked);
+            // Reset the selected ChessPieceControl
+            _currentPieceClicked = null;
+            
+        }
+
+
+
     }
 
 }

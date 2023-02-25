@@ -46,7 +46,6 @@
             this.piecePic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.piecePic.TabIndex = 0;
             this.piecePic.TabStop = false;
-            this.piecePic.Click += new System.EventHandler(this.piecePic_Click);
             // 
             // ChessPieceControl
             // 

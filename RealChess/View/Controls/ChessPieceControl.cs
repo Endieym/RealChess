@@ -34,9 +34,6 @@ namespace RealChess.View
             
         }
 
-        private void piecePic_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Clicked");
-        }
+       
     }
 }
