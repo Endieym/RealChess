@@ -92,9 +92,6 @@ namespace RealChess
 
                         // Adds the ChessPieceControl to the panel
                         newPanel.Controls.Add(pieceControl);
-
-                        
-
                     }
                 }
             }
@@ -103,6 +100,8 @@ namespace RealChess
         // Event handler for when the piece control is clicked
         private void PieceControl_Click(object sender, EventArgs e)
         {
+
+
             // Get the clicked piece
             PictureBox piecePic = sender as PictureBox;
 
@@ -112,7 +111,7 @@ namespace RealChess
             // Check if a piece was already clicked, if not, set currentPiece to it
             if (_currentPieceClicked is null)
             {
-                MessageBox.Show("Source");
+                //MessageBox.Show("Source");
                 _currentPieceClicked = myPiece;
                 myPiece.BackColor = Color.Yellow;
 
@@ -121,10 +120,9 @@ namespace RealChess
 
             else
             {
-                MessageBox.Show("Target");
 
                 // If a piece is already selected, move the current piece to the clicked panel
-                Panel targetPanel = (Panel)_currentPieceClicked.Parent;
+                Panel targetPanel = (Panel)myPiece.Parent;
 
                 // Trigger the Click event of the target panel
                 Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
@@ -134,19 +132,33 @@ namespace RealChess
         // Event handler for a panel is clicked
         private void Panel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Target");
 
             if (_currentPieceClicked is null)
                 return;
+
             
+            //MessageBox.Show("Target");
+
             // Get the clicked panel
             Panel myPanel = sender as Panel;
 
+            if (_currentPieceClicked.Parent.Equals(myPanel))
+                return;
+
+            if (!IsLegalMove(_currentPieceClicked, myPanel.Location))
+            {
+                return;
+            }
+            // Clear controls of selected panel
             myPanel.Controls.Clear();
+
+            // Remove control from previous panel
+            _currentPieceClicked.Parent.Controls.Remove(_currentPieceClicked);
+
+            _currentPieceClicked.BackColor = Color.Transparent;
             // Move the selected ChessPieceControl to the target panel
             myPanel.Controls.Add(_currentPieceClicked);
 
-            _currentPieceClicked.Parent.Controls.Remove(_currentPieceClicked);
             // Reset the selected ChessPieceControl
             _currentPieceClicked = null;
             

@@ -1,6 +1,7 @@
 ﻿using RealChess.Model.ChessPieces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,11 @@ namespace RealChess.Controller
 {
     internal static class BoardController
     {
+        // Checks if a move is legal
+        internal static bool IsLegalMove(View.ChessPieceControl pieceSource, Point targetLocation)
+        {
+            return true;
+        }
 
         internal static ChessPiece GetPieceForSquare(int row, int col)
         {
