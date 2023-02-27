@@ -1,6 +1,7 @@
 ﻿using RealChess.Model.ChessPieces;
 using RealChess.View;
 using static RealChess.Controller.BoardController;
+using static RealChess.Controller.GameController;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -142,7 +143,7 @@ namespace RealChess
                 Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
             }
         }
-
+        
         // Event handler for a panel is clicked
         private void Panel_Click(object sender, EventArgs e)
         {
@@ -163,15 +164,7 @@ namespace RealChess
             {
                 return;
             }
-            // Clear controls of selected panel
-            myPanel.Controls.Clear();
-
-            // Remove control from previous panel
-            _currentPieceClicked.Parent.Controls.Remove(_currentPieceClicked);
-
-            _currentPieceClicked.BackColor = Color.Transparent;
-            // Move the selected ChessPieceControl to the target panel
-            myPanel.Controls.Add(_currentPieceClicked);
+            MovePiece(_currentPieceClicked, myPanel);
 
             // Reset the selected ChessPieceControl
             _currentPieceClicked = null;

@@ -27,8 +27,8 @@ namespace RealChess.Model
             {
                 int keyPawn = rowPawns * Board.SIZE + col;
                 int keyPiece = row * Board.SIZE + col;
-                pieces.Add(keyPawn, GetPieceForSquare(row, col));
-                pieces.Add(keyPiece, GetPieceForSquare(rowPawns, col));
+                pieces.Add(keyPawn, GetPieceForSquare(rowPawns, col));
+                pieces.Add(keyPiece, GetPieceForSquare(row, col));
 
             }
         }

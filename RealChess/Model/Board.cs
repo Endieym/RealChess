@@ -21,12 +21,12 @@ namespace RealChess.Model
 
             foreach (var item in player1.Pieces)
             {
-                bitBoard |= (UInt64)1 << item.Key;
+                bitBoard |= (ulong)1 << item.Key;
             }
-
+            
             foreach (var item in player2.Pieces)
             {
-                bitBoard |= (UInt64)1 << item.Key;
+                bitBoard |= (ulong)1 << item.Key;
             }
         }
 

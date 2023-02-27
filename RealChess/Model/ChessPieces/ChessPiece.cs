@@ -19,6 +19,9 @@ namespace RealChess.Model.ChessPieces
             this.bitBoard = (UInt64)1 << key;
         }
 
+        public abstract UInt64 GetMoves();
+        
+
         public enum PieceColor { WHITE, BLACK }
         public enum PieceType { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING }
 

@@ -13,5 +13,10 @@ namespace RealChess.Model.ChessPieces
             this.Type = PieceType.KNIGHT;
 
         }
+
+        public override ulong GetMoves()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

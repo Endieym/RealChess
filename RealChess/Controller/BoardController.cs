@@ -5,17 +5,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
     internal static class BoardController
     {
-        // Checks if a move is legal
-        internal static bool IsLegalMove(View.ChessPieceControl pieceSource, Point targetLocation)
-        {
-            return true;
-        }
+        
 
         internal static ChessPiece GetPieceForSquare(int row, int col)
         {

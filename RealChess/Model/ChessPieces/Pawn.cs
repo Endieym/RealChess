@@ -8,6 +8,7 @@ namespace RealChess.Model.ChessPieces
 {
     public class Pawn : ChessPiece
     {
+        public bool HasMoved { get; set; }
         public Pawn()
         {
             this.Type = PieceType.PAWN;
@@ -18,6 +19,34 @@ namespace RealChess.Model.ChessPieces
         {
             this.Type = PieceType.PAWN;
             
+        }
+
+        public override ulong GetMoves()
+        {
+            // The bitmask which represents the move
+            UInt64 moveMask = this.bitBoard;
+
+            // Checks for the color of the chess piece
+            // and generates moves accordingly, also checks if pawn has moved
+            // once in the game, if not, pawn can move two squares
+            if (this.Color == PieceColor.WHITE)
+            {
+                // Goes up in the bitboard
+                moveMask >>= 8;
+                if (!HasMoved)
+                    moveMask |= moveMask >> 8;
+            }
+            else
+            {
+                // Goes down in the bitboard
+                moveMask <<= 8;
+                if (!HasMoved)
+                    moveMask |= moveMask << 8;
+
+            }
+
+
+            return moveMask;
         }
     }
 }
