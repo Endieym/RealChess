@@ -14,6 +14,12 @@ namespace RealChess.Model.ChessPieces
 
         }
 
+        public Rook(int row, int col) : base(row, col)
+        {
+            this.Type = PieceType.ROOK;
+
+        }
+
         public override ulong GetMoves()
         {
             throw new NotImplementedException();

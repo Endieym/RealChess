@@ -29,24 +29,35 @@ namespace RealChess.Model.ChessPieces
             // Checks for the color of the chess piece
             // and generates moves accordingly, also checks if pawn has moved
             // once in the game, if not, pawn can move two squares
-            if (this.Color == PieceColor.WHITE)
-            {
-                // Goes up in the bitboard
-                moveMask >>= 8;
-                if (!HasMoved)
-                    moveMask |= moveMask >> 8;
-            }
-            else
-            {
-                // Goes down in the bitboard
-                moveMask <<= 8;
-                if (!HasMoved)
-                    moveMask |= moveMask << 8;
+            ulong doubleMoveMask = 0;
+            ulong singleMoveMask = this.Color == PieceColor.WHITE ? moveMask >> 8:
+                moveMask << 8;
 
+            if (!HasMoved)
+            {
+                doubleMoveMask = this.Color == PieceColor.WHITE ? moveMask >> 16 :
+                moveMask << 16;
             }
 
+            
+            //if (this.Color == PieceColor.WHITE)
+            //{
+            //    // Goes up in the bitboard
+            //    moveMask >>= 8;
+            //    if (!HasMoved)
+            //        moveMask |= moveMask >> 8;
+            //}
+            //else
+            //{
+            //    // Goes down in the bitboard
+            //    moveMask <<= 8;
+            //    if (!HasMoved)
+            //        moveMask |= moveMask << 8;
 
-            return moveMask;
+            //}
+
+
+            return singleMoveMask | doubleMoveMask;
         }
     }
 }

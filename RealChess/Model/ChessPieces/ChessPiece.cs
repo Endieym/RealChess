@@ -20,6 +20,26 @@ namespace RealChess.Model.ChessPieces
         }
 
         public abstract UInt64 GetMoves();
+        public virtual List<int> GetMovesList()
+        {
+            // Initialize the moves list
+            List<int> list = new List<int>();
+
+            ulong movesMask = this.GetMoves();
+            // checks for legal moves using the moves bitmask
+            for(int i =0; i < 64; i++)
+            {
+                if((movesMask & 1) > 0)
+                    list.Add(i);
+                // shift by one bit, to check the next bit
+                movesMask >>= 1;
+
+                // If mask is 0, there are no more legal moves
+                if (movesMask == 0)
+                    break;
+            }
+            return list;
+        }
         
 
         public enum PieceColor { WHITE, BLACK }

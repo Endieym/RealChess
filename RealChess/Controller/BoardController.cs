@@ -21,27 +21,27 @@ namespace RealChess.Controller
             switch (pieceType)
             {
                 case PieceType.PAWN:
-                    chessPiece = new Pawn();
+                    chessPiece = new Pawn(row, col);
                     break;
 
                 case PieceType.KNIGHT:
-                    chessPiece = new Knight();
+                    chessPiece = new Knight(row, col);
                     break;
 
                 case PieceType.BISHOP:
-                    chessPiece = new Bishop();
+                    chessPiece = new Bishop(row, col);
                     break;
 
                 case PieceType.ROOK:
-                    chessPiece = new Rook();
+                    chessPiece = new Rook(row, col);
                     break;
 
                 case PieceType.QUEEN:
-                    chessPiece = new Queen();
+                    chessPiece = new Queen(row, col);
                     break;
 
                 case PieceType.KING:
-                    chessPiece = new King();
+                    chessPiece = new King(row, col);
                     break;
 
                 default:
@@ -79,9 +79,9 @@ namespace RealChess.Controller
         internal static PieceColor GetColorByPos(int row, int col)
         {
             if (row == 0 || row == 1)
-                return PieceColor.WHITE;
-            else
                 return PieceColor.BLACK;
+            else
+                return PieceColor.WHITE;
         }
     }
 

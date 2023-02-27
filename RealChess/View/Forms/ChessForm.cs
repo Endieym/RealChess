@@ -26,6 +26,8 @@ namespace RealChess
         // current panel in the panel board clicked
         private Panel _currentPanelClicked = null;
 
+        private const int tileSize = 65;
+        private const int gridSize = 8;
         public ChessForm()
         {
             InitializeComponent();
@@ -44,9 +46,8 @@ namespace RealChess
         // event handler of Form Load... init things here
         private void ChessForm_Load(object sender, EventArgs e)
         {
-            const int tileSize = 65;
-            const int gridSize = 8;
-            var clr1 = Color.DarkOliveGreen;
+            
+            var clr1 = Color.LightGreen;
             var clr2 = Color.White;
 
             // initialize the chess board panels
@@ -92,10 +93,10 @@ namespace RealChess
                         ChessPieceControl pieceControl = new ChessPieceControl();
 
                         // Set the piece on the control
-                        if (row < 2)
-                            pieceControl.SetPiece(dict1[(gridSize-1-row) * gridSize + col]);
+                        if (row > 5)
+                            pieceControl.SetPiece(dict1[row * gridSize + col]);
                         else
-                            pieceControl.SetPiece(dict2[(gridSize - 1 - row) * gridSize + col]);
+                            pieceControl.SetPiece(dict2[ row * gridSize + col]);
 
                         // Add an event listener to the UserControl
                         pieceControl.Controls["piecePic"].Click += new EventHandler(PieceControl_Click);
@@ -129,7 +130,7 @@ namespace RealChess
                 //MessageBox.Show("Source");
                 _currentPieceClicked = myPiece;
                 myPiece.BackColor = Color.Yellow;
-
+                ShowLegalMoves(myPiece, _chessBoardPanels);
 
             }
 
@@ -141,6 +142,21 @@ namespace RealChess
 
                 // Trigger the Click event of the target panel
                 Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+            }
+        }
+
+        private void ClearColor()
+        {
+            for(int row = 0; row < gridSize; row++)
+            {
+                for(int col = 0; col < gridSize; col++)
+                {
+                    foreach (ChessPieceControl c in _chessBoardPanels[row, col].Controls)
+                    {
+                        c.BackColor = Color.Transparent;
+
+                    }
+                }
             }
         }
         
@@ -155,13 +171,12 @@ namespace RealChess
             //MessageBox.Show("Target");
 
             // Get the clicked panel
-            Panel myPanel = sender as Panel;
+            Panel myPanel = sender as Panel;           
 
-            if (_currentPieceClicked.Parent.Equals(myPanel))
-                return;
-
-            if (!IsLegalMove(_currentPieceClicked, myPanel.Location))
+            if (!IsLegalMove(_currentPieceClicked, myPanel))
             {
+                ClearColor();
+                _currentPieceClicked = null;
                 return;
             }
             MovePiece(_currentPieceClicked, myPanel);

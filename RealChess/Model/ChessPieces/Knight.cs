@@ -14,6 +14,12 @@ namespace RealChess.Model.ChessPieces
 
         }
 
+        public Knight(int row, int col) : base(row, col)
+        {
+            this.Type = PieceType.KNIGHT;
+
+        }
+
         public override ulong GetMoves()
         {
             throw new NotImplementedException();
