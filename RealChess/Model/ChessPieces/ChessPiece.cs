@@ -8,13 +8,15 @@ namespace RealChess.Model.ChessPieces
 {
     public abstract class ChessPiece
     {
+        protected UInt64 bitBoard;
         public ChessPiece()
         {
         }
 
         public ChessPiece(int row, int col)
         {
-            
+            int key = row * Board.SIZE + col;
+            this.bitBoard = (UInt64)1 << key;
         }
 
         public enum PieceColor { WHITE, BLACK }

@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace RealChess.Model.ChessPieces
 {
-    internal class Pawn : ChessPiece
+    public class Pawn : ChessPiece
     {
         public Pawn()
         {
             this.Type = PieceType.PAWN;
 
+        }
+
+        public Pawn(int row, int col) : base(row, col)
+        {
+            this.Type = PieceType.PAWN;
+            
         }
     }
 }
