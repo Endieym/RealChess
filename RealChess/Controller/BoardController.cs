@@ -82,9 +82,9 @@ namespace RealChess.Controller
         internal static PieceColor GetColorByPos(int row, int col)
         {
             if (row == 0 || row == 1)
-                return PieceColor.BLACK;
-            else
                 return PieceColor.WHITE;
+            else
+                return PieceColor.BLACK;
         }
     }
 

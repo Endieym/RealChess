@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RealChess.Model;
 
 namespace RealChess
 {
@@ -44,11 +45,17 @@ namespace RealChess
         {
             const int tileSize = 65;
             const int gridSize = 8;
-            var clr1 = Color.DarkGray;
+            var clr1 = Color.DarkOliveGreen;
             var clr2 = Color.White;
 
-            // initialize the "chess board"
+            // initialize the chess board panels
             _chessBoardPanels = new Panel[gridSize, gridSize];
+
+            // initialize the board data structure
+
+            Board chessBoard = new Board();
+            Dictionary<int, ChessPiece> dict1 = chessBoard.GetPlayer1().Pieces;
+            Dictionary<int, ChessPiece> dict2 = chessBoard.GetPlayer2().Pieces;
 
             // double for loop to handle all rows and columns
             for (var row = 0; row < gridSize; row++)
@@ -84,8 +91,10 @@ namespace RealChess
                         ChessPieceControl pieceControl = new ChessPieceControl();
 
                         // Set the piece on the control
-                        ChessPiece piece = GetPieceForSquare(row, col);
-                        pieceControl.SetPiece(piece);
+                        if (row < 2)
+                            pieceControl.SetPiece(dict1[(gridSize-1-row) * gridSize + col]);
+                        else
+                            pieceControl.SetPiece(dict2[(gridSize - 1 - row) * gridSize + col]);
 
                         // Add an event listener to the UserControl
                         pieceControl.Controls["piecePic"].Click += new EventHandler(PieceControl_Click);
@@ -95,7 +104,12 @@ namespace RealChess
                     }
                 }
             }
+           
+
+
         }
+
+        
 
         // Event handler for when the piece control is clicked
         private void PieceControl_Click(object sender, EventArgs e)
