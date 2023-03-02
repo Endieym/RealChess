@@ -72,6 +72,13 @@
       <DependentUpon>ChessPieceControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\ChessPieces\ChessPiece.cs" />
+    <Compile Include="View\Controls\LegalMoveControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Controls\LegalMoveControl.Designer.cs">
+      <DependentUpon>LegalMoveControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\TransferEventArgs.cs" />
     <Compile Include="View\Forms\ChessForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +95,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="View\Controls\ChessPieceControl.resx">
       <DependentUpon>ChessPieceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Controls\LegalMoveControl.resx">
+      <DependentUpon>LegalMoveControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ChessForm.resx">
       <DependentUpon>ChessForm.cs</DependentUpon>
@@ -160,6 +170,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\black_rook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DotLegal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LegalMove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

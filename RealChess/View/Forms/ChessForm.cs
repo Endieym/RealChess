@@ -21,10 +21,8 @@ namespace RealChess
         private Panel[,] _chessBoardPanels;
 
         // current chess piece clicked
-        private ChessPieceControl _currentPieceClicked = null;
+        private static ChessPieceControl _currentPieceClicked = null;
 
-        // current panel in the panel board clicked
-        private Panel _currentPanelClicked = null;
 
         private const int tileSize = 65;
         private const int gridSize = 8;
@@ -35,6 +33,7 @@ namespace RealChess
 
         }
 
+        // Go back to main menu
         private void home_Click(object sender, EventArgs e)
         {
             MainPage home = new MainPage();
@@ -47,7 +46,7 @@ namespace RealChess
         private void ChessForm_Load(object sender, EventArgs e)
         {
             
-            var clr1 = Color.LightGreen;
+            var clr1 = Color.Green;
             var clr2 = Color.White;
 
             // initialize the chess board panels
@@ -106,9 +105,14 @@ namespace RealChess
                     }
                 }
             }
-           
 
+            SetBoard(_chessBoardPanels);
 
+        }
+
+        public static void ResetPieceClicked()
+        {
+            _currentPieceClicked = null;
         }
 
         
@@ -116,7 +120,10 @@ namespace RealChess
         // Event handler for when the piece control is clicked
         private void PieceControl_Click(object sender, EventArgs e)
         {
+            MouseEventArgs mouseArgs = e as MouseEventArgs;
 
+            if (mouseArgs.Button != MouseButtons.Left)
+                return;
 
             // Get the clicked piece
             PictureBox piecePic = sender as PictureBox;
@@ -130,7 +137,7 @@ namespace RealChess
                 //MessageBox.Show("Source");
                 _currentPieceClicked = myPiece;
                 myPiece.BackColor = Color.Yellow;
-                ShowLegalMoves(myPiece, _chessBoardPanels);
+                ShowLegalMoves(myPiece);
 
             }
 
@@ -145,44 +152,49 @@ namespace RealChess
             }
         }
 
-        private void ClearColor()
-        {
-            for(int row = 0; row < gridSize; row++)
-            {
-                for(int col = 0; col < gridSize; col++)
-                {
-                    foreach (ChessPieceControl c in _chessBoardPanels[row, col].Controls)
-                    {
-                        c.BackColor = Color.Transparent;
+        //private void ClearColor()
+        //{
+        //    for(int row = 0; row < gridSize; row++) 
+        //    {
+        //        for(int col = 0; col < gridSize; col++)
+        //        {
+        //            foreach (ChessPieceControl c in _chessBoardPanels[row, col].Controls)
+        //            {
+        //                c.BackColor = Color.Transparent;
+                        
 
-                    }
-                }
-            }
-        }
+        //            }
+        //        }
+        //    }
+        //}
         
-        // Event handler for a panel is clicked
+        // Event handler when a panel is clicked
         private void Panel_Click(object sender, EventArgs e)
         {
+            //MouseEventArgs mouseArgs = e as MouseEventArgs;
 
-            if (_currentPieceClicked is null)
-                return;
+            //if (mouseArgs.Button != MouseButtons.Left)
+            //    return;
+
+            //if (_currentPieceClicked is null)
+            //    return;
 
             
-            //MessageBox.Show("Target");
+            ////MessageBox.Show("Target");
 
-            // Get the clicked panel
-            Panel myPanel = sender as Panel;           
+            //// Get the clicked panel
+            //Panel myPanel = sender as Panel;           
 
-            if (!IsLegalMove(_currentPieceClicked, myPanel))
-            {
-                ClearColor();
-                _currentPieceClicked = null;
-                return;
-            }
-            MovePiece(_currentPieceClicked, myPanel);
+            //if (!IsLegalMove(_currentPieceClicked, myPanel))
+            //{
+            //    ClearColor();
+            //    _currentPieceClicked = null;
+            //    return;
+            //}
+            //MovePiece(_currentPieceClicked, myPanel);
 
-            // Reset the selected ChessPieceControl
-            _currentPieceClicked = null;
+            //// Reset the selected ChessPieceControl
+            //_currentPieceClicked = null;
             
         }
 
