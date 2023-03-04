@@ -21,6 +21,14 @@ namespace RealChess.Model
 
         }
 
+        public void UpdatePiece(int oldKey, int newKey)
+        {
+            var piece = pieces[oldKey];
+            piece.UpdatePosition(newKey);
+            this.pieces.Remove(oldKey);
+            this.pieces.Add(newKey, piece);
+        }
+
         private void init(int row, int rowPawns)
         {
             for (int col = 0; col < Board.SIZE; col++)

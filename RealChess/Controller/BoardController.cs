@@ -1,4 +1,6 @@
-﻿using RealChess.Model.ChessPieces;
+﻿using RealChess.Model;
+using RealChess.Model.ChessPieces;
+using RealChess.View;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,9 +12,29 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
+    
     internal static class BoardController
     {
-        
+        private static Board _gameBoard;
+
+        internal static void SetBoard(Board board)
+        {
+            _gameBoard = board;
+        }
+
+        // Updates the data structure on the move of the piece.
+        internal static void UpdateBoard(ChessPiece piece, int newKey, int oldKey)
+        {
+            if (!piece.HasMoved)
+                piece.HasMoved = true;
+
+            _gameBoard.UpdateBoard(piece,oldKey,newKey);
+
+        }
+        internal static List<int> GetCapturesList(ChessPiece piece)
+        {
+            return _gameBoard.GetCapturesPiece(piece);
+        }
 
         internal static ChessPiece GetPieceForSquare(int row, int col)
         {

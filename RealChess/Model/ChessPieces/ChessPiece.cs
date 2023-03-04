@@ -9,6 +9,8 @@ namespace RealChess.Model.ChessPieces
     public abstract class ChessPiece
     {
         protected UInt64 bitBoard;
+        public bool HasMoved { get; set; }
+
         public ChessPiece()
         {
         }
@@ -17,6 +19,11 @@ namespace RealChess.Model.ChessPieces
         {
             int key = row * Board.SIZE + col;
             this.bitBoard = (UInt64)1 << key;
+        }
+
+        public void UpdatePosition(int key)
+        {
+            this.bitBoard = (ulong)1 << key;
         }
 
         public abstract UInt64 GetMoves();

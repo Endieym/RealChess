@@ -18,9 +18,15 @@ namespace RealChess.Controller
         // The panel board
         private static Panel[,] _panelBoard;
 
+        private static int _tileSize;
+
+        private static int _gridSize;
+
         // Sets the panel board which represents all the squares on the chessboard
-        public static void SetBoard(Panel[,] panelBoard)
+        public static void SetBoard(Panel[,] panelBoard, int tileSize, int gridSize)
         {
+            _gridSize = gridSize;
+            _tileSize = tileSize;
             _panelBoard = panelBoard;
         }
 
@@ -37,6 +43,7 @@ namespace RealChess.Controller
         internal static void ShowLegalMoves(ChessPieceControl pieceSource)
         {
             List<int> movesList = pieceSource.Piece.GetMovesList();
+            List<int> capturesList = BoardController.GetCapturesList(pieceSource.Piece);
             foreach(int move in movesList)
             {
                 LegalMoveControl legalMoveControl = new LegalMoveControl();
@@ -44,8 +51,21 @@ namespace RealChess.Controller
                 _currentPieceClicked = pieceSource;
                 _panelBoard[move / 8, move % 8].Controls.Add(legalMoveControl);
             }
+
+            foreach(int capture in capturesList)
+            {
+                LegalMoveControl legalMoveControl = new LegalMoveControl();
+                legalMoveControl.SetCapture();
+                legalMoveControl.Transfer += LegalMoveControl_Move;
+                _currentPieceClicked = pieceSource;
+                _panelBoard[capture / 8, capture % 8].Controls.Clear();
+
+                _panelBoard[capture / 8, capture % 8].Controls.Add(legalMoveControl);
+            }
             
         }
+
+        
 
         private static void LegalMoveControl_Move(object sender, TransferEventArgs e)
         {
@@ -59,6 +79,11 @@ namespace RealChess.Controller
             // Clear controls of selected panel
             targetPanel.Controls.Clear();
 
+            // Get pieces' current location on the board
+            var oldRow = (pieceSource.Parent.Location.Y - 30) / _tileSize;
+            var oldCol = (pieceSource.Parent.Location.X - 10) / _tileSize;
+            int oldKey = oldRow * _gridSize + oldCol;  //tileSize * col + 10, tileSize * row + 30
+
             // Remove control from previous panel
             pieceSource.Parent.Controls.Remove(pieceSource);
 
@@ -69,10 +94,19 @@ namespace RealChess.Controller
             // Remove the dots indicating which squares are legal to move to.
             ClearLegalMoves(pieceSource);
 
+            // Finds the new location of the piece
+            var row = (targetPanel.Location.Y - 30) / _tileSize;
+            var col = (targetPanel.Location.X - 10) / _tileSize;
+            int newKey = row *_gridSize +col;  //tileSize * col + 10, tileSize * row + 30
+
+            
+            // Updates the data structure
+            BoardController.UpdateBoard(pieceSource.Piece, newKey, oldKey);
             ChessForm.ResetPieceClicked();
 
         }
 
+        
         internal static void ClearLegalMoves(ChessPieceControl pieceSource)
         {
             List<int> movesList = pieceSource.Piece.GetMovesList();
@@ -80,7 +114,7 @@ namespace RealChess.Controller
             {
                 LegalMoveControl legalMoveControl = new LegalMoveControl();
                 legalMoveControl.Transfer += LegalMoveControl_Move;
-                _currentPieceClicked = pieceSource;
+                pieceSource.BackColor = Color.Transparent;
 
                 Panel currentPanel = _panelBoard[move / 8, move % 8];
                 foreach (Control c in currentPanel.Controls)
