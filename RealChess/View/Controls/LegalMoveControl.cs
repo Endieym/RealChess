@@ -31,7 +31,7 @@ namespace RealChess.View.Controls
         {
             IsCapture = true;
             Image image = Properties.Resources.ResourceManager.GetObject("CaptureMove") as Image;
-            this.BackgroundImage = image;
+            this.piecePic.Image = image;
             
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             

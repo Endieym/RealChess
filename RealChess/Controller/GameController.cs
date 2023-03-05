@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
@@ -21,6 +22,8 @@ namespace RealChess.Controller
         private static int _tileSize;
 
         private static int _gridSize;
+
+        private static PieceColor turnColor = PieceColor.WHITE;
 
         // Sets the panel board which represents all the squares on the chessboard
         public static void SetBoard(Panel[,] panelBoard, int tileSize, int gridSize)
@@ -37,6 +40,11 @@ namespace RealChess.Controller
                 if (c.Equals(pieceSource) || c.Piece.Color == pieceSource.Piece.Color)
                     return false;
             return true;
+        }
+
+        internal static bool IsTurn(ChessPieceControl pieceSource)
+        {
+            return pieceSource.Piece.Color == turnColor;
         }
 
         // Highlights the legal squares the current piece can traverse to
@@ -146,7 +154,13 @@ namespace RealChess.Controller
             var col = (targetPanel.Location.X - 10) / _tileSize;
             int newKey = row *_gridSize +col;  //tileSize * col + 10, tileSize * row + 30
 
-            
+            System.Media.SoundPlayer player = isCapture? new System.Media.SoundPlayer(Properties.Resources.capture):
+                new System.Media.SoundPlayer(Properties.Resources.move);
+
+            turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
+                PieceColor.WHITE;
+
+            player.Play();
             // Updates the data structure
             BoardController.UpdateBoard(pieceSource.Piece, newKey, oldKey, isCapture);
             ChessForm.ResetPieceClicked();

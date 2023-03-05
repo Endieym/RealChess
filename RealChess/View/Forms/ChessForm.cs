@@ -143,8 +143,15 @@ namespace RealChess
             if (_currentPieceClicked is null)
             {
                 //MessageBox.Show("Source");
+
+                // Checks if the piece can be moved, according to whom's turn it is
+                if (!IsTurn(myPiece))
+                    return;
+
                 _currentPieceClicked = myPiece;
                 myPiece.BackColor = Color.Yellow;
+
+                // Shows the legal moves that can be made with the piece
                 ShowLegalMoves(myPiece);
 
             }

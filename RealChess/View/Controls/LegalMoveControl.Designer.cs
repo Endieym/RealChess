@@ -54,7 +54,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundImage = global::RealChess.Properties.Resources.LegalMove;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.Controls.Add(this.piecePic);
+            this.DoubleBuffered = true;
             this.Name = "LegalMoveControl";
             ((System.ComponentModel.ISupportInitialize)(this.piecePic)).EndInit();
             this.ResumeLayout(false);
