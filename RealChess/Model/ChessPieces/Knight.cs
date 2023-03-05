@@ -11,18 +11,25 @@ namespace RealChess.Model.ChessPieces
         public Knight()
         {
             this.Type = PieceType.KNIGHT;
+            this.Value = 3;
 
         }
 
         public Knight(int row, int col) : base(row, col)
         {
             this.Type = PieceType.KNIGHT;
-
+            this.Value = 3;
         }
 
-        public override ulong GetMoves()
+        public override ulong GenerateLegalMoves(ulong movesMask, ulong occupied)
         {
             throw new NotImplementedException();
         }
+
+        public override ulong GenerateMovesMask()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

@@ -23,13 +23,18 @@ namespace RealChess.Controller
         }
 
         // Updates the data structure on the move of the piece.
-        internal static void UpdateBoard(ChessPiece piece, int newKey, int oldKey)
+        internal static void UpdateBoard(ChessPiece piece, int newKey, int oldKey, bool isCapture)
         {
             if (!piece.HasMoved)
                 piece.HasMoved = true;
 
-            _gameBoard.UpdateBoard(piece,oldKey,newKey);
+            _gameBoard.UpdateBoard(piece,oldKey,newKey, isCapture);
 
+        }
+
+        internal static List<int> GetMovesList(ChessPiece piece)
+        {
+            return _gameBoard.GetMovesPiece(piece);
         }
         internal static List<int> GetCapturesList(ChessPiece piece)
         {

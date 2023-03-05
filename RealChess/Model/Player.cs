@@ -8,19 +8,32 @@ namespace RealChess.Model
     public class Player
     {
         Dictionary<int, ChessPiece> pieces;
-
+        List<ChessPiece> captures;
         public Dictionary<int, ChessPiece> Pieces 
         {
             get { return pieces; } 
         }
+        public List<ChessPiece> Captures
+        {
+            get { return captures; }
+        }
         public Player(bool white)
         {
             pieces = new Dictionary<int, ChessPiece>();
-            if (white) init(Board.SIZE - 1, Board.SIZE - 2);
-            else       init(0, 1);
+            if (white) Init(Board.SIZE - 1, Board.SIZE - 2);
+            else       Init(0, 1);
+
+            captures = new List<ChessPiece>();
 
         }
 
+        // Deletes a piece of a specific key from the dictionary
+        public void DeletePiece(int key)
+        {
+            this.pieces.Remove(key);
+        }
+
+        // Updates a pieces' location (key) in the dictionary
         public void UpdatePiece(int oldKey, int newKey)
         {
             var piece = pieces[oldKey];
@@ -29,7 +42,14 @@ namespace RealChess.Model
             this.pieces.Add(newKey, piece);
         }
 
-        private void init(int row, int rowPawns)
+        // Adds a captured piece to the list of captured pieces
+        public void AddCapture(ChessPiece pieceCaptured)
+        {
+            captures.Add(pieceCaptured);
+        }
+
+        // Initializes the dictionary
+        private void Init(int row, int rowPawns)
         {
             for (int col = 0; col < Board.SIZE; col++)
             {
@@ -39,6 +59,7 @@ namespace RealChess.Model
                 pieces.Add(keyPiece, GetPieceForSquare(row, col));
 
             }
+            
         }
     }
 }

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace RealChess.Model.ChessPieces
 {
-    public abstract class ChessPiece
+    public abstract class ChessPiece : IComparable<ChessPiece>
     {
         protected UInt64 bitBoard;
         public bool HasMoved { get; set; }
 
+        public ushort Value { get; set; }
         public ChessPiece()
         {
         }
@@ -26,28 +27,38 @@ namespace RealChess.Model.ChessPieces
             this.bitBoard = (ulong)1 << key;
         }
 
-        public abstract UInt64 GetMoves();
-        public virtual List<int> GetMovesList()
+        public abstract UInt64 GenerateMovesMask();
+
+        public abstract UInt64 GenerateLegalMoves(ulong movesMask, ulong occupied);
+
+        public int CompareTo(ChessPiece other)
         {
-            // Initialize the moves list
-            List<int> list = new List<int>();
+            if(other == null) return 1;
 
-            ulong movesMask = this.GetMoves();
-            // checks for legal moves using the moves bitmask
-            for(int i =0; i < 64; i++)
-            {
-                if((movesMask & 1) > 0)
-                    list.Add(i);
-                // shift by one bit, to check the next bit
-                movesMask >>= 1;
-
-                // If mask is 0, there are no more legal moves
-                if (movesMask == 0)
-                    break;
-            }
-            return list;
+            return this.Value.CompareTo(other.Value);
         }
-        
+
+        //public virtual List<int> GetMovesList()
+        //{
+        //    // Initialize the moves list
+        //    List<int> list = new List<int>();
+
+        //    ulong movesMask = this.GetMoves();
+        //    // checks for legal moves using the moves bitmask
+        //    for(int i =0; i < 64; i++)
+        //    {
+        //        if((movesMask & 1) > 0)
+        //            list.Add(i);
+        //        // shift by one bit, to check the next bit
+        //        movesMask >>= 1;
+
+        //        // If mask is 0, there are no more legal moves
+        //        if (movesMask == 0)
+        //            break;
+        //    }
+        //    return list;
+        //}
+
 
         public enum PieceColor { WHITE, BLACK }
         public enum PieceType { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING }

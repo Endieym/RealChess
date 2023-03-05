@@ -11,18 +11,26 @@ namespace RealChess.Model.ChessPieces
         public Bishop()
         {
             this.Type = PieceType.BISHOP;
+            this.Value = 3;
 
         }
 
         public Bishop(int row, int col) : base(row, col)
         {
             this.Type = PieceType.BISHOP;
-
+            this.Value = 3;
         }
 
-        public override ulong GetMoves()
+        public override ulong GenerateLegalMoves(ulong movesMask, ulong occupied)
         {
             throw new NotImplementedException();
         }
+
+        public override ulong GenerateMovesMask()
+        {
+            throw new NotImplementedException();
+        }
+
+       
     }
 }

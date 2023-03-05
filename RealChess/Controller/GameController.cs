@@ -42,8 +42,11 @@ namespace RealChess.Controller
         // Highlights the legal squares the current piece can traverse to
         internal static void ShowLegalMoves(ChessPieceControl pieceSource)
         {
-            List<int> movesList = pieceSource.Piece.GetMovesList();
+            // Gets both the legal moves and captures of the clicked piece control
+            List<int> movesList = BoardController.GetMovesList(pieceSource.Piece);
             List<int> capturesList = BoardController.GetCapturesList(pieceSource.Piece);
+            
+            // Shows the legal moves
             foreach(int move in movesList)
             {
                 LegalMoveControl legalMoveControl = new LegalMoveControl();
@@ -52,20 +55,54 @@ namespace RealChess.Controller
                 _panelBoard[move / 8, move % 8].Controls.Add(legalMoveControl);
             }
 
-            foreach(int capture in capturesList)
+            // Shows the legal captures 
+            foreach (int capture in capturesList)
             {
                 LegalMoveControl legalMoveControl = new LegalMoveControl();
                 legalMoveControl.SetCapture();
                 legalMoveControl.Transfer += LegalMoveControl_Move;
                 _currentPieceClicked = pieceSource;
-                _panelBoard[capture / 8, capture % 8].Controls.Clear();
-
+                
                 _panelBoard[capture / 8, capture % 8].Controls.Add(legalMoveControl);
+                legalMoveControl.BringToFront();
+                legalMoveControl.BackColor = Color.Transparent;
             }
             
         }
 
-        
+        internal static void ClearLegalMoves(ChessPieceControl pieceSource)
+        {
+            // Gets both the legal moves and captures of the clicked piece control
+            List<int> movesList = BoardController.GetMovesList(pieceSource.Piece);
+            List<int> capturesList = BoardController.GetCapturesList(pieceSource.Piece);
+            
+            // Hides the legal moves
+            foreach (int move in movesList)
+            {
+                Panel currentPanel = _panelBoard[move / 8, move % 8];
+                foreach (Control c in currentPanel.Controls)
+                {
+                    if (c is LegalMoveControl)
+                        currentPanel.Controls.Remove(c);
+                }
+            }
+
+            // Hides the legal captures
+            foreach (int capture in capturesList)
+            {
+                Panel currentPanel = _panelBoard[capture / 8, capture % 8];
+                foreach (Control c in currentPanel.Controls)
+                {
+                    if (c is LegalMoveControl)
+                        currentPanel.Controls.Remove(c);
+                }
+            }
+
+            
+
+        }
+
+
 
         private static void LegalMoveControl_Move(object sender, TransferEventArgs e)
         {
@@ -76,8 +113,18 @@ namespace RealChess.Controller
 
         internal static void MovePiece(ChessPieceControl pieceSource, Panel targetPanel)
         {
+
+            bool isCapture = false;
+            foreach (Control c in targetPanel.Controls)
+            {
+                if(c is ChessPieceControl)
+                    isCapture = true;
+            }
+
             // Clear controls of selected panel
             targetPanel.Controls.Clear();
+
+            
 
             // Get pieces' current location on the board
             var oldRow = (pieceSource.Parent.Location.Y - 30) / _tileSize;
@@ -101,28 +148,12 @@ namespace RealChess.Controller
 
             
             // Updates the data structure
-            BoardController.UpdateBoard(pieceSource.Piece, newKey, oldKey);
+            BoardController.UpdateBoard(pieceSource.Piece, newKey, oldKey, isCapture);
             ChessForm.ResetPieceClicked();
 
         }
 
         
-        internal static void ClearLegalMoves(ChessPieceControl pieceSource)
-        {
-            List<int> movesList = pieceSource.Piece.GetMovesList();
-            foreach (int move in movesList)
-            {
-                LegalMoveControl legalMoveControl = new LegalMoveControl();
-                legalMoveControl.Transfer += LegalMoveControl_Move;
-                pieceSource.BackColor = Color.Transparent;
-
-                Panel currentPanel = _panelBoard[move / 8, move % 8];
-                foreach (Control c in currentPanel.Controls)
-                {
-                    if(c is LegalMoveControl)
-                        currentPanel.Controls.Remove(c);
-                }
-            }
-        }
+        
     }
 }

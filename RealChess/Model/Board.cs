@@ -38,25 +38,72 @@ namespace RealChess.Model
         }
 
         // Updates the board according to a piece moving
-        public void UpdateBoard(ChessPiece piece, int oldKey, int newKey)
+        public void UpdateBoard(ChessPiece piece, int oldKey, int newKey, bool isCapture)
         {
             var playerColor = piece.Color;
             if (playerColor == PieceColor.WHITE)
             {
-                this.GetPlayer1().UpdatePiece(oldKey, newKey);
+                this.player1.UpdatePiece(oldKey, newKey);
                 this.whiteBoard ^= (ulong)1 << oldKey; // Removes previous position
                 this.whiteBoard |= (ulong)1 << newKey; // Adds new position
 
+                // If move is a capture, delete the piece from the other player
+                // and add the captured piece to player's captured pieces list
+                if (isCapture)
+                {
+                    this.player1.AddCapture(player2.Pieces[newKey]);
+                    this.player2.DeletePiece(newKey);
+                    
+                }
             }
             else
             {
-                this.GetPlayer2().UpdatePiece(oldKey, newKey);
+                this.player2.UpdatePiece(oldKey, newKey);
                 this.blackBoard ^= (ulong)1 << oldKey; // Removes previous position
                 this.blackBoard |= (ulong)1 << newKey; // Adds new position
+
+                // If move is a capture, delete the piece from the other player
+                // and add the captured piece to player's captured pieces list
+                if (isCapture)
+                {
+                    this.player2.AddCapture(player2.Pieces[newKey]);
+                    this.player1.DeletePiece(newKey);
+
+                }
+
             }
 
-            //this.bitBoard ^= (ulong)1 << oldKey; 
-            //this.bitBoard |= (ulong)1 << newKey; 
+            this.bitBoard = blackBoard | whiteBoard;
+        }
+        
+        public virtual List<int> GetMovesPiece(ChessPiece piece)
+        {
+            ulong movesMask = piece.GenerateMovesMask();
+                        
+            return GetPsuedoLegalMoves(movesMask, piece);
+        }
+
+        public List<int> GetPsuedoLegalMoves(ulong movesMask, ChessPiece piece)
+        {
+            ulong finalMoves = piece.GenerateLegalMoves(movesMask, this.bitBoard);
+            // Initialize the moves list
+            List<int> list = new List<int>();
+            
+            // checks for legal moves using the moves bitmask
+            for (int i = 0; i < 64; i++)
+            {
+                // If mask is 0, there are no more legal moves
+                if (finalMoves == 0)
+                    break;
+
+                if ((finalMoves & 1) > 0)
+                    list.Add(i);
+                // shift by one bit, to check the next bit
+                finalMoves >>= 1;
+
+
+            }
+            return list;
         }
 
         public List<int> GetCapturesPiece(ChessPiece piece)
@@ -64,7 +111,7 @@ namespace RealChess.Model
             List<int> list = new List<int>();
             // Gets the masks for the captures, according to piece type
             ulong movesMask = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures():
-                piece.GetMoves();
+                piece.GenerateMovesMask();
 
             // Checks colliding squares with enemy
             movesMask &= piece.Color == PieceColor.WHITE ? blackBoard : whiteBoard;
