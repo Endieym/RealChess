@@ -177,5 +177,11 @@
   <ItemGroup>
     <None Include="Resources\LegalMove.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CaptureMove.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CaptureMove.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

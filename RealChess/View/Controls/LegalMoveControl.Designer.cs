@@ -28,16 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LegalMoveControl));
             this.piecePic = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.piecePic)).BeginInit();
             this.SuspendLayout();
             // 
             // piecePic
             // 
-            this.piecePic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.piecePic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.piecePic.Cursor = System.Windows.Forms.Cursors.Default;
             this.piecePic.Image = global::RealChess.Properties.Resources.LegalMove;
-            this.piecePic.InitialImage = global::RealChess.Properties.Resources.LegalMove;
+            this.piecePic.InitialImage = ((System.Drawing.Image)(resources.GetObject("piecePic.InitialImage")));
             this.piecePic.Location = new System.Drawing.Point(0, 0);
             this.piecePic.Margin = new System.Windows.Forms.Padding(0);
             this.piecePic.Name = "piecePic";
@@ -51,6 +52,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Transparent;
+            this.BackgroundImage = global::RealChess.Properties.Resources.LegalMove;
             this.Controls.Add(this.piecePic);
             this.Name = "LegalMoveControl";
             ((System.ComponentModel.ISupportInitialize)(this.piecePic)).EndInit();

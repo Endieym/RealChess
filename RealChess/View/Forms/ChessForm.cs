@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RealChess.Model;
+using RealChess.Controller;
 
 namespace RealChess
 {
@@ -23,7 +24,7 @@ namespace RealChess
         // current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
 
-
+        
         private const int tileSize = 65;
         private const int gridSize = 8;
         public ChessForm()
@@ -36,9 +37,11 @@ namespace RealChess
         // Go back to main menu
         private void home_Click(object sender, EventArgs e)
         {
+
             MainPage home = new MainPage();
             home.Show();
             this.Hide();
+
         }
         
 
@@ -48,7 +51,7 @@ namespace RealChess
             
             var clr1 = Color.Green;
             var clr2 = Color.White;
-
+            
             // initialize the chess board panels
             _chessBoardPanels = new Panel[gridSize, gridSize];
 
@@ -106,13 +109,18 @@ namespace RealChess
                 }
             }
 
-            SetBoard(_chessBoardPanels);
-
+            SetBoard(_chessBoardPanels, tileSize,gridSize);
+            BoardController.SetBoard(chessBoard);
         }
 
+        // Resets the current piece clicked to null
         public static void ResetPieceClicked()
         {
+            // Resets the piece control's color to transparent
+            if(_currentPieceClicked != null)
+                _currentPieceClicked.BackColor = Color.Transparent;
             _currentPieceClicked = null;
+
         }
 
         
@@ -147,6 +155,7 @@ namespace RealChess
                 // If a piece is already selected, move the current piece to the clicked panel
                 Panel targetPanel = (Panel)myPiece.Parent;
 
+                
                 // Trigger the Click event of the target panel
                 Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
             }
@@ -170,7 +179,10 @@ namespace RealChess
         
         // Event handler when a panel is clicked
         private void Panel_Click(object sender, EventArgs e)
-        {
+        {   
+            if(_currentPieceClicked != null)
+                GameController.ClearLegalMoves(_currentPieceClicked);
+            ResetPieceClicked();
             //MouseEventArgs mouseArgs = e as MouseEventArgs;
 
             //if (mouseArgs.Button != MouseButtons.Left)

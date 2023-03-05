@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,12 +14,29 @@ namespace RealChess.View.Controls
     public partial class LegalMoveControl : UserControl
     {
         public event EventHandler<TransferEventArgs> Transfer;
-
+        public bool IsCapture { get; set; }
         public LegalMoveControl()
         {
             InitializeComponent();
+            SetStyle(ControlStyles.SupportsTransparentBackColor |
+              ControlStyles.AllPaintingInWmPaint |
+              ControlStyles.UserPaint, true);
+
+
+            this.BackColor = Color.Transparent;
+
         }
 
+        public void SetCapture()
+        {
+            IsCapture = true;
+            Image image = Properties.Resources.ResourceManager.GetObject("CaptureMove") as Image;
+            this.BackgroundImage = image;
+            
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            
+
+        }
 
         private void OnTransfer(TransferEventArgs e)
         {
@@ -47,5 +65,7 @@ namespace RealChess.View.Controls
                 OnTransfer(new TransferEventArgs((Panel)this.Parent));
             }
         }
+
+        
     }
 }
