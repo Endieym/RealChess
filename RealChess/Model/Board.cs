@@ -5,18 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.BoardOperations;
 
 namespace RealChess.Model
 {
 
     public class Board
     {
-        public static int SIZE = 8;
+        public const int SIZE = 8;
         Player player1;
         Player player2;
         UInt64 bitBoard;
         UInt64 whiteBoard;
         UInt64 blackBoard;
+        List<Move> movesList;
         public Board()
         {
             this.player1 = new Player(true);
@@ -24,6 +26,7 @@ namespace RealChess.Model
             this.bitBoard = 0;
             this.whiteBoard = 0;
             this.blackBoard = 0;
+            movesList = new List<Move>();
 
             foreach (var item in player1.Pieces)
             {
@@ -38,9 +41,19 @@ namespace RealChess.Model
         }
 
         // Updates the board according to a piece moving
-        public void UpdateBoard(ChessPiece piece, int oldKey, int newKey, bool isCapture)
+        // ChessPiece piece, int oldKey, int newKey, bool isCapture
+        public void UpdateBoard(Move move)
         {
-            var playerColor = piece.Color;
+            // Checks if the piece has moved before, if not, change the attribute
+            if (!move.PieceMoved.HasMoved)
+                move.PieceMoved.HasMoved = true;
+
+            var playerColor = move.PieceMoved.Color;
+            
+            var oldKey = move.StartSquare;
+            var newKey = move.EndSquare;
+            bool isCapture = move.IsCapture;
+
             if (playerColor == PieceColor.WHITE)
             {
                 this.player1.UpdatePiece(oldKey, newKey);
@@ -52,7 +65,11 @@ namespace RealChess.Model
                 if (isCapture)
                 {
                     this.player1.AddCapture(player2.Pieces[newKey]);
-                    this.player2.DeletePiece(newKey);
+                    if(!move.IsEnPassantCapture)
+                        this.player2.DeletePiece(newKey);
+                    else
+                        this.player2.DeletePiece(newKey + 8);
+                    this.blackBoard ^= (ulong)1 << newKey;
                     
                 }
             }
@@ -67,27 +84,31 @@ namespace RealChess.Model
                 if (isCapture)
                 {
                     this.player2.AddCapture(player2.Pieces[newKey]);
-                    this.player1.DeletePiece(newKey);
+                    if (!move.IsEnPassantCapture)
+                        this.player1.DeletePiece(newKey);
+                    else
+                        this.player1.DeletePiece(newKey - 8);
+                    this.whiteBoard ^= (ulong)1 << newKey;
 
                 }
 
             }
-
+            movesList.Add(move);
             this.bitBoard = blackBoard | whiteBoard;
         }
         
-        public virtual List<int> GetMovesPiece(ChessPiece piece)
+        public virtual List<Move> GetMovesPiece(ChessPiece piece)
         {
             ulong movesMask = piece.GenerateMovesMask();
                         
             return GetPsuedoLegalMoves(movesMask, piece);
         }
 
-        public List<int> GetPsuedoLegalMoves(ulong movesMask, ChessPiece piece)
+        public List<Move> GetPsuedoLegalMoves(ulong movesMask, ChessPiece piece)
         {
             ulong finalMoves = piece.GenerateLegalMoves(movesMask, this.bitBoard);
             // Initialize the moves list
-            List<int> list = new List<int>();
+            List<Move> list = new List<Move>();
             
             // checks for legal moves using the moves bitmask
             for (int i = 0; i < 64; i++)
@@ -97,7 +118,7 @@ namespace RealChess.Model
                     break;
 
                 if ((finalMoves & 1) > 0)
-                    list.Add(i);
+                    list.Add(new Move(i, piece));
                 // shift by one bit, to check the next bit
                 finalMoves >>= 1;
 
@@ -106,20 +127,44 @@ namespace RealChess.Model
             return list;
         }
 
-        public List<int> GetCapturesPiece(ChessPiece piece)
+        public List<Move> GetCapturesPiece(ChessPiece piece)
         {
-            List<int> list = new List<int>();
+            List<Move> captureList = new List<Move>();
             // Gets the masks for the captures, according to piece type
             ulong movesMask = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures():
                 piece.GenerateMovesMask();
 
             // Checks colliding squares with enemy
             movesMask &= piece.Color == PieceColor.WHITE ? blackBoard : whiteBoard;
+            ulong enPassantMask = 0;
+
+            // Adds en passant (if possible)
+            if(movesList.Count > 3 && piece.Type == PieceType.PAWN)
+            { 
+                Move lastMove = movesList[movesList.Count - 1];
+                enPassantMask |= GenerateEnPassant((Pawn)piece,lastMove);
+                if (enPassantMask > 0)
+                {
+                    Move enPassant = new Move((int)Math.Log(enPassantMask, 2), piece)
+                    {
+                        IsEnPassantCapture = true
+                    };
+                    captureList.Add(enPassant);
+
+                }
+            }
+
             // checks for legal moves using the moves bitmask
             for (int i = 0; i < 64; i++)
             {
                 if ((movesMask & 1) > 0)
-                    list.Add(i);
+                {
+                    Move newMove = new Move(i, piece);
+                    newMove.IsCapture = true;
+                    captureList.Add(newMove);
+
+
+                }
                 // shift by one bit, to check the next bit
                 movesMask >>= 1;
 
@@ -127,9 +172,7 @@ namespace RealChess.Model
                 if (movesMask == 0)
                     break;
             }
-            return list;
-
-
+            return captureList;
 
         }
 

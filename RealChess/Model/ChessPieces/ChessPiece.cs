@@ -59,7 +59,7 @@ namespace RealChess.Model.ChessPieces
         //    return list;
         //}
 
-
+      
         public enum PieceColor { WHITE, BLACK }
         public enum PieceType { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING }
 

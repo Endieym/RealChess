@@ -43,6 +43,13 @@ namespace RealChess.Model.ChessPieces
             
         }
 
+        // Returns the bitboard representing one square back from where the pawn is
+        public ulong GoBack()
+        {
+            return this.Color == PieceColor.WHITE ? this.bitBoard << 8 :
+                this.bitBoard >> 8;
+        }
+
         public ulong GetCaptures()
         {
             // The bitmask which represents the move
@@ -53,7 +60,7 @@ namespace RealChess.Model.ChessPieces
             // once in the game, if not, pawn can move two squares
 
             moveMask = this.Color == PieceColor.WHITE ? moveMask >> 8 : moveMask <<8;          
-            moveMask = moveMask << 1;
+            moveMask <<= 1;
             moveMask |= moveMask >> 2;
 
             return moveMask;
@@ -78,24 +85,6 @@ namespace RealChess.Model.ChessPieces
                 doubleMoveMask = this.Color == PieceColor.WHITE ? moveMask >> 16 :
                 moveMask << 16;
             }
-
-            
-            //if (this.Color == PieceColor.WHITE)
-            //{
-            //    // Goes up in the bitboard
-            //    moveMask >>= 8;
-            //    if (!HasMoved)
-            //        moveMask |= moveMask >> 8;
-            //}
-            //else
-            //{
-            //    // Goes down in the bitboard
-            //    moveMask <<= 8;
-            //    if (!HasMoved)
-            //        moveMask |= moveMask << 8;
-
-            //}
-
 
             return singleMoveMask | doubleMoveMask;
         }

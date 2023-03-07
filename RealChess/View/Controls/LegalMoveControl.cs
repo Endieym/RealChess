@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealChess.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,8 @@ namespace RealChess.View.Controls
     {
         public event EventHandler<TransferEventArgs> Transfer;
         public bool IsCapture { get; set; }
+        public Move CurrentMove { get; set; }
+
         public LegalMoveControl()
         {
             InitializeComponent();
@@ -50,7 +53,7 @@ namespace RealChess.View.Controls
             if (e.Button == MouseButtons.Left)
             {
                 // Raise the transfer event with the clicked legal move control's coordinates
-                OnTransfer(new TransferEventArgs((Panel)this.Parent));
+                OnTransfer(new TransferEventArgs(this.CurrentMove));
             }
         }
 
@@ -62,7 +65,7 @@ namespace RealChess.View.Controls
             if (mouseArgs.Button == MouseButtons.Left)
             {
                 // Raise the transfer event with the clicked legal move control's coordinates
-                OnTransfer(new TransferEventArgs((Panel)this.Parent));
+                OnTransfer(new TransferEventArgs(this.CurrentMove));
             }
         }
 
