@@ -98,31 +98,24 @@ namespace RealChess.Model
         }
         
         public virtual List<Move> GetMovesPiece(ChessPiece piece)
-        {
-            ulong movesMask = piece.GenerateMovesMask();
-                        
-            return GetPsuedoLegalMoves(movesMask, piece);
+        {                        
+            return GetPsuedoLegalMoves(piece);
         }
 
-        public List<Move> GetPsuedoLegalMoves(ulong movesMask, ChessPiece piece)
+        public List<Move> GetPsuedoLegalMoves(ChessPiece piece)
         {
-            ulong finalMoves = piece.GenerateLegalMoves(movesMask, this.bitBoard);
+            ulong finalMoves = piece.GenerateLegalMoves(this.bitBoard);
             // Initialize the moves list
             List<Move> list = new List<Move>();
-            
+
             // checks for legal moves using the moves bitmask
-            for (int i = 0; i < 64; i++)
+            while (finalMoves != 0)
             {
-                // If mask is 0, there are no more legal moves
-                if (finalMoves == 0)
-                    break;
-
-                if ((finalMoves & 1) > 0)
-                    list.Add(new Move(i, piece));
-                // shift by one bit, to check the next bit
-                finalMoves >>= 1;
-
-
+                // determine bit index, also referred as BitScan
+                int bitIndex = (int)Math.Log(finalMoves & ~(finalMoves - 1), 2);
+                Move newMove = new Move(bitIndex, piece);
+                list.Add(newMove);
+                finalMoves &= finalMoves - 1; // reset LS1B
             }
             return list;
         }
@@ -132,7 +125,7 @@ namespace RealChess.Model
             List<Move> captureList = new List<Move>();
             // Gets the masks for the captures, according to piece type
             ulong movesMask = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures():
-                piece.GenerateMovesMask();
+                piece.GenerateLegalMoves(bitBoard);
 
             // Checks colliding squares with enemy
             movesMask &= piece.Color == PieceColor.WHITE ? blackBoard : whiteBoard;
@@ -154,25 +147,20 @@ namespace RealChess.Model
                 }
             }
 
-            // checks for legal moves using the moves bitmask
-            for (int i = 0; i < 64; i++)
+            while (movesMask != 0)
             {
-                if ((movesMask & 1) > 0)
+                // determine bit index, also referred as BitScan
+                int bitIndex = (int)Math.Log(movesMask & ~(movesMask - 1),2);
+                Move newMove = new Move(bitIndex, piece)
                 {
-                    Move newMove = new Move(i, piece);
-                    newMove.IsCapture = true;
-                    captureList.Add(newMove);
-
-
-                }
-                // shift by one bit, to check the next bit
-                movesMask >>= 1;
-
-                // If mask is 0, there are no more legal moves
-                if (movesMask == 0)
-                    break;
+                    IsCapture = true
+                };
+                captureList.Add(newMove);
+                movesMask &= movesMask - 1; // reset LS1B
             }
+
             return captureList;
+            
 
         }
 

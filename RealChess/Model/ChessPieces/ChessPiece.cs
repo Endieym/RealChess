@@ -27,9 +27,8 @@ namespace RealChess.Model.ChessPieces
             this.bitBoard = (ulong)1 << key;
         }
 
-        public abstract UInt64 GenerateMovesMask();
 
-        public abstract UInt64 GenerateLegalMoves(ulong movesMask, ulong occupied);
+        public abstract UInt64 GenerateLegalMoves(ulong occupied);
 
         public int CompareTo(ChessPiece other)
         {

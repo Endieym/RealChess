@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static RealChess.Model.BoardOperations;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -21,12 +22,13 @@ namespace RealChess.Model.ChessPieces
             this.Value = 5;
         }
 
-        public override ulong GenerateLegalMoves(ulong movesMask, ulong occupied)
+        public override ulong GenerateLegalMoves(ulong occupied)
         {
-            throw new NotImplementedException();
+            return GenerateLines(this.bitBoard, occupied);
+                
         }
 
-        public override ulong GenerateMovesMask()
+        public ulong GenerateMovesMask()
         {
             throw new NotImplementedException();
         }

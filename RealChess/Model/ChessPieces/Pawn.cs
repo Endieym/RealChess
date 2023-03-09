@@ -21,8 +21,10 @@ namespace RealChess.Model.ChessPieces
             
         }
 
-        public override ulong GenerateLegalMoves(ulong movesMask, ulong occupied)
+        public override ulong GenerateLegalMoves(ulong occupied)
         {
+            
+            ulong movesMask = GenerateMovesMask();
             // The bit representing the double move (2 squares above)
             ulong doubleMask = this.Color == PieceColor.WHITE ? movesMask & movesMask >> 8:
                 movesMask & movesMask << 8;
@@ -68,7 +70,7 @@ namespace RealChess.Model.ChessPieces
         
         }
 
-        public override ulong GenerateMovesMask()
+        public ulong GenerateMovesMask()
         {
             // The bitmask which represents the move
             UInt64 moveMask = this.bitBoard;

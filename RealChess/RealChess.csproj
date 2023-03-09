@@ -52,8 +52,9 @@
   <ItemGroup>
     <Compile Include="Controller\BoardController.cs" />
     <Compile Include="Controller\GameController.cs" />
-    <Compile Include="Model\Board.cs" />
-    <Compile Include="Model\BoardOperations.cs" />
+    <Compile Include="Model\Bitboard\BitboardConstants.cs" />
+    <Compile Include="Model\Bitboard\Board.cs" />
+    <Compile Include="Model\Bitboard\BoardOperations.cs" />
     <Compile Include="Model\ChessPieces\Bishop.cs" />
     <Compile Include="Model\ChessPieces\King.cs" />
     <Compile Include="Model\ChessPieces\Rook.cs" />

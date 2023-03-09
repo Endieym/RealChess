@@ -13,7 +13,6 @@ namespace RealChess.Model
         public ChessPiece CapturedPiece { get; set; }
         public int StartSquare { get; set; }
         public int EndSquare { get; set; }
-
         public bool IsCapture { get; set; }
         public bool IsEnPassantCapture { get; set; }
         public bool IsPromotion { get; set; }
