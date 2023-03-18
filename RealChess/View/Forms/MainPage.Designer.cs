@@ -116,6 +116,7 @@
             this.Controls.Add(this.button_play_ai);
             this.Controls.Add(this.button_play);
             this.Controls.Add(this.pictureBox2);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "MainPage";
             this.Text = "   ";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

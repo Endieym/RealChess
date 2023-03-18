@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static RealChess.Model.BoardOperations;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -23,7 +24,7 @@ namespace RealChess.Model.ChessPieces
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {
-            throw new NotImplementedException();
+            return GenerateDiagonals(this.bitBoard, occupied);
         }
 
         public ulong GenerateMovesMask()

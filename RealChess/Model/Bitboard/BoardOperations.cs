@@ -42,9 +42,14 @@ namespace RealChess.Model
             return (int)Math.Log(position, 2);
         }
 
-        public static ulong GenerateDiagonals(ulong position)
+        public static ulong GenerateDiagonals(ulong position, ulong occupied)
         {
-            return 0;
+            ulong moves = 0;
+            moves |= BishopMovesInDirection(position, occupied, 0);
+            moves |= BishopMovesInDirection(position, occupied, 1);
+            moves |= BishopMovesInDirection(position, occupied, 2);
+            moves |= BishopMovesInDirection(position, occupied, 3);
+            return moves;
 
         }
         public static ulong GenerateLines(ulong position, ulong occupied)
@@ -59,10 +64,28 @@ namespace RealChess.Model
 
         }
 
+        public static ulong BishopMovesInDirection(ulong squareIndex, ulong occupiedSquares, int direction)
+        {
+            
+
+            switch (direction)
+            {
+                case 0: // NorthEast
+                    return SlideNorthEast(squareIndex, occupiedSquares);
+                case 1: // SouthEast
+                    return SlideSouthEast(squareIndex, occupiedSquares);
+                case 2: // SouthWes
+                    return SlideSouthWest(squareIndex, occupiedSquares);
+                case 3: // NorthWest
+                    return SlideNorthWest(squareIndex, occupiedSquares);
+                default:
+                    return 0;
+            }
+        }
+
         public static ulong RookMovesInDirection(ulong squareIndex, ulong occupiedSquares, int direction)
         {
-            //ulong fileMask = FileMask(squareIndex % 8);
-            //ulong rankMask = RankMask(squareIndex / 8);
+            
 
             switch (direction)
             {
@@ -79,6 +102,27 @@ namespace RealChess.Model
             }
         }
 
+
+        // Generates moves to the north west
+        public static ulong SlideNorthWest(ulong square, ulong blockers)
+        {
+            ulong attacks = 0;
+            blockers |= BitboardConstants.AFile;
+            if ((square & BitboardConstants.AFile) != 0)
+                return 0;
+            // while in the board 
+            while (square > 0)
+            {
+                square >>= 9;
+                attacks |= square;
+
+                // while not reached an occupied square
+                if ((square & blockers) != 0) break;
+
+            }
+            return attacks;
+        }
+
         // Generates moves to the north
         public static ulong SlideNorth(ulong square, ulong blockers)
         {
@@ -92,6 +136,26 @@ namespace RealChess.Model
                 // while not reached an occupied square
                 if ((square & blockers) != 0) break;
      
+            }
+            return attacks;
+        }
+
+        // Generates moves to the north east
+        public static ulong SlideNorthEast(ulong square, ulong blockers)
+        {
+            ulong attacks = 0;
+            blockers |= BitboardConstants.HFile;
+            if ((square & BitboardConstants.HFile) != 0)
+                return 0;
+            // while in the board 
+            while (square > 0)
+            {
+                square >>= 7;
+                attacks |= square;
+
+                // while not reached an occupied square
+                if ((square & blockers) != 0) break;
+
             }
             return attacks;
         }
@@ -134,6 +198,26 @@ namespace RealChess.Model
             return attacks;
         }
 
+        // Generates moves to the south east
+        public static ulong SlideSouthEast(ulong square, ulong blockers)
+        {
+            ulong attacks = 0;
+            blockers |= BitboardConstants.HFile;
+            if ((square & BitboardConstants.HFile) != 0)
+                return 0;
+            // while in the board 
+            while (square > 0)
+            {
+                square <<= 9;
+                attacks |= square;
+
+                // while not reached an occupied square
+                if ((square & blockers) != 0) break;
+
+            }
+            return attacks;
+        }
+
         // Generates moves to the west
         public static ulong SlideWest(ulong square, ulong blockers)
         {
@@ -152,6 +236,26 @@ namespace RealChess.Model
             }
             // while not reached an occupied square, and not reached the end of the rank
 
+            return attacks;
+        }
+
+        // Generates moves to the south west
+        public static ulong SlideSouthWest(ulong square, ulong blockers)
+        {
+            ulong attacks = 0;
+            blockers |= BitboardConstants.AFile;
+            if ((square & BitboardConstants.AFile) != 0)
+                return 0;
+            // while in the board 
+            while (square > 0)
+            {
+                square <<= 7;
+                attacks |= square;
+
+                // while not reached an occupied square
+                if ((square & blockers) != 0) break;
+
+            }
             return attacks;
         }
     }

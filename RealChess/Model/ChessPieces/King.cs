@@ -23,8 +23,7 @@ namespace RealChess.Model.ChessPieces
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {
-            ulong movesMask = GenerateMovesMask();
-            return movesMask & (~occupied);
+            return GenerateMovesMask();
         }
 
         public ulong GenerateMovesMask()
