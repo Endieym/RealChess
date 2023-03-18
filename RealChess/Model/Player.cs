@@ -9,6 +9,8 @@ namespace RealChess.Model
     {
         Dictionary<int, ChessPiece> pieces;
         List<ChessPiece> captures;
+
+        int kingPos;
         public Dictionary<int, ChessPiece> Pieces 
         {
             get { return pieces; } 
@@ -26,6 +28,15 @@ namespace RealChess.Model
             captures = new List<ChessPiece>();
 
         }
+        internal King GetKing()
+        {
+            return (King)this.pieces[kingPos];
+        }
+
+        public ulong GetAttacks()
+        {
+            return 0;
+        }
 
         // Deletes a piece of a specific key from the dictionary
         public void DeletePiece(int key)
@@ -37,6 +48,12 @@ namespace RealChess.Model
         public void UpdatePiece(int oldKey, int newKey)
         {
             var piece = pieces[oldKey];
+
+            // Checks if the piece is a king, if so, update king position for player
+            if (piece.Type == ChessPiece.PieceType.KING)
+                this.kingPos = newKey;
+
+            // Updates position for the individual piece's bitboard
             piece.UpdatePosition(newKey);
             this.pieces.Remove(oldKey);
             this.pieces.Add(newKey, piece);
@@ -56,7 +73,12 @@ namespace RealChess.Model
                 int keyPawn = rowPawns * Board.SIZE + col;
                 int keyPiece = row * Board.SIZE + col;
                 pieces.Add(keyPawn, GetPieceForSquare(rowPawns, col));
-                pieces.Add(keyPiece, GetPieceForSquare(row, col));
+                ChessPiece pieceToAdd = GetPieceForSquare(row, col);
+                pieces.Add(keyPiece, pieceToAdd);
+
+                // Checks if the added piece is a king, if so, init king position
+                if (pieceToAdd.Type == ChessPiece.PieceType.KING)
+                    this.kingPos = keyPiece;
 
             }
             

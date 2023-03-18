@@ -19,6 +19,7 @@ namespace RealChess.Model
         UInt64 whiteBoard;
         UInt64 blackBoard;
         List<Move> movesList;
+
         public Board()
         {
             this.player1 = new Player(true);
@@ -27,7 +28,7 @@ namespace RealChess.Model
             this.whiteBoard = 0;
             this.blackBoard = 0;
             movesList = new List<Move>();
-
+            
             foreach (var item in player1.Pieces)
             {
                 this.whiteBoard |= (ulong)1 << item.Key;
@@ -38,6 +39,17 @@ namespace RealChess.Model
                 this.blackBoard |= (ulong)1 << item.Key;
             }
             this.bitBoard = whiteBoard | blackBoard;
+        }
+
+        public bool IsKingUnderAttack(PieceColor color)
+        {
+            King king = color == PieceColor.WHITE ? player1.GetKing() :
+                player2.GetKing();
+
+            ulong attackingSquares = color == PieceColor.WHITE ? player1.GetAttacks() :
+                player2.GetAttacks();
+
+            return true;
         }
 
         // Updates the board according to a piece moving

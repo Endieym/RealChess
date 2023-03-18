@@ -30,6 +30,10 @@ namespace RealChess.Model.ChessPieces
 
         public abstract UInt64 GenerateLegalMoves(ulong occupied);
 
+        public bool isUnderAttack()
+        {
+            return false;
+        }
         public int CompareTo(ChessPiece other)
         {
             if(other == null) return 1;
