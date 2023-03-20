@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using RealChess.Model;
 using RealChess.Controller;
+using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess
 {
@@ -162,9 +163,13 @@ namespace RealChess
                 // If a piece is already selected, move the current piece to the clicked panel
                 Panel targetPanel = (Panel)myPiece.Parent;
 
-                
+                PieceColor currentColor = _currentPieceClicked.Piece.Color;
                 // Trigger the Click event of the target panel
                 Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+                
+                if (myPiece.Piece.Color == currentColor)
+                    PieceControl_Click(piecePic, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));;
+
             }
         }
 
