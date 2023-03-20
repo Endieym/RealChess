@@ -41,16 +41,37 @@ namespace RealChess.Model
             this.bitBoard = whiteBoard | blackBoard;
         }
 
+        
+
         public bool IsKingUnderAttack(PieceColor color)
         {
-            King king = color == PieceColor.WHITE ? player1.GetKing() :
-                player2.GetKing();
+            ulong attackingSquares = GetPlayerAttack(color);
 
-            ulong attackingSquares = color == PieceColor.WHITE ? player1.GetAttacks() :
-                player2.GetAttacks();
-
-            return true;
+            return color == PieceColor.WHITE ? player1.InCheck(attackingSquares) :
+                player2.InCheck(attackingSquares);
+           
         }
+
+        public int GetKingPos(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? player1.GetKingPos() :
+                player2.GetKingPos();
+        }
+        
+        //public bool IsInCheck(PieceColor color)
+        //{
+        //    return color == PieceColor.WHITE ? player1.InCheck(attackingSquares) :
+        //        player2.InCheck(attackingSquares);
+        //}
+
+        public ulong GetPlayerAttack(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? player2.GetAttacks(whiteBoard, bitBoard) :
+               player1.GetAttacks(blackBoard, bitBoard);
+            
+        }
+        
+
 
         // Updates the board according to a piece moving
         // ChessPiece piece, int oldKey, int newKey, bool isCapture
@@ -60,11 +81,64 @@ namespace RealChess.Model
             if (!move.PieceMoved.HasMoved)
                 move.PieceMoved.HasMoved = true;
 
+            bool isCapture = move.IsCapture;
+            var newKey = move.EndSquare;
+            UpdateDataStructures(move);
+
+            if (isCapture)
+            {
+                if (move.PieceMoved.Color == PieceColor.WHITE)
+                {
+                    this.player1.AddCapture(player2.Pieces[newKey]);
+
+                }
+                else
+                {
+                    this.player2.AddCapture(player1.Pieces[newKey]);
+
+                }
+                UpdateCaptures(move);
+                
+
+            }
+
+
+            this.bitBoard = blackBoard | whiteBoard;
+            if (IsKingUnderAttack(PieceColor.WHITE))
+                Console.WriteLine("Test!");
+        }
+
+        public void UpdateCaptures(Move move)
+        {
             var playerColor = move.PieceMoved.Color;
-            
+            var newKey = move.EndSquare;
+
+            if (playerColor == PieceColor.WHITE)
+            {
+                
+                    if (!move.IsEnPassantCapture)
+                        this.player2.DeletePiece(newKey);
+                    else
+                        this.player2.DeletePiece(newKey + 8);
+                    this.blackBoard ^= (ulong)1 << newKey;
+                
+            }
+            else
+            {                
+                    if (!move.IsEnPassantCapture)
+                        this.player1.DeletePiece(newKey);
+                    else
+                        this.player1.DeletePiece(newKey - 8);
+                    this.whiteBoard ^= (ulong)1 << newKey;               
+            }
+        }
+
+        public void UpdateDataStructures(Move move)
+        {
+            var playerColor = move.PieceMoved.Color;
+
             var oldKey = move.StartSquare;
             var newKey = move.EndSquare;
-            bool isCapture = move.IsCapture;
 
             if (playerColor == PieceColor.WHITE)
             {
@@ -72,53 +146,34 @@ namespace RealChess.Model
                 this.whiteBoard ^= (ulong)1 << oldKey; // Removes previous position
                 this.whiteBoard |= (ulong)1 << newKey; // Adds new position
 
-                // If move is a capture, delete the piece from the other player
-                // and add the captured piece to player's captured pieces list
-                if (isCapture)
-                {
-                    this.player1.AddCapture(player2.Pieces[newKey]);
-                    if(!move.IsEnPassantCapture)
-                        this.player2.DeletePiece(newKey);
-                    else
-                        this.player2.DeletePiece(newKey + 8);
-                    this.blackBoard ^= (ulong)1 << newKey;
-                    
-                }
             }
             else
             {
                 this.player2.UpdatePiece(oldKey, newKey);
                 this.blackBoard ^= (ulong)1 << oldKey; // Removes previous position
                 this.blackBoard |= (ulong)1 << newKey; // Adds new position
-
-                // If move is a capture, delete the piece from the other player
-                // and add the captured piece to player's captured pieces list
-                if (isCapture)
-                {
-                    this.player2.AddCapture(player2.Pieces[newKey]);
-                    if (!move.IsEnPassantCapture)
-                        this.player1.DeletePiece(newKey);
-                    else
-                        this.player1.DeletePiece(newKey - 8);
-                    this.whiteBoard ^= (ulong)1 << newKey;
-
-                }
-
             }
+
             movesList.Add(move);
-            this.bitBoard = blackBoard | whiteBoard;
+
+
         }
-        
+
+
+
         public virtual List<Move> GetMovesPiece(ChessPiece piece)
         {                        
             return GetPsuedoLegalMoves(piece);
         }
-
+        
         public List<Move> GetPsuedoLegalMoves(ChessPiece piece)
         {
             ulong finalMoves = piece.GenerateLegalMoves(this.bitBoard);
             // Initialize the moves list
             List<Move> list = new List<Move>();
+
+            // Removes moves over friendly squares
+            finalMoves &= piece.Color == PieceColor.WHITE ? ~whiteBoard : ~blackBoard;
 
             // checks for legal moves using the moves bitmask
             while (finalMoves != 0)
@@ -126,18 +181,111 @@ namespace RealChess.Model
                 // determine bit index, also referred as BitScan
                 int bitIndex = (int)Math.Log(finalMoves & ~(finalMoves - 1), 2);
                 Move newMove = new Move(bitIndex, piece);
+                if (!IsMoveLegal(newMove))
+                {
+                    finalMoves &= finalMoves - 1; // reset LS1B
+                    continue;
+
+                }
+                if (IsKingUnderAttack(piece.Color))
+                    newMove.DefendsCheck = true;
+                if (IsMoveCheck(newMove))
+                {
+                    newMove.IsCheck = true;
+                    newMove.Type = Move.MoveType.Check;
+                }
                 list.Add(newMove);
                 finalMoves &= finalMoves - 1; // reset LS1B
             }
             return list;
         }
 
+        
+
+        public ulong GetAttacksMask(ChessPiece piece)
+        {
+
+            return piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures():
+                piece.GenerateLegalMoves(bitBoard);
+
+        }
+
+        public bool IsMoveLegal(Move newMove)
+        {
+            MakeTemporaryMove(newMove);
+
+            bool result = IsKingUnderAttack(newMove.PieceMoved.Color);
+
+            UndoMove();
+
+            return !result;
+        }
+
+        public void MakeTemporaryMove(Move move)
+        {
+            UpdateDataStructures(move);
+            if (move.IsCapture)
+                UpdateCaptures(move);
+            bitBoard = blackBoard | whiteBoard;
+        }
+
+        public bool IsMoveCheck(Move newMove)
+        {
+            MakeTemporaryMove(newMove);
+
+            bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
+
+            UndoMove();
+
+            return result;
+
+        }
+
+        public void UndoMove()
+        {
+            int index = movesList.Count - 1;
+            Move oldMove = movesList[index];
+            Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved);
+            UpdateDataStructures(undoMove);
+            movesList.RemoveAt(index+1);
+            movesList.RemoveAt(index);
+            if (oldMove.IsCapture)
+                UndoCapture(oldMove);
+            bitBoard = blackBoard | whiteBoard;
+
+        }
+
+        public void UndoCapture(Move oldCapture)
+        {
+            var playerColor = oldCapture.PieceMoved.Color;
+            var newKey = oldCapture.EndSquare;
+            ChessPiece oldPiece = oldCapture.CapturedPiece;
+
+            if (playerColor == PieceColor.WHITE)
+            {
+
+                if (!oldCapture.IsEnPassantCapture)
+                    this.player2.AddPiece(oldPiece, newKey);
+                else
+                    this.player2.AddPiece(oldPiece, newKey + 8);
+                this.blackBoard |= (ulong)1 << newKey;
+
+            }
+            else
+            {
+                if (!oldCapture.IsEnPassantCapture)
+                    this.player1.AddPiece(oldPiece,newKey);
+                else
+                    this.player1.AddPiece(oldPiece,newKey - 8);
+                this.whiteBoard |= (ulong)1 << newKey;
+            }
+        }
+
         public List<Move> GetCapturesPiece(ChessPiece piece)
         {
             List<Move> captureList = new List<Move>();
             // Gets the masks for the captures, according to piece type
-            ulong movesMask = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures():
-                piece.GenerateLegalMoves(bitBoard);
+            ulong movesMask = GetAttacksMask(piece);
 
             // Checks colliding squares with enemy
             movesMask &= piece.Color == PieceColor.WHITE ? blackBoard : whiteBoard;
@@ -154,7 +302,8 @@ namespace RealChess.Model
                     {
                         IsEnPassantCapture = true
                     };
-                    captureList.Add(enPassant);
+                    if(IsMoveLegal(enPassant))
+                        captureList.Add(enPassant);
 
                 }
             }
@@ -162,13 +311,38 @@ namespace RealChess.Model
             while (movesMask != 0)
             {
                 // determine bit index, also referred as BitScan
-                int bitIndex = (int)Math.Log(movesMask & ~(movesMask - 1),2);
+                int bitIndex = (int)Math.Log(movesMask & ~(movesMask - 1), 2);
                 Move newMove = new Move(bitIndex, piece)
                 {
-                    IsCapture = true
+                    IsCapture = true,
+                    Type = Move.MoveType.Capture
                 };
+
+                if (piece.Color == PieceColor.WHITE)
+                    newMove.CapturedPiece = player2.Pieces[bitIndex];
+                else
+                    newMove.CapturedPiece = player1.Pieces[bitIndex];
+
+
+                if (!IsMoveLegal(newMove))
+                {
+                    movesMask &= movesMask - 1; // reset LS1B
+                    continue;
+
+                }
+                
+                if (IsKingUnderAttack(piece.Color))
+                    newMove.DefendsCheck = true;
+
+                if (IsMoveCheck(newMove))
+                {
+                    newMove.IsCheck = true;
+                    newMove.Type = Move.MoveType.Check;
+
+                }
                 captureList.Add(newMove);
                 movesMask &= movesMask - 1; // reset LS1B
+
             }
 
             return captureList;

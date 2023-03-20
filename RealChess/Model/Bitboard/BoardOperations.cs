@@ -37,6 +37,12 @@ namespace RealChess.Model
             return 0xFFUL << (rank * 8);
         }
 
+        public static PieceColor GetOppositeColor(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+
+        }
+
         public static int UInt64ToKey(ulong position)
         {
             return (int)Math.Log(position, 2);

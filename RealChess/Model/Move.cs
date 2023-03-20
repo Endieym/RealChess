@@ -16,6 +16,20 @@ namespace RealChess.Model
         public bool IsCapture { get; set; }
         public bool IsEnPassantCapture { get; set; }
         public bool IsPromotion { get; set; }
+        public bool IsCheck { get; set; }
+        public ulong BoardBefore { get; set; }
+        public bool DefendsCheck { get; set; }
+
+        public enum MoveType
+        {
+            Normal,
+            Capture,
+            Check,
+            Checkmate,
+            Stalemate
+        }
+        public MoveType Type { get; set; }
+
 
         public Move()
         {
@@ -25,6 +39,8 @@ namespace RealChess.Model
         {
             EndSquare = endSquare;
             PieceMoved = piece;
+            StartSquare = (int)Math.Log(piece.GetPosition(), 2);
+            Type = MoveType.Normal;
         }
     }
 }

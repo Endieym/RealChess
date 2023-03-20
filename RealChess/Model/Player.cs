@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using static RealChess.Controller.BoardController;
+using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Model
 {
@@ -28,15 +29,39 @@ namespace RealChess.Model
             captures = new List<ChessPiece>();
 
         }
+
+        // Returns the king piece of the player
         internal King GetKing()
         {
             return (King)this.pieces[kingPos];
         }
 
-        public ulong GetAttacks()
+        internal int GetKingPos()
         {
-            return 0;
+            return kingPos;
         }
+
+        // Returns true if the player's king is in check, false if else
+        internal bool InCheck(ulong attacks)
+        {
+            return this.GetKing().IsUnderAttack(attacks);
+        }
+        
+        // Returns the bitboard of the player's current possible attacks
+        public ulong GetAttacks(ulong enemySquares, ulong ocuppied)
+        {
+            ulong attacks = 0;
+            foreach (var value in pieces.Values)
+            {
+                attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
+                value.GenerateLegalMoves(ocuppied);
+            }
+            attacks &= enemySquares;
+            return attacks;
+            
+        }
+
+
 
         // Deletes a piece of a specific key from the dictionary
         public void DeletePiece(int key)
@@ -63,6 +88,18 @@ namespace RealChess.Model
         public void AddCapture(ChessPiece pieceCaptured)
         {
             captures.Add(pieceCaptured);
+        }
+
+        // Adds a chess piece to the dictionary at a given key
+        public void AddPiece(ChessPiece piece, int key)
+        {
+            this.pieces.Add(key, piece);
+        }
+
+        // Removes the last captured piece 
+        public void RemoveCapture()
+        {
+            captures.RemoveAt(captures.Count - 1);
         }
 
         // Initializes the dictionary

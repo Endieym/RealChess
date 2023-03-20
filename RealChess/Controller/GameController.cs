@@ -141,10 +141,10 @@ namespace RealChess.Controller
 
             
 
-            // Get pieces' current location on the board
-            var oldRow = (pieceSource.Parent.Location.Y - 30) / _tileSize;
-            var oldCol = (pieceSource.Parent.Location.X - 10) / _tileSize;
-            move.StartSquare = oldRow * _gridSize + oldCol;  //tileSize * col + 10, tileSize * row + 30
+            //// Get pieces' current location on the board
+            //var oldRow = (pieceSource.Parent.Location.Y - 30) / _tileSize;
+            //var oldCol = (pieceSource.Parent.Location.X - 10) / _tileSize;
+            //move.StartSquare = oldRow * _gridSize + oldCol;  //tileSize * col + 10, tileSize * row + 30
 
             //// Finds the new location of the piece
             //var row = (targetPanel.Location.Y - 30) / _tileSize;
@@ -158,22 +158,49 @@ namespace RealChess.Controller
             // Move the selected ChessPieceControl to the target panel
             targetPanel.Controls.Add(pieceSource);
 
-            move.PieceMoved = pieceSource.Piece;
-
             // Remove the dots indicating which squares are legal to move to.
             ClearLegalMoves(pieceSource);
 
             FinalizeMove(move);
             
         }
-
+        internal static void RemoveHighlight(PieceColor color)
+        {
+            int key = BoardController.GetKingPos(color);
+            _panelBoard[key / 8, key % 8].BackColor = Color.Transparent;
+        }
+        internal static void HighlightCheck(PieceColor color)
+        {
+            int key = BoardController.GetKingPos(color);
+            _panelBoard[key / 8, key % 8].BackColor = Color.Red;
+        }
         internal static void FinalizeMove(Move move)
         {
+            System.Media.SoundPlayer player;
+            switch (move.Type)
+            {
+                case Move.MoveType.Capture:
+                    player = new System.Media.SoundPlayer(Properties.Resources.capture);
 
-            
+                    break;
 
-            System.Media.SoundPlayer player = move.IsCapture ? new System.Media.SoundPlayer(Properties.Resources.capture) :
-                new System.Media.SoundPlayer(Properties.Resources.move);
+                case Move.MoveType.Check:
+                    player = new System.Media.SoundPlayer(Properties.Resources.Check);
+                    if (move.PieceMoved.Color == PieceColor.WHITE)
+                        HighlightCheck(PieceColor.BLACK);
+                    else
+                        HighlightCheck(PieceColor.WHITE);
+                    break;
+
+                default:
+                    player = new System.Media.SoundPlayer(Properties.Resources.move);
+                    
+                    break;
+            }
+
+            if (move.DefendsCheck)
+                RemoveHighlight(move.PieceMoved.Color);
+
 
             turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
                 PieceColor.WHITE;

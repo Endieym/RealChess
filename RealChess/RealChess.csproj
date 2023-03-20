@@ -192,5 +192,8 @@
   <ItemGroup>
     <None Include="Resources\move-self.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Check.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

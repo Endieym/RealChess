@@ -23,7 +23,6 @@ namespace RealChess.Model.ChessPieces
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {
-            
             ulong movesMask = GenerateMovesMask();
             // The bit representing the double move (2 squares above)
             ulong doubleMask = this.Color == PieceColor.WHITE ? movesMask & movesMask >> 8:

@@ -29,11 +29,20 @@ namespace RealChess.Model.ChessPieces
 
 
         public abstract UInt64 GenerateLegalMoves(ulong occupied);
-
-        public bool isUnderAttack()
+        
+        public bool IsUnderAttack(ulong attackingMask)
         {
+            if ((attackingMask & bitBoard) != 0)
+                return true;
+
             return false;
         }
+
+        public ulong GetPosition()
+        {
+            return this.bitBoard;
+        }
+
         public int CompareTo(ChessPiece other)
         {
             if(other == null) return 1;

@@ -30,6 +30,16 @@ namespace RealChess.Controller
 
         }
 
+        internal static bool IsInCheck(PieceColor color)
+        {
+            return _gameBoard.IsKingUnderAttack(color);
+        }
+
+        internal static int GetKingPos(PieceColor color)
+        {
+            return _gameBoard.GetKingPos(color);
+        }
+
         internal static List<Move> GetMovesList(ChessPiece piece)
         {
             return _gameBoard.GetMovesPiece(piece);
