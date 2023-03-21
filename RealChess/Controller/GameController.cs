@@ -176,6 +176,17 @@ namespace RealChess.Controller
         }
         internal static void FinalizeMove(Move move)
         {
+
+            // Updates the data structure
+            BoardController.UpdateBoard(move);
+
+            var color = move.PieceMoved.Color == PieceColor.WHITE ?
+                PieceColor.BLACK : PieceColor.WHITE;
+            if (!BoardController.HasLegalMoves(color)&&
+                move.IsCheck)
+            {
+                move.Type = Move.MoveType.Checkmate;
+            }
             System.Media.SoundPlayer player;
             switch (move.Type)
             {
@@ -191,7 +202,22 @@ namespace RealChess.Controller
                     else
                         HighlightCheck(PieceColor.WHITE);
                     break;
+                case Move.MoveType.Checkmate:
+                    player = new System.Media.SoundPlayer(Properties.Resources.Check);
 
+                    if (move.PieceMoved.Color == PieceColor.WHITE)
+                    {
+                        HighlightCheck(PieceColor.BLACK);
+                        MessageBox.Show("Checkmate by WHITE!");
+
+                    }
+                    else 
+                    {
+                        HighlightCheck(PieceColor.WHITE);
+                        MessageBox.Show("Checkmate by BLACK!");
+
+                    }
+                    break;
                 default:
                     player = new System.Media.SoundPlayer(Properties.Resources.move);
                     
@@ -206,8 +232,7 @@ namespace RealChess.Controller
                 PieceColor.WHITE;
 
             player.Play();
-            // Updates the data structure
-            BoardController.UpdateBoard(move);
+            
             ChessForm.ResetPieceClicked();
 
         }

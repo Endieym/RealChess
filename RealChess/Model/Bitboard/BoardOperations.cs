@@ -27,6 +27,54 @@ namespace RealChess.Model
             }
             return 0;
         }
+
+        // Returns a tuple of two rooks from the player's pieces
+        public static Tuple<Rook, Rook> GetRooks(Dictionary<int, ChessPiece> pieces)
+        {
+            Rook firstRook = null;
+            Rook secondRook = null;
+            foreach (var piece in pieces)
+            {
+                if(piece.Value.Type == PieceType.ROOK)
+                {
+                    if (firstRook is null)
+                    {
+                        firstRook = (Rook)piece.Value;
+                        break;
+                    }
+                    secondRook = (Rook)piece.Value;
+                }
+            }
+
+            return new Tuple<Rook, Rook>(firstRook, secondRook);
+
+
+
+        }
+        // Returns the bitmask of a possible castle.
+        // if a castle is not available, returns 0
+        public static ulong GenerateCastle(King king, Dictionary<int,ChessPiece> pieces)
+        {
+            if (king.HasMoved)
+                return 0;
+            if (king.InCheck)
+                return 0;
+
+            Tuple<Rook, Rook> rookPair = GetRooks(pieces);
+            //if (lastMove.PieceMoved.Color == pawn.Color)
+            //    return 0;
+
+            //// Checks if the last move was a double pawn move 
+            //if (lastMove.PieceMoved.Type == PieceType.PAWN &&
+            //    Math.Abs(lastMove.EndSquare - lastMove.StartSquare) == 16)
+            //{
+            //    // Returns the bitmask for the en passant
+            //    return ((Pawn)lastMove.PieceMoved).GoBack() & pawn.GetCaptures();
+            //}
+            return 0;
+        }
+
+
         public static ulong FileMask(int file)
         {
             return 0x0101010101010101UL << file;

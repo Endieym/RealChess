@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.BoardOperations;
+using System.Collections.Specialized;
 
 namespace RealChess.Model
 {
@@ -51,7 +52,11 @@ namespace RealChess.Model
                 player2.InCheck(attackingSquares);
            
         }
-
+        private King GetKing(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? player1.GetKing() :
+                player2.GetKing();
+        }
         public int GetKingPos(PieceColor color)
         {
             return color == PieceColor.WHITE ? player1.GetKingPos() :
@@ -81,6 +86,11 @@ namespace RealChess.Model
             if (!move.PieceMoved.HasMoved)
                 move.PieceMoved.HasMoved = true;
 
+            var oppositeColor = GetOppositeColor(move.PieceMoved.Color);
+            if (move.IsCheck)
+            {
+                GetKing(oppositeColor).InCheck = true;
+            }
             bool isCapture = move.IsCapture;
             var newKey = move.EndSquare;
             UpdateDataStructures(move);
@@ -280,7 +290,24 @@ namespace RealChess.Model
                 this.whiteBoard |= (ulong)1 << newKey;
             }
         }
+        public bool CanLegallyMove(PieceColor color)
+        {
+            var pieces = color == PieceColor.WHITE?
+                player1.Pieces.ToDictionary(entry => entry.Key,
+                entry => entry.Value):
+                player2.Pieces.ToDictionary(entry => entry.Key,
+                entry => entry.Value);
+            
+            foreach (var piece in pieces.Values)
+            {
+                if (GetCapturesPiece(piece).Count > 0)
+                    return true;
+                if (GetPsuedoLegalMoves(piece).Count > 0)
+                    return true;
+            }
 
+            return false;
+        }
         public List<Move> GetCapturesPiece(ChessPiece piece)
         {
             List<Move> captureList = new List<Move>();
