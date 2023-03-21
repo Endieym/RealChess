@@ -29,18 +29,30 @@ namespace RealChess.Model.ChessPieces
 
         public ulong GenerateMovesMask()
         {
+            ulong east = 0, west = 0, northeast = 0, northwest = 0,
+                southeast = 0, southwest = 0;
             // Directions are for white, but still the same just
             // opposite for black
             UInt64 moveMask = this.bitBoard;
             ulong north = moveMask << 8;
             ulong south = moveMask >> 8;
-            ulong east = (moveMask & 0x7f7f7f7f7f7f7f7fUL) >> 1;
-            ulong west = (moveMask & 0xfefefefefefefefeUL) << 1;
-            ulong northeast = (moveMask & 0x7f7f7f7f7f7f7f7fUL) << 7;
-            ulong northwest = (moveMask & 0xfefefefefefefefeUL) << 9;
-            ulong southeast = (moveMask & 0x7f7f7f7f7f7f7f7fUL) >> 9;
-            ulong southwest = (moveMask & 0xfefefefefefefefeUL) >> 7;
 
+            // Checks if king is not on the A file, so he can move west
+            if((this.bitBoard & BitboardConstants.AFile) == 0)
+            {
+                west = (moveMask & 0xfefefefefefefefeUL) << 1;
+                northwest = (moveMask & 0xfefefefefefefefeUL) << 9;
+                southwest = (moveMask & 0xfefefefefefefefeUL) >> 7;
+
+            }
+            // Checks if king is not on the H file, so he can move east
+            if ((this.bitBoard & BitboardConstants.AFile) == 0)
+            {
+                east = (moveMask & 0x7f7f7f7f7f7f7f7fUL) >> 1;
+                northeast = (moveMask & 0x7f7f7f7f7f7f7f7fUL) << 7;
+                southeast = (moveMask & 0x7f7f7f7f7f7f7f7fUL) >> 9;
+
+            }
             moveMask = north | south | east | west | northeast | northwest | southeast | southwest;
 
             return moveMask;
