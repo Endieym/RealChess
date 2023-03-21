@@ -115,8 +115,7 @@ namespace RealChess.Controller
         private static void LegalMoveControl_Move(object sender, TransferEventArgs e)
         {
             // Transfer the selected piece to the clicked panel
-            MovePiece(_currentPieceClicked, e.CurrentMove);
-            
+            MovePiece(_currentPieceClicked, e.CurrentMove);           
         }
 
         internal static void MovePiece(ChessPieceControl pieceSource, Move move)
@@ -125,8 +124,38 @@ namespace RealChess.Controller
             Panel targetPanel = _panelBoard[key / 8, key % 8];
 
             if (move.IsEnPassantCapture)
-                key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;  
-            
+                key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;
+
+            else if (move.IsKingSideCastle)
+            {
+                Panel castlePanel = _panelBoard[key / 8, key % 8 +1];
+                Panel targetCastle = _panelBoard[key / 8, key % 8 - 1];
+
+                ChessPieceControl chessPieceControl = null;
+                foreach(Control c in castlePanel.Controls)
+                {
+                    if(c is ChessPieceControl)
+                        chessPieceControl = (ChessPieceControl)c;   
+                }
+                chessPieceControl.Parent.Controls.Clear();
+                targetCastle.Controls.Add(chessPieceControl);
+
+
+            }
+            else if(move.IsQueenSideCastle)
+            {
+                Panel castlePanel = _panelBoard[key / 8, key % 8 - 2];
+                Panel targetCastle = _panelBoard[key / 8, key % 8 + 1];
+
+                ChessPieceControl chessPieceControl = null;
+                foreach (Control c in castlePanel.Controls)
+                {
+                    if (c is ChessPieceControl)
+                        chessPieceControl = (ChessPieceControl)c;
+                }
+                chessPieceControl.Parent.Controls.Clear();
+                targetCastle.Controls.Add(chessPieceControl);
+            }
 
             Panel capturedPanel = _panelBoard[key / 8, key % 8];
 
@@ -151,9 +180,10 @@ namespace RealChess.Controller
             //var col = (targetPanel.Location.X - 10) / _tileSize;
             //move.EndSquare = row *_gridSize +col;  //tileSize * col + 10, tileSize * row + 30
 
+            
+
             // Remove control from previous panel
             pieceSource.Parent.Controls.Remove(pieceSource);
-
             pieceSource.BackColor = Color.Transparent;
             // Move the selected ChessPieceControl to the target panel
             targetPanel.Controls.Add(pieceSource);
@@ -167,12 +197,18 @@ namespace RealChess.Controller
         internal static void RemoveHighlight(PieceColor color)
         {
             int key = BoardController.GetKingPos(color);
-            _panelBoard[key / 8, key % 8].BackColor = Color.Transparent;
+            foreach(ChessPieceControl c in _panelBoard[key / 8, key % 8].Controls)
+            {
+                c.BackColor = Color.Transparent;
+            }
         }
         internal static void HighlightCheck(PieceColor color)
         {
             int key = BoardController.GetKingPos(color);
-            _panelBoard[key / 8, key % 8].BackColor = Color.Red;
+            foreach (ChessPieceControl c in _panelBoard[key / 8, key % 8].Controls)
+            {
+                c.BackColor = Color.Red;
+            }
         }
         internal static void FinalizeMove(Move move)
         {
@@ -225,7 +261,10 @@ namespace RealChess.Controller
             }
 
             if (move.DefendsCheck)
+            {
                 RemoveHighlight(move.PieceMoved.Color);
+                
+            }
 
 
             turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :

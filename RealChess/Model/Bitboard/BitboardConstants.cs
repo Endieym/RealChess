@@ -18,5 +18,9 @@ namespace RealChess.Model
 
         public const ulong RankOne = 0xff00000000000000;
         public const ulong RankEight = 0x00000000000000ff;
+        public const ulong WhiteQueenSide = 0xe00000000000000;
+        public const ulong WhiteKingSide = 0x6000000000000000;
+        public const ulong BlackQueenSide = 0xe;
+        public const ulong BlackKingSide = 0x60;
     }
 }
