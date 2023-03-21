@@ -14,11 +14,17 @@ namespace RealChess
     {
         public MainPage()
         {
-            InitializeComponent();
-        }
 
-        private void label1_Click(object sender, EventArgs e)
+            InitializeComponent();
+
+
+        } 
+
+        private void button_play_Click(object sender, EventArgs e)
         {
+            ChessForm frms2 = new ChessForm();
+            frms2.Show();
+            this.Hide();
 
         }
     }
