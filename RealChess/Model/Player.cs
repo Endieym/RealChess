@@ -68,12 +68,26 @@ namespace RealChess.Model
             foreach (var value in pieces.Values)
             {
                 attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
-                value.GenerateLegalMoves(ocuppied);
+                value.GenerateLegalMoves(occuppied);
             }
             attacks ^= friendlySquares;
             return attacks;
 
         }
+
+        //public ulong GetMoves(ulong friendlySquares, ulong ocuppied)
+        //{
+        //    ulong attacks = 0;
+        //    foreach (var value in pieces.Values)
+        //    {
+        //        attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
+        //        value.GenerateLegalMoves(ocuppied);
+        //    }
+        //    attacks = enemySquares;
+        //    return attacks;
+
+        //}
+
 
 
 
