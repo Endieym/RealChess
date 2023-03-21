@@ -30,6 +30,11 @@ namespace RealChess.Controller
 
         }
 
+        internal static bool HasLegalMoves(PieceColor color)
+        {
+            return _gameBoard.CanLegallyMove(color);
+        }
+
         internal static bool IsInCheck(PieceColor color)
         {
             return _gameBoard.IsKingUnderAttack(color);

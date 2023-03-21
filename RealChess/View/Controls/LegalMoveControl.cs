@@ -20,12 +20,13 @@ namespace RealChess.View.Controls
 
         public LegalMoveControl()
         {
+
             InitializeComponent();
             SetStyle(ControlStyles.SupportsTransparentBackColor |
               ControlStyles.AllPaintingInWmPaint |
               ControlStyles.UserPaint, true);
 
-
+            
             this.BackColor = Color.Transparent;
 
         }

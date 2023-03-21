@@ -15,5 +15,8 @@ namespace RealChess.Model
         public const ulong HFile = 0x8080808080808080UL;
         public const ulong BFile = 0x202020202020202;
         public const ulong GFile = 0x4040404040404040;
+
+        public const ulong RankOne = 0xff00000000000000;
+        public const ulong RankEight = 0x00000000000000ff;
     }
 }

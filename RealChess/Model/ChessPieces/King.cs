@@ -8,6 +8,7 @@ namespace RealChess.Model.ChessPieces
 {
     internal class King : ChessPiece
     {
+        public bool InCheck { get; set; }
         public King()
         {
             this.Type = PieceType.KING;

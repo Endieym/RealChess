@@ -48,18 +48,33 @@ namespace RealChess.Model
         }
         
         // Returns the bitboard of the player's current possible attacks
-        public ulong GetAttacks(ulong enemySquares, ulong ocuppied)
+        public ulong GetAttacks(ulong enemySquares, ulong occuppied)
         {
             ulong attacks = 0;
             foreach (var value in pieces.Values)
             {
                 attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
-                value.GenerateLegalMoves(ocuppied);
+                value.GenerateLegalMoves(occuppied);
             }
-            attacks &= enemySquares;
+            
+            attacks ^= ~enemySquares;
             return attacks;
             
         }
+
+        //public ulong GetMoves(ulong friendlySquares, ulong ocuppied)
+        //{
+        //    ulong attacks = 0;
+        //    foreach (var value in pieces.Values)
+        //    {
+        //        attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
+        //        value.GenerateLegalMoves(ocuppied);
+        //    }
+        //    attacks = enemySquares;
+        //    return attacks;
+
+        //}
+
 
 
 
