@@ -119,7 +119,14 @@ namespace RealChess
         {
             // Resets the piece control's color to transparent
             if(_currentPieceClicked != null)
-                _currentPieceClicked.BackColor = Color.Transparent;
+            {
+                if(_currentPieceClicked.Piece.Type == PieceType.KING &&
+                    ((King)_currentPieceClicked.Piece).InCheck)
+                    _currentPieceClicked.BackColor = Color.Red;
+                else
+                    _currentPieceClicked.BackColor = Color.Transparent;
+
+            }
             _currentPieceClicked = null;
 
         }
@@ -164,10 +171,11 @@ namespace RealChess
                 Panel targetPanel = (Panel)myPiece.Parent;
 
                 PieceColor currentColor = _currentPieceClicked.Piece.Color;
+                var currentPiece = _currentPieceClicked;
                 // Trigger the Click event of the target panel
                 Panel_Click(targetPanel, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
                 
-                if (myPiece.Piece.Color == currentColor)
+                if (myPiece.Piece.Color == currentColor && !myPiece.Equals(currentPiece))
                     PieceControl_Click(piecePic, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));;
 
             }
@@ -175,7 +183,7 @@ namespace RealChess
 
         //private void ClearColor()
         //{
-        //    for(int row = 0; row < gridSize; row++) 
+        //    for(int row = 0; row < gridSize; row++)
         //    {
         //        for(int col = 0; col < gridSize; col++)
         //        {

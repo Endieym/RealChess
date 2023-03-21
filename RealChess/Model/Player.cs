@@ -53,7 +53,7 @@ namespace RealChess.Model
             ulong attacks = 0;
             foreach (var value in pieces.Values)
             {
-                attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
+                attacks |= value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
                 value.GenerateLegalMoves(occuppied);
             }
             
@@ -62,18 +62,18 @@ namespace RealChess.Model
             
         }
 
-        //public ulong GetMoves(ulong friendlySquares, ulong ocuppied)
-        //{
-        //    ulong attacks = 0;
-        //    foreach (var value in pieces.Values)
-        //    {
-        //        attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
-        //        value.GenerateLegalMoves(ocuppied);
-        //    }
-        //    attacks = enemySquares;
-        //    return attacks;
+        public ulong GetMoves(ulong friendlySquares, ulong ocuppied)
+        {
+            ulong attacks = 0;
+            foreach (var value in pieces.Values)
+            {
+                attacks += value.Type == PieceType.PAWN ? ((Pawn)value).GetCaptures() :
+                value.GenerateLegalMoves(ocuppied);
+            }
+            attacks ^= friendlySquares;
+            return attacks;
 
-        //}
+        }
 
 
 

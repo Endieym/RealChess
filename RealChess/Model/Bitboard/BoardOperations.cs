@@ -40,9 +40,12 @@ namespace RealChess.Model
                     if (firstRook is null)
                     {
                         firstRook = (Rook)piece.Value;
-                        break;
+                        
                     }
-                    secondRook = (Rook)piece.Value;
+                    else{
+                        secondRook = (Rook)piece.Value;
+
+                    }
                 }
             }
 
@@ -51,27 +54,56 @@ namespace RealChess.Model
 
 
         }
+
+        public static ulong GenerateQueenSide()
+        {
+            return 0;
+        }
+
         // Returns the bitmask of a possible castle.
         // if a castle is not available, returns 0
-        public static ulong GenerateCastle(King king, Dictionary<int,ChessPiece> pieces)
+        public static Tuple<ulong,ulong> GenerateCastle(King king, Dictionary<int,ChessPiece> pieces, ulong blocked)
         {
-            if (king.HasMoved)
-                return 0;
-            if (king.InCheck)
-                return 0;
 
-            Tuple<Rook, Rook> rookPair = GetRooks(pieces);
-            //if (lastMove.PieceMoved.Color == pawn.Color)
-            //    return 0;
+            ulong queenSide = 0;
+            ulong kingSide = 0;
 
-            //// Checks if the last move was a double pawn move 
-            //if (lastMove.PieceMoved.Type == PieceType.PAWN &&
-            //    Math.Abs(lastMove.EndSquare - lastMove.StartSquare) == 16)
-            //{
-            //    // Returns the bitmask for the en passant
-            //    return ((Pawn)lastMove.PieceMoved).GoBack() & pawn.GetCaptures();
-            //}
-            return 0;
+            if (!king.HasMoved || !king.InCheck)
+            {
+                // Gets the pair of rooks from the player's pieces
+                Tuple<Rook, Rook> rookPair = GetRooks(pieces);
+                 if (king.Color == PieceColor.WHITE)
+                {
+                    if (!rookPair.Item1.HasMoved &&
+                        (BitboardConstants.WhiteQueenSide & blocked) == 0)
+                    {
+                        queenSide |= king.GetPosition() >> 2;
+                    }
+                    if (!rookPair.Item2.HasMoved &&
+                        (BitboardConstants.WhiteKingSide & blocked) == 0)
+                    {
+                        kingSide |= king.GetPosition() << 2;
+
+                    }
+                }
+                else if (king.Color == PieceColor.BLACK)
+                {
+                    if (!rookPair.Item1.HasMoved &&
+                        (BitboardConstants.BlackQueenSide & blocked) == 0)
+                    {
+                        queenSide |= king.GetPosition() >> 2;
+                    }
+                    if (!rookPair.Item2.HasMoved &&
+                        (BitboardConstants.BlackKingSide & blocked) == 0)
+                    {
+                        kingSide |= king.GetPosition() << 2;
+
+                    }
+                }
+            }
+            
+            
+            return new Tuple<ulong,ulong>(queenSide,kingSide);
         }
 
 

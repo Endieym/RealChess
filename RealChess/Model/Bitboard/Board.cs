@@ -76,7 +76,12 @@ namespace RealChess.Model
             
         }
         
+        public ulong GetPlayerMove(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? player1.GetMoves(whiteBoard, bitBoard) :
+               player2.GetMoves(blackBoard, bitBoard);
 
+        }
 
         // Updates the board according to a piece moving
         // ChessPiece piece, int oldKey, int newKey, bool isCapture
@@ -90,6 +95,10 @@ namespace RealChess.Model
             if (move.IsCheck)
             {
                 GetKing(oppositeColor).InCheck = true;
+            }
+            if (move.DefendsCheck)
+            {
+                GetKing(move.PieceMoved.Color).InCheck = false;
             }
             bool isCapture = move.IsCapture;
             var newKey = move.EndSquare;
@@ -149,19 +158,32 @@ namespace RealChess.Model
 
             var oldKey = move.StartSquare;
             var newKey = move.EndSquare;
+            ulong oldBitmask = (ulong)1 << oldKey;
+            ulong newBitmask = (ulong)1 << newKey;
 
             if (playerColor == PieceColor.WHITE)
             {
                 this.player1.UpdatePiece(oldKey, newKey);
-                this.whiteBoard ^= (ulong)1 << oldKey; // Removes previous position
-                this.whiteBoard |= (ulong)1 << newKey; // Adds new position
-
+                this.whiteBoard ^= oldBitmask; // Removes previous position
+                this.whiteBoard |= newBitmask; // Adds new position
+                if (move.IsKingSideCastle)
+                {
+                    this.player1.UpdatePiece(newKey+1, oldKey+1);
+                    this.whiteBoard ^= newBitmask >> 1; // Removes previous position
+                    this.whiteBoard |= oldBitmask << 1; // Adds new position
+                }
+                else if (move.IsQueenSideCastle)
+                {
+                    this.player1.UpdatePiece(newKey - 2, oldKey - 1);
+                    this.whiteBoard ^= newBitmask << 2; // Removes previous position
+                    this.whiteBoard |= oldBitmask >> 1; // Adds new position
+                }
             }
             else
             {
                 this.player2.UpdatePiece(oldKey, newKey);
-                this.blackBoard ^= (ulong)1 << oldKey; // Removes previous position
-                this.blackBoard |= (ulong)1 << newKey; // Adds new position
+                this.blackBoard ^= oldBitmask; // Removes previous position
+                this.blackBoard |= newBitmask; // Adds new position
             }
 
             movesList.Add(move);
@@ -181,10 +203,13 @@ namespace RealChess.Model
             ulong finalMoves = piece.GenerateLegalMoves(this.bitBoard);
             // Initialize the moves list
             List<Move> list = new List<Move>();
-
+            
             // Removes moves over friendly squares
             finalMoves &= piece.Color == PieceColor.WHITE ? ~whiteBoard : ~blackBoard;
 
+            ulong castleMask = 0;
+            
+            
             // checks for legal moves using the moves bitmask
             while (finalMoves != 0)
             {
@@ -207,6 +232,45 @@ namespace RealChess.Model
                 list.Add(newMove);
                 finalMoves &= finalMoves - 1; // reset LS1B
             }
+
+            // Adds castling (if possible)
+            if (piece.Type == PieceType.KING)
+            {
+                var pieces = piece.Color == PieceColor.WHITE ? player1.Pieces : player2.Pieces;
+                ulong boardAndEnemyMoves = bitBoard;
+                boardAndEnemyMoves |= GetPlayerMove(GetOppositeColor(piece.Color));
+
+                var Castle = GenerateCastle((King)piece, pieces, boardAndEnemyMoves);
+                ulong castleQueen = Castle.Item1;
+                ulong castleKing = Castle.Item2;
+                if (castleQueen > 0)
+                {
+
+                    Move castleMove = new Move((int)Math.Log(castleQueen, 2), piece)
+                    {
+                        IsQueenSideCastle = true
+                    };
+                    if (IsMoveCheck(castleMove))
+                        castleMove.IsCheck = true;
+                    list.Add(castleMove);
+
+                }
+                if (castleKing > 0)
+                {
+
+                    Move castleMove = new Move((int)Math.Log(castleKing, 2), piece)
+                    {
+                        IsKingSideCastle = true
+                    };
+                    if (IsMoveCheck(castleMove))
+                        castleMove.IsCheck = true;
+
+                    list.Add(castleMove);
+
+
+                }
+            }
+
             return list;
         }
 
@@ -241,6 +305,10 @@ namespace RealChess.Model
 
         public bool IsMoveCheck(Move newMove)
         {
+            //if (newMove.IsKingSideCastle)
+            //{
+            //    MakeTemporaryMove(new Move(newMove.EndSquare -1, Rook))
+            //}
             MakeTemporaryMove(newMove);
 
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
@@ -255,7 +323,21 @@ namespace RealChess.Model
         {
             int index = movesList.Count - 1;
             Move oldMove = movesList[index];
+            
+            
+            
             Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved);
+            if (oldMove.IsKingSideCastle)
+            {
+                int pos = oldMove.StartSquare + 1;
+                var piece = oldMove.PieceMoved.Color == PieceColor.WHITE ?
+                    player1.Pieces[pos]:
+                    player2.Pieces[pos];
+
+                UpdateDataStructures(new Move(pos+2, piece));
+
+            }
+
             UpdateDataStructures(undoMove);
             movesList.RemoveAt(index+1);
             movesList.RemoveAt(index);
