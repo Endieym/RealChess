@@ -184,6 +184,19 @@ namespace RealChess.Model
                 this.player2.UpdatePiece(oldKey, newKey);
                 this.blackBoard ^= oldBitmask; // Removes previous position
                 this.blackBoard |= newBitmask; // Adds new position
+
+                if (move.IsKingSideCastle)
+                {
+                    this.player2.UpdatePiece(newKey + 1, oldKey + 1);
+                    this.blackBoard ^= newBitmask >> 1; // Removes previous position
+                    this.blackBoard |= oldBitmask << 1; // Adds new position
+                }
+                else if (move.IsQueenSideCastle)
+                {
+                    this.player2.UpdatePiece(newKey - 2, oldKey - 1);
+                    this.blackBoard ^= newBitmask << 2; // Removes previous position
+                    this.blackBoard |= oldBitmask >> 1; // Adds new position
+                }
             }
 
             movesList.Add(move);
@@ -207,8 +220,6 @@ namespace RealChess.Model
             // Removes moves over friendly squares
             finalMoves &= piece.Color == PieceColor.WHITE ? ~whiteBoard : ~blackBoard;
 
-            ulong castleMask = 0;
-            
             
             // checks for legal moves using the moves bitmask
             while (finalMoves != 0)
@@ -229,6 +240,9 @@ namespace RealChess.Model
                     newMove.IsCheck = true;
                     newMove.Type = Move.MoveType.Check;
                 }
+                if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, finalMoves))
+                    newMove.IsPromotion = true;
+
                 list.Add(newMove);
                 finalMoves &= finalMoves - 1; // reset LS1B
             }
@@ -274,7 +288,6 @@ namespace RealChess.Model
             return list;
         }
 
-        
 
         public ulong GetAttacksMask(ChessPiece piece)
         {
@@ -319,6 +332,16 @@ namespace RealChess.Model
 
         }
 
+        // Checks if the given bitboard for the mask results in a promotion
+        public bool IsMovePromotion(PieceColor color ,ulong movePosition)
+        {
+            movePosition &= color == PieceColor.WHITE ? BitboardConstants.RankEight:
+                BitboardConstants.RankOne;
+
+            return movePosition > 0;
+
+        }
+
         public void UndoMove()
         {
             int index = movesList.Count - 1;
@@ -335,6 +358,16 @@ namespace RealChess.Model
                     player2.Pieces[pos];
 
                 UpdateDataStructures(new Move(pos+2, piece));
+
+            }
+            if (oldMove.IsQueenSideCastle)
+            {
+                int pos = oldMove.StartSquare - 1;
+                var piece = oldMove.PieceMoved.Color == PieceColor.WHITE ?
+                    player1.Pieces[pos] :
+                    player2.Pieces[pos];
+
+                UpdateDataStructures(new Move(pos - 3, piece));
 
             }
 
@@ -449,6 +482,9 @@ namespace RealChess.Model
                     newMove.Type = Move.MoveType.Check;
 
                 }
+                if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
+                    newMove.IsPromotion = true;
+
                 captureList.Add(newMove);
                 movesMask &= movesMask - 1; // reset LS1B
 

@@ -64,7 +64,7 @@ namespace RealChess.Model.ChessPieces
             if ((moveMask & BitboardConstants.AFile) == 0)
             {
                 moveMask >>= 1;
-                if ((moveMask & BitboardConstants.HFile) == 0) moveMask |= moveMask << 2;
+                if ((moveMask & BitboardConstants.GFile) == 0) moveMask |= moveMask << 2;
 
             }
             else

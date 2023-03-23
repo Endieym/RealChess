@@ -40,17 +40,17 @@ namespace RealChess.Model.ChessPieces
             // Checks if king is not on the A file, so he can move west
             if((this.bitBoard & BitboardConstants.AFile) == 0)
             {
-                west = (moveMask & 0xfefefefefefefefeUL) << 1;
-                northwest = (moveMask & 0xfefefefefefefefeUL) << 9;
-                southwest = (moveMask & 0xfefefefefefefefeUL) >> 7;
+                west = moveMask >> 1;
+                northwest = moveMask  >> 9;
+                southwest = moveMask << 7;
 
             }
             // Checks if king is not on the H file, so he can move east
-            if ((this.bitBoard & BitboardConstants.AFile) == 0)
+            if ((this.bitBoard & BitboardConstants.HFile) == 0)
             {
-                east = (moveMask & 0x7f7f7f7f7f7f7f7fUL) >> 1;
-                northeast = (moveMask & 0x7f7f7f7f7f7f7f7fUL) << 7;
-                southeast = (moveMask & 0x7f7f7f7f7f7f7f7fUL) >> 9;
+                east = moveMask << 1;
+                northeast = moveMask >> 7;
+                southeast = moveMask << 9;
 
             }
             moveMask = north | south | east | west | northeast | northwest | southeast | southwest;

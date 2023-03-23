@@ -94,6 +94,7 @@ namespace RealChess.Model
             if (piece.Type == ChessPiece.PieceType.KING)
                 this.kingPos = newKey;
 
+
             // Updates position for the individual piece's bitboard
             piece.UpdatePosition(newKey);
             this.pieces.Remove(oldKey);

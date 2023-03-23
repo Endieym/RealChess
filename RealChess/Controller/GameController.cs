@@ -1,6 +1,7 @@
 ﻿using RealChess.Model;
 using RealChess.View;
 using RealChess.View.Controls;
+using RealChess.View.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -122,7 +123,14 @@ namespace RealChess.Controller
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
+            if (move.IsPromotion)
+            {
+                PromotionForm frms2 = new PromotionForm();
+                frms2.StartPosition = FormStartPosition.CenterParent;
+                frms2.Location = targetPanel.Location;
+                frms2.ShowDialog();
 
+            }
             if (move.IsEnPassantCapture)
                 key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;
 
