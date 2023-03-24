@@ -1,4 +1,5 @@
 ﻿using RealChess.Model;
+using RealChess.Model.ChessPieces;
 using RealChess.View;
 using RealChess.View.Controls;
 using RealChess.View.Forms;
@@ -119,17 +120,46 @@ namespace RealChess.Controller
             MovePiece(_currentPieceClicked, e.CurrentMove);           
         }
 
+        // Changes the pawn to the selected piece
+        internal static void SwitchPiece(ChessPieceControl pieceSource, PieceType type, int key)
+        {
+            var colorBefore = pieceSource.Piece.Color;
+            switch (type)
+            {
+                case PieceType.QUEEN:
+                    pieceSource.Piece = new Queen(key);
+                    break;
+
+                case PieceType.KNIGHT:
+                    pieceSource.Piece = new Knight(key);
+                    break;
+
+                case PieceType.ROOK:
+                    pieceSource.Piece = new Rook(key);
+                    break;
+
+                case PieceType.BISHOP:
+                    pieceSource.Piece = new Bishop(key);
+                    break;
+            }
+            pieceSource.Piece.Color = colorBefore;
+            pieceSource.SetPiece(pieceSource.Piece);
+
+        }
+
         internal static void MovePiece(ChessPieceControl pieceSource, Move move)
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
+            ClearLegalMoves(pieceSource);
             if (move.IsPromotion)
             {
+
                 PromotionForm frms2 = new PromotionForm();
                 frms2.StartPosition = FormStartPosition.CenterParent;
                 frms2.Location = targetPanel.Location;
                 frms2.ShowDialog();
-
+                SwitchPiece(pieceSource, frms2.PieceClicked,key);
             }
             if (move.IsEnPassantCapture)
                 key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;
@@ -164,6 +194,7 @@ namespace RealChess.Controller
                 chessPieceControl.Parent.Controls.Clear();
                 targetCastle.Controls.Add(chessPieceControl);
             }
+            Console.Write(pieceSource.Piece);
 
             Panel capturedPanel = _panelBoard[key / 8, key % 8];
 
@@ -197,7 +228,6 @@ namespace RealChess.Controller
             targetPanel.Controls.Add(pieceSource);
 
             // Remove the dots indicating which squares are legal to move to.
-            ClearLegalMoves(pieceSource);
 
             FinalizeMove(move);
             

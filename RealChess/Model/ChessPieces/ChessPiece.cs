@@ -11,7 +11,7 @@ namespace RealChess.Model.ChessPieces
         protected UInt64 bitBoard;
         public bool HasMoved { get; set; }
 
-        public ushort Value { get; set; }
+        public virtual ushort Value { get; set; }
         public ChessPiece()
         {
         }
@@ -19,6 +19,12 @@ namespace RealChess.Model.ChessPieces
         public ChessPiece(int row, int col)
         {
             int key = row * Board.SIZE + col;
+            this.bitBoard = (UInt64)1 << key;
+        }
+
+        public ChessPiece(int key)
+        {
+            
             this.bitBoard = (UInt64)1 << key;
         }
 
@@ -76,7 +82,7 @@ namespace RealChess.Model.ChessPieces
         public enum PieceType { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING }
 
         public PieceColor Color{ get; set; }
-        public PieceType Type{ get; set; }
+        public virtual PieceType Type{ get; set; }
         
     
         }

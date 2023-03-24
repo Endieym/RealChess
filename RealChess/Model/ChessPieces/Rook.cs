@@ -9,18 +9,13 @@ namespace RealChess.Model.ChessPieces
 {
     internal class Rook : ChessPiece
     {
-        public Rook()
-        {
-            this.Type = PieceType.ROOK;
-            this.Value = 5;
+        public override PieceType Type { get; set; } = PieceType.ROOK;
+        public override ushort Value { get; set; } = 5;
+        public Rook() { }
 
-        }
+        public Rook(int key) : base(key) { }
 
-        public Rook(int row, int col) : base(row, col)
-        {
-            this.Type = PieceType.ROOK;
-            this.Value = 5;
-        }
+        public Rook(int row, int col) : base(row, col) { }
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {

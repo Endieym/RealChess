@@ -8,18 +8,11 @@ namespace RealChess.Model.ChessPieces
 {
     public class Pawn : ChessPiece
     {
-        public Pawn()
-        {
-            this.Type = PieceType.PAWN;
-            this.Value = 1;
-        }
+        public override PieceType Type { get; set; } = PieceType.PAWN;
+        public override ushort Value { get; set; } = 1;
+        public Pawn() { }
 
-        public Pawn(int row, int col) : base(row, col)
-        {
-            this.Type = PieceType.PAWN;
-            this.Value = 1;
-            
-        }
+        public Pawn(int row, int col) : base(row, col) { }
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {
@@ -61,9 +54,12 @@ namespace RealChess.Model.ChessPieces
             // once in the game, if not, pawn can move two squares
 
             moveMask = this.Color == PieceColor.WHITE ? moveMask >> 8 : moveMask <<8;
+
+            // Checks if the pawn is not on the A file and can move west
             if ((moveMask & BitboardConstants.AFile) == 0)
             {
                 moveMask >>= 1;
+                // Checks if the pawn is not on the H file and can move east
                 if ((moveMask & BitboardConstants.GFile) == 0) moveMask |= moveMask << 2;
 
             }

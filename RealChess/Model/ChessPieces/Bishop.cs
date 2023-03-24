@@ -9,18 +9,13 @@ namespace RealChess.Model.ChessPieces
 {
     internal class Bishop : ChessPiece
     {
-        public Bishop()
-        {
-            this.Type = PieceType.BISHOP;
-            this.Value = 3;
+        public override PieceType Type { get; set; } = PieceType.BISHOP;
+        public override ushort Value { get; set; } = 3;
+        public Bishop() { }
 
-        }
+        public Bishop(int key) : base(key) { }
 
-        public Bishop(int row, int col) : base(row, col)
-        {
-            this.Type = PieceType.BISHOP;
-            this.Value = 3;
-        }
+        public Bishop(int row, int col) : base(row, col) { }
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {

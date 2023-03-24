@@ -8,19 +8,15 @@ namespace RealChess.Model.ChessPieces
 {
     internal class King : ChessPiece
     {
+        public override PieceType Type { get; set; } = PieceType.KING;
+        public override ushort Value { get; set; } = 9999;
+
         public bool InCheck { get; set; }
-        public King()
-        {
-            this.Type = PieceType.KING;
-            this.Value = 9999;
 
-        }
-
-        public King(int row, int col) : base(row, col)
-        {
-            this.Type = PieceType.KING;
-            this.Value = 9999;
-        }
+        public King() { }
+        
+        public King(int row, int col) : base(row, col) { }
+        
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {

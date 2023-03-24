@@ -24,6 +24,8 @@ namespace RealChess.View
             Piece = piece;
             Image image = LoadPieceImage(piece);
             piecePic.Image = image;
+            piecePic.Refresh();
+           
         }
 
         private Image LoadPieceImage(ChessPiece piece)

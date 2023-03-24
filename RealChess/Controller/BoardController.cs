@@ -45,6 +45,16 @@ namespace RealChess.Controller
             return _gameBoard.GetKingPos(color);
         }
 
+        internal static bool IsMoveCheck(Move move)
+        {
+            return _gameBoard.IsMoveCheck(move);
+        }
+
+        internal static void SwitchPiece(int key, ChessPiece piece)
+        {
+
+        }
+
         internal static List<Move> GetMovesList(ChessPiece piece)
         {
             return _gameBoard.GetMovesPiece(piece);

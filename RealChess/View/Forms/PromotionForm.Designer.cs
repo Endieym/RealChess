@@ -29,97 +29,99 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PromotionForm));
-            this.piecePic = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.piecePic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.queenPic = new System.Windows.Forms.PictureBox();
+            this.knightPic = new System.Windows.Forms.PictureBox();
+            this.rookPic = new System.Windows.Forms.PictureBox();
+            this.bishopPic = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.queenPic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.knightPic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rookPic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bishopPic)).BeginInit();
             this.SuspendLayout();
             // 
-            // piecePic
+            // queenPic
             // 
-            this.piecePic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.piecePic.Cursor = System.Windows.Forms.Cursors.Default;
-            this.piecePic.Image = global::RealChess.Properties.Resources.black_queen;
-            this.piecePic.InitialImage = ((System.Drawing.Image)(resources.GetObject("piecePic.InitialImage")));
-            this.piecePic.Location = new System.Drawing.Point(9, 9);
-            this.piecePic.Margin = new System.Windows.Forms.Padding(0);
-            this.piecePic.Name = "piecePic";
-            this.piecePic.Size = new System.Drawing.Size(94, 94);
-            this.piecePic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.piecePic.TabIndex = 1;
-            this.piecePic.TabStop = false;
+            this.queenPic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.queenPic.Cursor = System.Windows.Forms.Cursors.Default;
+            this.queenPic.Image = global::RealChess.Properties.Resources.black_queen;
+            this.queenPic.InitialImage = ((System.Drawing.Image)(resources.GetObject("queenPic.InitialImage")));
+            this.queenPic.Location = new System.Drawing.Point(13, 9);
+            this.queenPic.Margin = new System.Windows.Forms.Padding(0);
+            this.queenPic.Name = "queenPic";
+            this.queenPic.Size = new System.Drawing.Size(94, 94);
+            this.queenPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.queenPic.TabIndex = 1;
+            this.queenPic.TabStop = false;
             // 
-            // pictureBox1
+            // knightPic
             // 
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.pictureBox1.Image = global::RealChess.Properties.Resources.black_knight;
-            this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
-            this.pictureBox1.Location = new System.Drawing.Point(9, 114);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(94, 92);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
+            this.knightPic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.knightPic.Cursor = System.Windows.Forms.Cursors.Default;
+            this.knightPic.Image = global::RealChess.Properties.Resources.black_knight;
+            this.knightPic.InitialImage = ((System.Drawing.Image)(resources.GetObject("knightPic.InitialImage")));
+            this.knightPic.Location = new System.Drawing.Point(13, 114);
+            this.knightPic.Margin = new System.Windows.Forms.Padding(0);
+            this.knightPic.Name = "knightPic";
+            this.knightPic.Size = new System.Drawing.Size(94, 92);
+            this.knightPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.knightPic.TabIndex = 2;
+            this.knightPic.TabStop = false;
             // 
-            // pictureBox2
+            // rookPic
             // 
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.pictureBox2.Image = global::RealChess.Properties.Resources.black_rook;
-            this.pictureBox2.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.InitialImage")));
-            this.pictureBox2.Location = new System.Drawing.Point(9, 220);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(94, 91);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox2.TabIndex = 3;
-            this.pictureBox2.TabStop = false;
+            this.rookPic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.rookPic.Cursor = System.Windows.Forms.Cursors.Default;
+            this.rookPic.Image = global::RealChess.Properties.Resources.black_rook;
+            this.rookPic.InitialImage = ((System.Drawing.Image)(resources.GetObject("rookPic.InitialImage")));
+            this.rookPic.Location = new System.Drawing.Point(13, 219);
+            this.rookPic.Margin = new System.Windows.Forms.Padding(0);
+            this.rookPic.Name = "rookPic";
+            this.rookPic.Size = new System.Drawing.Size(94, 91);
+            this.rookPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.rookPic.TabIndex = 3;
+            this.rookPic.TabStop = false;
             // 
-            // pictureBox3
+            // bishopPic
             // 
-            this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictureBox3.Cursor = System.Windows.Forms.Cursors.Default;
-            this.pictureBox3.Image = global::RealChess.Properties.Resources.black_bishop;
-            this.pictureBox3.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox3.InitialImage")));
-            this.pictureBox3.Location = new System.Drawing.Point(9, 322);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(94, 91);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 4;
-            this.pictureBox3.TabStop = false;
+            this.bishopPic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.bishopPic.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bishopPic.Image = global::RealChess.Properties.Resources.black_bishop;
+            this.bishopPic.InitialImage = ((System.Drawing.Image)(resources.GetObject("bishopPic.InitialImage")));
+            this.bishopPic.Location = new System.Drawing.Point(13, 323);
+            this.bishopPic.Margin = new System.Windows.Forms.Padding(0);
+            this.bishopPic.Name = "bishopPic";
+            this.bishopPic.Size = new System.Drawing.Size(94, 91);
+            this.bishopPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.bishopPic.TabIndex = 4;
+            this.bishopPic.TabStop = false;
             // 
             // PromotionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(120, 422);
-            this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.piecePic);
+            this.Controls.Add(this.bishopPic);
+            this.Controls.Add(this.rookPic);
+            this.Controls.Add(this.knightPic);
+            this.Controls.Add(this.queenPic);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "PromotionForm";
             this.Text = "PromotionForm";
-            ((System.ComponentModel.ISupportInitialize)(this.piecePic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.queenPic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.knightPic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rookPic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bishopPic)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox piecePic;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox queenPic;
+        private System.Windows.Forms.PictureBox knightPic;
+        private System.Windows.Forms.PictureBox rookPic;
+        private System.Windows.Forms.PictureBox bishopPic;
     }
 }

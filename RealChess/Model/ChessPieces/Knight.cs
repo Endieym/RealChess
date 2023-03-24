@@ -9,18 +9,13 @@ namespace RealChess.Model.ChessPieces
 {
     internal class Knight : ChessPiece
     {
-        public Knight()
-        {
-            this.Type = PieceType.KNIGHT;
-            this.Value = 3;
+        public override PieceType Type { get; set; } = PieceType.KNIGHT;
+        public override ushort Value { get; set; } = 3;
+        public Knight() { }
 
-        }
+        public Knight(int key) : base(key) { }
 
-        public Knight(int row, int col) : base(row, col)
-        {
-            this.Type = PieceType.KNIGHT;
-            this.Value = 3;
-        }
+        public Knight(int row, int col) : base(row, col) { }
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {
