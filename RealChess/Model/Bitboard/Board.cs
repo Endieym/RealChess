@@ -166,16 +166,18 @@ namespace RealChess.Model
                 this.player1.UpdatePiece(oldKey, newKey);
                 this.whiteBoard ^= oldBitmask; // Removes previous position
                 this.whiteBoard |= newBitmask; // Adds new position
+
                 if (move.IsKingSideCastle)
                 {
                     this.player1.UpdatePiece(newKey+1, oldKey+1);
-                    this.whiteBoard ^= newBitmask >> 1; // Removes previous position
+                    this.whiteBoard ^= newBitmask << 1; // Removes previous position
                     this.whiteBoard |= oldBitmask << 1; // Adds new position
                 }
+
                 else if (move.IsQueenSideCastle)
                 {
                     this.player1.UpdatePiece(newKey - 2, oldKey - 1);
-                    this.whiteBoard ^= newBitmask << 2; // Removes previous position
+                    this.whiteBoard ^= newBitmask >> 2; // Removes previous position
                     this.whiteBoard |= oldBitmask >> 1; // Adds new position
                 }
             }
@@ -201,6 +203,36 @@ namespace RealChess.Model
 
             movesList.Add(move);
 
+
+        }
+
+        public Move MakePromotionMove(Move move, ChessPiece chessPiece)
+        {
+            var endKey = move.EndSquare;
+            var beforeKey = move.StartSquare;
+            if (chessPiece.Color == PieceColor.WHITE)
+            {
+                player1.SwitchPiece(beforeKey, chessPiece);
+
+            }
+            else
+            {
+                player2.SwitchPiece(beforeKey, chessPiece);
+            }
+
+            Move promotion = new Move(endKey, chessPiece);
+
+            promotion.IsCapture = move.IsCapture;
+            promotion.DefendsCheck = move.DefendsCheck;
+
+            if (IsMoveCheck(promotion)) 
+            {
+                promotion.IsCheck = true;
+                promotion.Type = Move.MoveType.Check;
+
+            }
+
+            return promotion;
 
         }
 

@@ -75,8 +75,12 @@ namespace RealChess.Model
 
         }
 
-
-
+        // Changes the piece in a specific key
+        public void SwitchPiece(int key, ChessPiece piece)
+        {
+            this.pieces.Remove(key);
+            this.pieces.Add(key, piece);
+        }
 
 
         // Deletes a piece of a specific key from the dictionary

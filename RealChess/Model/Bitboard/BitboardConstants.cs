@@ -22,5 +22,10 @@ namespace RealChess.Model
         public const ulong WhiteKingSide = 0x6000000000000000;
         public const ulong BlackQueenSide = 0xe;
         public const ulong BlackKingSide = 0x60;
+
+        public const int blackQueenRook = 0;
+        public const int blackKingRook = 7;
+        public const int whiteQueenRook = 56;
+        public const int whiteKingRook = 63;
     }
 }

@@ -11,7 +11,7 @@ namespace RealChess.Model.ChessPieces
     {
 
         public override PieceType Type { get; set; } = PieceType.QUEEN;
-        public override ushort Value { get; set; } = 8;
+        public override ushort Value { get; set; } = 9;
         public Queen() { }
 
         public Queen(int key) : base(key) { }

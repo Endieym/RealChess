@@ -143,6 +143,7 @@ namespace RealChess.Controller
                     break;
             }
             pieceSource.Piece.Color = colorBefore;
+            pieceSource.Piece.UpdatePosition(key);
             pieceSource.SetPiece(pieceSource.Piece);
 
         }
@@ -155,11 +156,18 @@ namespace RealChess.Controller
             if (move.IsPromotion)
             {
 
-                PromotionForm frms2 = new PromotionForm();
-                frms2.StartPosition = FormStartPosition.CenterParent;
-                frms2.Location = targetPanel.Location;
+                PromotionForm frms2 = new PromotionForm
+                {
+                    StartPosition = FormStartPosition.CenterParent,
+                    Location = targetPanel.Location
+                };
+
                 frms2.ShowDialog();
-                SwitchPiece(pieceSource, frms2.PieceClicked,key);
+
+                SwitchPiece(pieceSource, frms2.PieceClicked,move.StartSquare);               
+                move = BoardController.PromotePiece(move, pieceSource.Piece);
+
+
             }
             if (move.IsEnPassantCapture)
                 key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;

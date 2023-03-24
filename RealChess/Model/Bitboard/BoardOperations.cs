@@ -29,24 +29,27 @@ namespace RealChess.Model
         }
 
         // Returns a tuple of two rooks from the player's pieces
-        public static Tuple<Rook, Rook> GetRooks(Dictionary<int, ChessPiece> pieces)
+        public static Tuple<Rook, Rook> GetRooks(Dictionary<int, ChessPiece> pieces, PieceColor color)
         {
-            Rook firstRook = null;
-            Rook secondRook = null;
-            foreach (var piece in pieces)
-            {
-                if(piece.Value.Type == PieceType.ROOK)
-                {
-                    if (firstRook is null)
-                    {
-                        firstRook = (Rook)piece.Value;
-                        
-                    }
-                    else{
-                        secondRook = (Rook)piece.Value;
+            var queenKey = color == PieceColor.WHITE? BitboardConstants.whiteQueenRook:
+                BitboardConstants.blackQueenRook;
+            var kingKey = color == PieceColor.WHITE ? BitboardConstants.whiteKingRook :
+                BitboardConstants.blackKingRook;
+            ChessPiece queenSide, kingSide;
+            Rook firstRook = null, secondRook = null;
 
-                    }
-                }
+            if (pieces.TryGetValue(queenKey, out queenSide))
+            {
+                if(queenSide.Type == PieceType.ROOK)
+                    firstRook = (Rook)pieces[queenKey];
+
+            }
+
+            if (pieces.TryGetValue(kingKey, out kingSide))
+            {
+                if (kingSide.Type == PieceType.ROOK)
+                    secondRook = (Rook)pieces[kingKey];
+
             }
 
             return new Tuple<Rook, Rook>(firstRook, secondRook);
@@ -67,19 +70,19 @@ namespace RealChess.Model
 
             ulong queenSide = 0;
             ulong kingSide = 0;
-
-            if (!king.HasMoved || !king.InCheck)
+            
+            if (!king.HasMoved && !king.InCheck)
             {
                 // Gets the pair of rooks from the player's pieces
-                Tuple<Rook, Rook> rookPair = GetRooks(pieces);
+                Tuple<Rook, Rook> rookPair = GetRooks(pieces, king.Color);
                  if (king.Color == PieceColor.WHITE)
                 {
-                    if (!rookPair.Item1.HasMoved &&
+                    if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
                         (BitboardConstants.WhiteQueenSide & blocked) == 0)
                     {
                         queenSide |= king.GetPosition() >> 2;
                     }
-                    if (!rookPair.Item2.HasMoved &&
+                    if (rookPair.Item2 != null && !rookPair.Item2.HasMoved &&
                         (BitboardConstants.WhiteKingSide & blocked) == 0)
                     {
                         kingSide |= king.GetPosition() << 2;
@@ -88,12 +91,12 @@ namespace RealChess.Model
                 }
                 else if (king.Color == PieceColor.BLACK)
                 {
-                    if (!rookPair.Item1.HasMoved &&
+                    if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
                         (BitboardConstants.BlackQueenSide & blocked) == 0)
                     {
                         queenSide |= king.GetPosition() >> 2;
                     }
-                    if (!rookPair.Item2.HasMoved &&
+                    if (rookPair.Item2 != null &&!rookPair.Item2.HasMoved &&
                         (BitboardConstants.BlackKingSide & blocked) == 0)
                     {
                         kingSide |= king.GetPosition() << 2;
