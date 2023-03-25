@@ -204,5 +204,17 @@
   <ItemGroup>
     <None Include="Resources\Check.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\realchessIcon2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RealChessText.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RealChessLogo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

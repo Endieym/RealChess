@@ -133,23 +133,44 @@
   <data name="black_bishop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\black_bishop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Check" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Check.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="white_rook" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\white_rook.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="black_queen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\black_queen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="RealChessText" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RealChessText.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="move" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\move-self.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="REALCHESS2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\REALCHESS2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="white_bishop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\white_bishop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="capture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\capture.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="background" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\background.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="black_knight" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\black_knight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="white_bishop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\white_bishop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CaptureMove" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CaptureMove.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="black_king" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\black_king.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="realchessIcon2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\realchessIcon2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="black_pawn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\black_pawn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,16 +187,7 @@
   <data name="homeIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\homeIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="CaptureMove" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CaptureMove.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="capture" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\capture.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="move" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\move-self.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Check" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Check.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="RealChessLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RealChessLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

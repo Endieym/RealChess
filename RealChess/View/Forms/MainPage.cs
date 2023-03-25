@@ -27,5 +27,10 @@ namespace RealChess
             this.Hide();
 
         }
+
+        private void MainPage_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

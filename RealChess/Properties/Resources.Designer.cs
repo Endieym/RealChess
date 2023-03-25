@@ -63,6 +63,16 @@ namespace RealChess.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap background {
+            get {
+                object obj = ResourceManager.GetObject("background", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap black_bishop {
             get {
                 object obj = ResourceManager.GetObject("black_bishop", resourceCulture);
@@ -193,6 +203,36 @@ namespace RealChess.Properties {
         internal static System.Drawing.Bitmap realchessIcon {
             get {
                 object obj = ResourceManager.GetObject("realchessIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap realchessIcon2 {
+            get {
+                object obj = ResourceManager.GetObject("realchessIcon2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RealChessLogo {
+            get {
+                object obj = ResourceManager.GetObject("RealChessLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RealChessText {
+            get {
+                object obj = ResourceManager.GetObject("RealChessText", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
