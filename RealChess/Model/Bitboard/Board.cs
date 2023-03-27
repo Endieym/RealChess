@@ -134,21 +134,21 @@ namespace RealChess.Model
 
             if (playerColor == PieceColor.WHITE)
             {
-                
-                    if (!move.IsEnPassantCapture)
-                        this.player2.DeletePiece(newKey);
-                    else
-                        this.player2.DeletePiece(newKey + 8);
+                if (move.IsEnPassantCapture)
+                    newKey += 8;
+                  
+                    this.player2.DeletePiece(newKey);
                     this.blackBoard ^= (ulong)1 << newKey;
                 
             }
             else
-            {                
-                    if (!move.IsEnPassantCapture)
-                        this.player1.DeletePiece(newKey);
-                    else
-                        this.player1.DeletePiece(newKey - 8);
-                    this.whiteBoard ^= (ulong)1 << newKey;               
+            {
+
+                if (move.IsEnPassantCapture)
+                    newKey -= 8;
+
+                this.player1.DeletePiece(newKey);
+                this.whiteBoard ^= (ulong)1 << newKey;               
             }
         }
 
