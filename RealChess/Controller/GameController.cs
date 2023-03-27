@@ -16,6 +16,7 @@ namespace RealChess.Controller
 {
     internal static class GameController
     {
+        public static bool IsReal { get; set; }
         // Current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
 
@@ -81,6 +82,9 @@ namespace RealChess.Controller
                 legalMoveControl.BackColor = Color.Transparent;
             }
             
+            if(IsReal)
+                RealController.ShowPiece(pieceSource.Piece);
+            
         }
 
         internal static void ClearLegalMoves(ChessPieceControl pieceSource)
@@ -110,6 +114,9 @@ namespace RealChess.Controller
                         currentPanel.Controls.Remove(c);
                 }
             }
+
+            if (IsReal)
+                RealController.ResetToMorale();
         }
 
 

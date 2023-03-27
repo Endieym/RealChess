@@ -32,7 +32,12 @@ namespace RealChess.Model
 
         }
         
+        internal int CalculateSuccess()
+        {
+            int percent = 0;
 
+            return percent;
+        }
         // Returns the king piece of the player
         internal King GetKing()
         {

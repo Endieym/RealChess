@@ -20,7 +20,6 @@ namespace RealChess
     public partial class ChessForm : Form
     {
 
-        public bool IsReal { get; set; }
         // class member array of Panels to track chessboard tiles
         private Panel[,] _chessBoardPanels;
 
@@ -169,12 +168,15 @@ namespace RealChess
                 blackPic.Location = new Point((blackPanel.Width - blackPic.Width) / 2,5);
                 Label blackLabel = new Label
                 {
-                    Text = "   Black Morale",
+                    Text = "Black Morale",
                     Name = "blackLabel",
+                    Width = 72,
+                    TextAlign = ContentAlignment.MiddleCenter,
+
 
 
                 };
-                blackLabel.Location = new Point((blackPanel.Width - blackLabel.Width) / 2, blackPic.Bottom + 11);
+                blackLabel.Location = new Point((blackPanel.Width - blackLabel.Width)/2, blackPic.Bottom + 11);
 
                 ProgressBar blackBar = new ProgressBar
                 {
@@ -233,8 +235,11 @@ namespace RealChess
                 };
                 Label whiteLabel = new Label
                 {
-                    Text = "   White Morale",
+                    Text = "White Morale",
                     Name = "whiteLabel",
+                    Width = 72,
+                    TextAlign = ContentAlignment.MiddleCenter,
+
 
                 };
                 whiteLabel.Location = new Point((whitePanel.Width - whiteLabel.Width) / 2, whiteBar.Bottom + 20);

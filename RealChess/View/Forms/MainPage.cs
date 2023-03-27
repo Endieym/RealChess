@@ -1,4 +1,5 @@
-﻿using RealChess.View.Forms;
+﻿using RealChess.Controller;
+using RealChess.View.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,14 +41,14 @@ namespace RealChess
 
                 if (chooseForm.ChoseReal)
                 {
-                    frms2.IsReal = true;
+                    GameController.IsReal = true;
                     frms2.Show();
                     this.Hide();
 
                 }
                 else
                 {
-                    frms2.IsReal = false;
+                    GameController.IsReal = false;
                     frms2.Show();
                     this.Hide();
                 }
