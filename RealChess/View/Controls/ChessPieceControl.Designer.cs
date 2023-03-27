@@ -36,7 +36,7 @@
             // piecePic
             // 
             this.piecePic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.piecePic.Cursor = System.Windows.Forms.Cursors.Default;
+            this.piecePic.Cursor = System.Windows.Forms.Cursors.Hand;
             this.piecePic.Image = global::RealChess.Properties.Resources.black_king;
             this.piecePic.InitialImage = ((System.Drawing.Image)(resources.GetObject("piecePic.InitialImage")));
             this.piecePic.Location = new System.Drawing.Point(0, 0);

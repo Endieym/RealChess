@@ -42,6 +42,7 @@
             // 
             // button_play
             // 
+            this.button_play.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_play.FlatAppearance.BorderSize = 3;
             this.button_play.Font = new System.Drawing.Font("Molot", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_play.Image = global::RealChess.Properties.Resources.black_bishop;
@@ -91,6 +92,7 @@
             // 
             // button1
             // 
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button1.FlatAppearance.BorderSize = 3;
             this.button1.Font = new System.Drawing.Font("Molot", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Image = global::RealChess.Properties.Resources.black_bishop;
@@ -104,6 +106,7 @@
             // 
             // button2
             // 
+            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button2.FlatAppearance.BorderSize = 3;
             this.button2.Font = new System.Drawing.Font("Molot", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Image = global::RealChess.Properties.Resources.black_bishop;

@@ -12,6 +12,8 @@ namespace RealChess.Model
         List<ChessPiece> captures;
 
         int kingPos;
+        public int Morale { get; set; }
+
         public Dictionary<int, ChessPiece> Pieces 
         {
             get { return pieces; } 
@@ -29,6 +31,7 @@ namespace RealChess.Model
             captures = new List<ChessPiece>();
 
         }
+        
 
         // Returns the king piece of the player
         internal King GetKing()

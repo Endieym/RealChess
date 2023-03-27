@@ -19,6 +19,8 @@ namespace RealChess
 {
     public partial class ChessForm : Form
     {
+
+        public bool IsReal { get; set; }
         // class member array of Panels to track chessboard tiles
         private Panel[,] _chessBoardPanels;
 
@@ -112,6 +114,178 @@ namespace RealChess
 
             SetBoard(_chessBoardPanels, tileSize,gridSize);
             BoardController.SetBoard(chessBoard);
+
+            GenerateSideBar();
+
+
+        }
+        
+        public void GenerateSideBar()
+        {
+            // Add the control to the form's controls
+            if (IsReal)
+            {
+                var moralPanel = new Panel
+                {
+                    Size = new Size(tileSize * 4, tileSize * gridSize ),
+                    Location = new Point(tileSize * gridSize + 20, 30),
+                    Tag = "moralPanel",
+                    BackColor = Color.White,
+
+                };
+
+                PictureBox vsPic = new PictureBox
+                {
+                    Height = 150,
+                    Width = 200,
+                    Image = (Image)Properties.Resources.ResourceManager.GetObject("vsLogo"),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+
+                };
+
+                // Add pieces panel
+                var blackPanel = new Panel
+                {
+                    Size = new Size(tileSize * 4, tileSize * gridSize/2 - vsPic.Height/2),
+                    Location = new Point(0,0),
+                    Name = "blackPanel",
+                    BackColor = Color.White,
+
+                };
+                
+                blackPanel.Controls.Add(new Label());
+                PictureBox blackPic = new PictureBox
+                {
+                    Height = 100,
+                    Width = 100,
+                    Image = (Image)Properties.Resources.ResourceManager.GetObject("black_king"),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Anchor = AnchorStyles.None,
+                    Name = "blackPic",
+
+
+                };
+
+                blackPic.Location = new Point((blackPanel.Width - blackPic.Width) / 2,5);
+                Label blackLabel = new Label
+                {
+                    Text = "   Black Morale",
+                    Name = "blackLabel",
+
+
+                };
+                blackLabel.Location = new Point((blackPanel.Width - blackLabel.Width) / 2, blackPic.Bottom + 11);
+
+                ProgressBar blackBar = new ProgressBar
+                {
+                    Value = 70,
+                    Minimum = 0,
+                    Maximum = 100,
+                    Width = 200,
+                    Height = 20,
+                    Name = "blackBar",
+
+
+                };
+
+                blackBar.Location = new Point((blackPanel.Width - blackBar.Width)/2, blackLabel.Bottom + 10);
+                
+                Label blackPercentage = new Label
+                {
+                    Text = "70%",
+                    Location = new Point((blackPanel.Width - blackBar.Width) / 2 + blackBar.Width, blackLabel.Bottom + 11),
+                    Name = "blackPercent",
+
+                };
+
+                
+                vsPic.Location = new Point((blackPanel.Width - vsPic.Width) / 2, blackBar.Bottom+10);
+
+                // Add morale panel
+                var whitePanel = new Panel
+                {
+                    Size = new Size(tileSize * 4, tileSize * gridSize / 2 - vsPic.Height / 2),
+                    Location = new Point(0, vsPic.Bottom +10),
+                    Name = "whitePanel",
+                    BackColor = Color.White,
+                };
+
+
+                ProgressBar whiteBar = new ProgressBar
+                {
+                    Value = 70,
+                    Minimum = 0,
+                    Maximum = 100,
+                    Width = 200,
+                    Height = 20,
+                    Name = "whiteBar",
+
+
+                };   
+                whiteBar.Location = new Point((whitePanel.Width - whiteBar.Width) / 2, 0);
+                
+                Label whitePercentage = new Label
+                {
+                    Text = "70%",
+                    Location = new Point((whitePanel.Width - whiteBar.Width) / 2 + whiteBar.Width , 0),
+                    Name = "whitePercent",
+
+                };
+                Label whiteLabel = new Label
+                {
+                    Text = "   White Morale",
+                    Name = "whiteLabel",
+
+                };
+                whiteLabel.Location = new Point((whitePanel.Width - whiteLabel.Width) / 2, whiteBar.Bottom + 20);
+
+                PictureBox whitePic = new PictureBox
+                {
+                    Height = 100,
+                    Width = 100,
+                    Image = (Image)Properties.Resources.ResourceManager.GetObject("white_king"),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Anchor = AnchorStyles.None,
+                    Name = "whitePic",
+
+
+                };
+
+                whitePic.Location = new Point((whitePanel.Width - whitePic.Width) / 2, whiteLabel.Bottom );
+
+                // Adds the controls for the black part
+                blackPanel.Controls.Add(blackPic);
+                blackPanel.Controls.Add(blackLabel);
+                blackPanel.Controls.Add(blackBar);
+                blackPanel.Controls.Add(blackPercentage);
+
+                // Adds the controls for the white part
+                whitePanel.Controls.Add(whiteBar);
+                whitePanel.Controls.Add(whitePercentage);
+                whitePanel.Controls.Add(whiteLabel);
+                whitePanel.Controls.Add(whitePic);
+                
+                //Adds the panels to the general panel
+                moralPanel.Controls.Add(blackPanel);
+                moralPanel.Controls.Add(vsPic);
+                moralPanel.Controls.Add(whitePanel);
+                Controls.Add(moralPanel);
+                RealController.SetSidePanel(moralPanel);
+
+            }
+            else
+            {
+                // Create a new RichTextBox control
+                RichTextBox chessNotationBox = new RichTextBox
+                {
+                    Size = new Size(200, tileSize * gridSize),
+                    Location = new Point(tileSize * gridSize + 20, 30)
+
+                };
+                chessNotationBox.ReadOnly = true;
+                Controls.Add(chessNotationBox);
+
+            }
         }
 
         // Resets the current piece clicked to null

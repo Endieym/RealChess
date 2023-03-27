@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Controller\BoardController.cs" />
     <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\RealController.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />
     <Compile Include="Model\Bitboard\BoardOperations.cs" />
@@ -88,6 +89,12 @@
     <Compile Include="View\Forms\ChessForm.Designer.cs">
       <DependentUpon>ChessForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\ChooseGame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\ChooseGame.Designer.cs">
+      <DependentUpon>ChooseGame.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\MainPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\ChessForm.resx">
       <DependentUpon>ChessForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\ChooseGame.resx">
+      <DependentUpon>ChooseGame.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\MainPage.resx">
       <DependentUpon>MainPage.cs</DependentUpon>
@@ -215,6 +225,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\RealChessLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RealLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KingLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CloseIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vsLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
