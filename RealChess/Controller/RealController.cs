@@ -32,7 +32,7 @@ namespace RealChess.Controller
         
 
 
-
+        
         public static void SetSidePanel(Panel panel)
         {
             sidePanel = panel;
@@ -49,8 +49,10 @@ namespace RealChess.Controller
             blackBar = sidePanel.Controls.Find("blackBar", true).FirstOrDefault() as ProgressBar;
             vsPic = sidePanel.Controls.Find("vsPic", true).FirstOrDefault() as PictureBox;
         }
+
         public static void ShowMove(Move move)
         {
+            ChessForm.DisableClicks();
             ShowPiece(move.CapturedPiece);
             SetMoraleMove(move);
             if (move.PieceMoved.Color == PieceColor.WHITE)
@@ -82,10 +84,10 @@ namespace RealChess.Controller
             {
                 Application.DoEvents();
             }
-            
-            
+                       
             stopwatch.Stop();
 
+            ChessForm.EnableClicks();
             // Stop the animation
             ImageAnimator.StopAnimate(gifImage, (sender, e) =>
             {

@@ -60,7 +60,7 @@ namespace RealChess.Model
                 player2.InCheck(attackingSquares);
            
         }
-        private King GetKing(PieceColor color)
+        internal King GetKing(PieceColor color)
         {
             return color == PieceColor.WHITE ? player1.GetKing() :
                 player2.GetKing();
@@ -359,6 +359,11 @@ namespace RealChess.Model
             return list;
         }
 
+        public ulong GetBoard()
+        {
+            return this.bitBoard;
+        }
+
 
         public ulong GetAttacksMask(ChessPiece piece)
         {
@@ -581,8 +586,8 @@ namespace RealChess.Model
 
             return captureList;
             
-
         }
+
 
         public Player GetPlayer1()
         {

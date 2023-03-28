@@ -11,5 +11,7 @@ namespace RealChess.Model
         public const int SuccessfullCapture = 3;
         public const int Captured = 4;
         public const int EnPassantMorale = 15;
+        public const int AdjacentToKing = 12;
+        public const int RooksConnected = 8;
     }
 }

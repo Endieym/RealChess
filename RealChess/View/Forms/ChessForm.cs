@@ -27,6 +27,7 @@ namespace RealChess
         // current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
 
+        private static bool animationInProgress = false;
         
         private const int tileSize = 65;
         private const int gridSize = 8;
@@ -308,6 +309,14 @@ namespace RealChess
 
             }
         }
+        public static void DisableClicks()
+        {
+            animationInProgress = true;
+        }
+        public static void EnableClicks()
+        {
+            animationInProgress = false;
+        }
 
         // Resets the current piece clicked to null
         public static void ResetPieceClicked()
@@ -331,6 +340,9 @@ namespace RealChess
         // Event handler for when the piece control is clicked
         private void PieceControl_Click(object sender, EventArgs e)
         {
+            if (animationInProgress)
+                return;
+
             MouseEventArgs mouseArgs = e as MouseEventArgs;
 
             if (mouseArgs.Button != MouseButtons.Left)

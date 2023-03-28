@@ -28,8 +28,8 @@ namespace RealChess.Model
             return 0;
         }
 
-        // Returns a tuple of two rooks from the player's pieces
-        public static Tuple<Rook, Rook> GetRooks(Dictionary<int, ChessPiece> pieces, PieceColor color)
+        // Returns a tuple of two rooks from the player's pieces (only rooks which haven't moved)
+        public static Tuple<Rook, Rook> GetRooksCastle(Dictionary<int, ChessPiece> pieces, PieceColor color)
         {
             var queenKey = color == PieceColor.WHITE? BitboardConstants.whiteQueenRook:
                 BitboardConstants.blackQueenRook;
@@ -54,14 +54,53 @@ namespace RealChess.Model
 
             return new Tuple<Rook, Rook>(firstRook, secondRook);
 
-
-
         }
 
-        public static ulong GenerateQueenSide()
+        // Returns a tuple of two rooks from the player's pieces
+        public static Tuple<Rook, Rook> GetRooks(Dictionary<int, ChessPiece> pieces, PieceColor color)
         {
-            return 0;
+            
+            ChessPiece queenSide, kingSide;
+            Rook firstRook = null, secondRook = null;
+
+           
+            foreach(var piece in pieces)
+            {
+                
+                if(piece.Value.Type == PieceType.ROOK)
+                {
+                    if (firstRook == null)
+                        firstRook = (Rook)piece.Value;
+                    else
+                        secondRook = (Rook)piece.Value;
+                }
+
+            }
+
+            return new Tuple<Rook, Rook>(firstRook, secondRook);
+
+
+
         }
+
+        // Gets the pieces of a specific player, and returns whether or not the rooks
+        // are connected
+        public static bool AreRooksConnected(Dictionary<int, ChessPiece> pieces, PieceColor color, ulong occupied)
+        {
+            // Gets the rook pair
+            Tuple<Rook, Rook> rookPair = GetRooks(pieces, color);
+
+            // If a rook is missing (captured) return false
+            if (rookPair.Item1 == null || rookPair.Item2 == null)
+                return false;
+
+            // Checks if the rooks are connected via bitboard
+            if ((rookPair.Item1.GenerateLegalMoves(occupied) & rookPair.Item2.GetPosition()) > 0)
+                return true;
+            
+            return false;
+        }
+
 
         // Returns the bitmask of a possible castle.
         // if a castle is not available, returns 0
@@ -74,7 +113,7 @@ namespace RealChess.Model
             if (!king.HasMoved && !king.InCheck)
             {
                 // Gets the pair of rooks from the player's pieces
-                Tuple<Rook, Rook> rookPair = GetRooks(pieces, king.Color);
+                Tuple<Rook, Rook> rookPair = GetRooksCastle(pieces, king.Color);
                  if (king.Color == PieceColor.WHITE)
                 {
                     if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
