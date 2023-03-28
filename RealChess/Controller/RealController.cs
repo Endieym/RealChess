@@ -52,7 +52,8 @@ namespace RealChess.Controller
         public static void ShowMove(Move move)
         {
             ShowPiece(move.CapturedPiece);
-            if(move.PieceMoved.Color == PieceColor.WHITE)
+            SetMoraleMove(move);
+            if (move.PieceMoved.Color == PieceColor.WHITE)
             {
                 whitePanel.Visible = true;
                 blackPercent.Visible = false;
@@ -91,7 +92,10 @@ namespace RealChess.Controller
                 // Redraw the PictureBox control one last time to display the final image
                 vsPic.Invalidate();
             });
+            
         }
+
+        
 
         public static void ShowPiece(ChessPiece piece)
         {
@@ -106,11 +110,57 @@ namespace RealChess.Controller
             
             ChangeLabel(piece);
             ChangePicture(piece);
+            SetMoralePiece(piece);
+        }
+
+        public static void SetMoralePiece(ChessPiece piece)
+        {
+            var success = RealBoardController.GetPieceMorale(piece);
+            SetMorale(success, piece.Color);
+
+        }
+
+        public static void SetMoraleMove(Move move)
+        {
+            // Gets the morale for both players
+            var success = RealBoardController.CalculateSuccess(move);
+
+            SetMorale(success, move.PieceMoved.Color);
+
+        }
+        public static void SetMorale(int morale, PieceColor color)
+        {
+            if (color == PieceColor.WHITE)
+            {
+                whiteBar.Value = morale;
+                whitePercent.Text = morale.ToString() + '%';
+
+            }
+            else
+            {
+                blackBar.Value = morale;
+
+                blackPercent.Text = morale.ToString() + '%';
+            }
         }
         public static void ResetToMorale()
         {
             whitePanel.Visible = true;
             blackPanel.Visible = true;
+
+            whiteBar.Visible = true;
+            whitePercent.Visible = true;
+            blackBar.Visible = true;
+            blackPercent.Visible = true;
+            // Gets the morale for both players
+            var whiteMorale = RealBoardController.GetPlayerMorale(PieceColor.WHITE);
+            var blackMorale = RealBoardController.GetPlayerMorale(PieceColor.BLACK);
+
+            whiteBar.Value = whiteMorale;
+            blackBar.Value = blackMorale;
+
+            whitePercent.Text = whiteMorale.ToString() + '%';
+            blackPercent.Text = blackMorale.ToString() + '%';
 
             // Resets the text 
             whiteLabel.Text = "White Morale";

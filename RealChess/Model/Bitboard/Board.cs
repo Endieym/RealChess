@@ -20,11 +20,14 @@ namespace RealChess.Model
         UInt64 whiteBoard;
         UInt64 blackBoard;
         List<Move> movesList;
+        
 
         public Board()
         {
             this.player1 = new Player(true);
             this.player2 = new Player(false);
+            player1.Morale = 70;
+            player2.Morale = 70;
             this.bitBoard = 0;
             this.whiteBoard = 0;
             this.blackBoard = 0;
@@ -40,6 +43,11 @@ namespace RealChess.Model
                 this.blackBoard |= (ulong)1 << item.Key;
             }
             this.bitBoard = whiteBoard | blackBoard;
+        }
+
+        public int GetMorale(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? player1.Morale : player2.Morale;
         }
 
         
@@ -83,10 +91,46 @@ namespace RealChess.Model
 
         }
 
+        // Updates the morale 
+        public void UpdateReal(Move move)
+        {
+            var color = move.PieceMoved.Color;
+            if (move.IsEnPassantCapture)
+            {
+                if (color == PieceColor.WHITE)
+                {
+                    player1.EnPassant();
+                    player2.DecreaseMorale();
+                }
+                else
+                {
+                    player2.EnPassant();
+                    player1.DecreaseMorale();
+
+
+                }
+            }
+            else if (move.IsCapture)
+            {
+                if(color == PieceColor.WHITE)
+                {
+                    player1.IncreaseMorale();
+                    player2.DecreaseMorale();
+                }
+                else
+                {
+                    player2.IncreaseMorale();
+                    player1.DecreaseMorale();
+
+
+                }
+            }
+        }
         // Updates the board according to a piece moving
         // ChessPiece piece, int oldKey, int newKey, bool isCapture
         public void UpdateBoard(Move move)
         {
+            
             // Checks if the piece has moved before, if not, change the attribute
             if (!move.PieceMoved.HasMoved)
                 move.PieceMoved.HasMoved = true;
@@ -105,21 +149,9 @@ namespace RealChess.Model
             UpdateDataStructures(move);
 
             if (isCapture)
-            {
-                if (move.PieceMoved.Color == PieceColor.WHITE)
-                {
-                    this.player1.AddCapture(player2.Pieces[newKey]);
-
-                }
-                else
-                {
-                    this.player2.AddCapture(player1.Pieces[newKey]);
-
-                }
                 UpdateCaptures(move);
                 
 
-            }
 
 
             this.bitBoard = blackBoard | whiteBoard;
@@ -135,20 +167,27 @@ namespace RealChess.Model
             if (playerColor == PieceColor.WHITE)
             {
                 if (move.IsEnPassantCapture)
+                {
                     newKey += 8;
-                  
-                    this.player2.DeletePiece(newKey);
-                    this.blackBoard ^= (ulong)1 << newKey;
-                
+
+                }
+                this.player1.AddCapture(player2.Pieces[newKey]);
+                this.player2.DeletePiece(newKey);
+                this.blackBoard ^= (ulong)1 << newKey;
+
             }
             else
             {
 
                 if (move.IsEnPassantCapture)
+                {
                     newKey -= 8;
 
+                }
+                this.player2.AddCapture(player1.Pieces[newKey]);
                 this.player1.DeletePiece(newKey);
-                this.whiteBoard ^= (ulong)1 << newKey;               
+                this.whiteBoard ^= (ulong)1 << newKey;   
+
             }
         }
 
@@ -474,11 +513,29 @@ namespace RealChess.Model
                 {
                     Move enPassant = new Move((int)Math.Log(enPassantMask, 2), piece)
                     {
-                        IsEnPassantCapture = true
+                        IsEnPassantCapture = true,
+                        IsCapture = true
                     };
-                    if(IsMoveLegal(enPassant))
-                        captureList.Add(enPassant);
+                    var capturedPieceIndex = piece.Color == PieceColor.WHITE ? (int)Math.Log(enPassantMask, 2) + 8 :
+                        (int)Math.Log(enPassantMask, 2) - 8;
 
+                    if (piece.Color == PieceColor.WHITE)
+                        enPassant.CapturedPiece = player2.Pieces[capturedPieceIndex];
+                    else
+                        enPassant.CapturedPiece = player1.Pieces[capturedPieceIndex];
+                    
+                    // Checks if the enpassant is a check
+                    if (IsMoveCheck(enPassant))
+                  
+                    {
+                        enPassant.IsCheck = true;
+                        enPassant.Type = Move.MoveType.Check;
+
+                    }
+
+                    if (IsMoveLegal(enPassant))
+                        captureList.Add(enPassant);
+                    movesMask &= ~(enPassantMask);
                 }
             }
 

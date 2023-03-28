@@ -47,20 +47,21 @@ namespace RealChess.View.Controls
             Transfer?.Invoke(this, e);
         }
 
-        private void LegalMoveControl_MouseClick(object sender, MouseEventArgs e)
-        {
+        //private void LegalMoveControl_MouseClick(object sender, MouseEventArgs e)
+        //{
 
-            // Check if the control is clicked with the left mouse button
-            if (e.Button == MouseButtons.Left)
-            {
-                // Raise the transfer event with the clicked legal move control's coordinates
-                OnTransfer(new TransferEventArgs(this.CurrentMove));
-            }
-        }
+        //    // Check if the control is clicked with the left mouse button
+        //    if (e.Button == MouseButtons.Left)
+        //    {
+        //        // Raise the transfer event with the clicked legal move control's coordinates
+        //        OnTransfer(new TransferEventArgs(this.CurrentMove));
+        //    }
+        //}
 
         private void piecePic_Click(object sender, EventArgs e)
         {
             MouseEventArgs mouseArgs = e as MouseEventArgs;
+            piecePic.Click -= piecePic_Click;
 
             // Check if the control is clicked with the left mouse button
             if (mouseArgs.Button == MouseButtons.Left)

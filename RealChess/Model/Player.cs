@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using static RealChess.Controller.BoardController;
 using static RealChess.Model.ChessPieces.ChessPiece;
-
+using static RealChess.Model.RealConstants;
 namespace RealChess.Model
 {
     public class Player
@@ -111,6 +111,42 @@ namespace RealChess.Model
             piece.UpdatePosition(newKey);
             this.pieces.Remove(oldKey);
             this.pieces.Add(newKey, piece);
+        }
+
+        public void EnPassant()
+        {
+            // The max morale is 100.
+            if (Morale + EnPassantMorale > 100)
+            {
+                Morale = 100;
+                return;
+            }
+            Morale += EnPassantMorale;
+        }
+      
+
+        // Increases the morale by a constant
+        public void IncreaseMorale()
+        {
+            // The max morale is 100.
+            if (Morale + SuccessfullCapture > 100)
+            {
+                Morale = 100;
+                return;
+            }
+            Morale += SuccessfullCapture;
+        }
+
+        // Decreases the morale by a constant
+        public void DecreaseMorale()
+        {
+            // The minimum morale is 50.
+            if (Morale - Captured < 50)
+            {
+                Morale = 50;
+                return;
+            }
+            Morale -= Captured;
         }
 
         // Adds a captured piece to the list of captured pieces

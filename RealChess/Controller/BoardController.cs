@@ -55,6 +55,7 @@ namespace RealChess.Controller
             return _gameBoard.MakePromotionMove(move, piece);
         }
 
+
         internal static List<Move> GetMovesList(ChessPiece piece)
         {
             return _gameBoard.GetMovesPiece(piece);

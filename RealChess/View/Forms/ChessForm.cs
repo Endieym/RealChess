@@ -114,6 +114,8 @@ namespace RealChess
 
             SetBoard(_chessBoardPanels, tileSize,gridSize);
             BoardController.SetBoard(chessBoard);
+            if (IsReal)
+                RealBoardController.SetBoard(chessBoard);
 
             GenerateSideBar();
 

@@ -116,8 +116,7 @@ namespace RealChess.Controller
                 }
             }
 
-            if (IsReal)
-                RealController.ResetToMorale();
+            
         }
 
 
@@ -156,10 +155,13 @@ namespace RealChess.Controller
 
         }
 
+        // Initiates the move of a piece, according to the control clicked
         internal static void MovePiece(ChessPieceControl pieceSource, Move move)
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
+            ClearLegalMoves(pieceSource);
+
             if (move.IsPromotion)
             {
 
@@ -209,34 +211,31 @@ namespace RealChess.Controller
                 chessPieceControl.Parent.Controls.Clear();
                 targetCastle.Controls.Add(chessPieceControl);
             }
-            Panel capturedPanel = _panelBoard[key / 8, key % 8];
-            if(IsReal && move.IsCapture)
-                RealController.ShowMove(move);
-            
-            ClearLegalMoves(pieceSource);
 
-            //foreach (Control c in targetPanel.Controls)
-            //{
-            //    if (c is ChessPieceControl)
-            //        move.CapturedPiece = ((ChessPieceControl)c).Piece;
-            //}
+            Panel capturedPanel = _panelBoard[key / 8, key % 8];
+            if(IsReal && move.IsCapture )
+            {
+                RealController.ShowMove(move);
+                if(RealBoardController.TryMove(move) == false)
+                {
+                    RealController.ResetToMorale();
+                    EndTurn();
+                    return;
+                }
+                
+            }
+            
+
+            if (IsReal)
+            {
+                RealBoardController.UpdateReal(move);
+                RealController.ResetToMorale();
+
+            }
 
             // Clear controls of selected panel
             capturedPanel.Controls.Clear();
 
-            
-
-            //// Get pieces' current location on the board
-            //var oldRow = (pieceSource.Parent.Location.Y - 30) / _tileSize;
-            //var oldCol = (pieceSource.Parent.Location.X - 10) / _tileSize;
-            //move.StartSquare = oldRow * _gridSize + oldCol;  //tileSize * col + 10, tileSize * row + 30
-
-            //// Finds the new location of the piece
-            //var row = (targetPanel.Location.Y - 30) / _tileSize;
-            //var col = (targetPanel.Location.X - 10) / _tileSize;
-            //move.EndSquare = row *_gridSize +col;  //tileSize * col + 10, tileSize * row + 30
-
-            
 
             // Remove control from previous panel
             pieceSource.Parent.Controls.Remove(pieceSource);
@@ -321,12 +320,16 @@ namespace RealChess.Controller
                 
             }
 
+            player.Play();
+            EndTurn();
 
+        }
+
+        public static void EndTurn()
+        {
             turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
                 PieceColor.WHITE;
 
-            player.Play();
-            
             ChessForm.ResetPieceClicked();
 
         }

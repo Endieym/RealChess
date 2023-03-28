@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Controller\BoardController.cs" />
     <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\RealBoardController.cs" />
     <Compile Include="Controller\RealController.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Model\ChessPieces\Pawn.cs" />
     <Compile Include="Model\Move.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\RealConstants.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
