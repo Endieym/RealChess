@@ -1,11 +1,15 @@
-﻿using RealChess.Model.ChessPieces;
+﻿using RealChess.Model;
+using RealChess.Model.ChessPieces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
@@ -22,6 +26,8 @@ namespace RealChess.Controller
         private static Label whitePercent;
         private static ProgressBar whiteBar;
         private static ProgressBar blackBar;
+        private static PictureBox vsPic;
+
         
         
 
@@ -41,8 +47,52 @@ namespace RealChess.Controller
             whitePercent = sidePanel.Controls.Find("whitePercent", true).FirstOrDefault() as Label;
             whiteBar = sidePanel.Controls.Find("whiteBar", true).FirstOrDefault() as ProgressBar;
             blackBar = sidePanel.Controls.Find("blackBar", true).FirstOrDefault() as ProgressBar;
-            
+            vsPic = sidePanel.Controls.Find("vsPic", true).FirstOrDefault() as PictureBox;
         }
+        public static void ShowMove(Move move)
+        {
+            ShowPiece(move.CapturedPiece);
+            if(move.PieceMoved.Color == PieceColor.WHITE)
+            {
+                whitePanel.Visible = true;
+                blackPercent.Visible = false;
+                blackBar.Visible = false;
+            }
+            else
+            {
+                blackPanel.Visible = true;
+                whitePercent.Visible = false;
+                whiteBar.Visible = false;
+            }
+
+            Bitmap gifImage = new Bitmap(150, 200);
+
+            // Read the image from the resources using its name
+            gifImage = Properties.Resources.fightGif;
+
+            vsPic.Image = gifImage;
+            // Start the animation using the ImageAnimator class
+
+            // Wait for 2 seconds using a while loop and a Stopwatch
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            while (stopwatch.ElapsedMilliseconds < 2000)
+            {
+                Application.DoEvents();
+            }
+            
+            
+            stopwatch.Stop();
+
+            // Stop the animation
+            ImageAnimator.StopAnimate(gifImage, (sender, e) =>
+            {
+                // Redraw the PictureBox control one last time to display the final image
+                vsPic.Invalidate();
+            });
+        }
+
         public static void ShowPiece(ChessPiece piece)
         {
             
@@ -68,8 +118,9 @@ namespace RealChess.Controller
 
             // Resets the pieces images
             whitePic.Image = LoadPieceImage(new King()); 
-            blackPic.Image = LoadPieceImage(new King { Color = ChessPiece.PieceColor.BLACK}); 
-
+            blackPic.Image = LoadPieceImage(new King { Color = ChessPiece.PieceColor.BLACK});
+            
+            vsPic.Image = (Image)Properties.Resources.ResourceManager.GetObject("vsLogo");
         }
         public static void ChangeLabel(ChessPiece piece)
         {
@@ -90,16 +141,20 @@ namespace RealChess.Controller
         {
             whitePanel.Visible = true;
             blackPanel.Visible = false;
+            whiteBar.Visible = true;
+            whitePercent.Visible = true;
         }
         public static void HideWhite()
         {
             whitePanel.Visible = false;
+            
         }
         public static void ShowBlack()
         {
             blackPanel.Visible = true;
             whitePanel.Visible = false;
-
+            blackBar.Visible = true;
+            blackPercent.Visible = true;
         }
         public static void HideBlack()
         {

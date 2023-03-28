@@ -238,5 +238,8 @@
   <ItemGroup>
     <None Include="Resources\vsLogo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fightGif.gif" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

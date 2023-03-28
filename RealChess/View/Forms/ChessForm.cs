@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using RealChess.Model;
 using RealChess.Controller;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using System.IO;
 
 namespace RealChess
 {
@@ -139,7 +140,7 @@ namespace RealChess
                     Width = 200,
                     Image = (Image)Properties.Resources.ResourceManager.GetObject("vsLogo"),
                     SizeMode = PictureBoxSizeMode.Zoom,
-
+                    Name = "vsPic"
                 };
 
                 // Add pieces panel
@@ -257,6 +258,19 @@ namespace RealChess
                 };
 
                 whitePic.Location = new Point((whitePanel.Width - whitePic.Width) / 2, whiteLabel.Bottom );
+                
+                //Bitmap gifImage = new Bitmap(150,200);
+
+                //// Read the image from the resources using its name
+                //gifImage = Properties.Resources.fightGif;
+
+                //vsPic.Image = gifImage;
+                //// Start the animation using the ImageAnimator class
+                //ImageAnimator.Animate(vsPic.Image, (sender, e) =>
+                //{
+                //    // Redraw the picture box control when the frame changes
+                //    vsPic.Invalidate();
+                //});
 
                 // Adds the controls for the black part
                 blackPanel.Controls.Add(blackPic);

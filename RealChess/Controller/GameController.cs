@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
@@ -159,7 +160,6 @@ namespace RealChess.Controller
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
-            ClearLegalMoves(pieceSource);
             if (move.IsPromotion)
             {
 
@@ -209,9 +209,11 @@ namespace RealChess.Controller
                 chessPieceControl.Parent.Controls.Clear();
                 targetCastle.Controls.Add(chessPieceControl);
             }
-            Console.Write(pieceSource.Piece);
-
             Panel capturedPanel = _panelBoard[key / 8, key % 8];
+            if(IsReal && move.IsCapture)
+                RealController.ShowMove(move);
+            
+            ClearLegalMoves(pieceSource);
 
             //foreach (Control c in targetPanel.Controls)
             //{
