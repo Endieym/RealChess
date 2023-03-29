@@ -56,6 +56,7 @@
     <Compile Include="Controller\RealController.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />
+    <Compile Include="Model\Bitboard\BoardLogic.cs" />
     <Compile Include="Model\Bitboard\BoardOperations.cs" />
     <Compile Include="Model\ChessPieces\Bishop.cs" />
     <Compile Include="Model\ChessPieces\King.cs" />

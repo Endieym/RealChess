@@ -83,23 +83,7 @@ namespace RealChess.Model
 
         }
 
-        // Gets the pieces of a specific player, and returns whether or not the rooks
-        // are connected
-        public static bool AreRooksConnected(Dictionary<int, ChessPiece> pieces, PieceColor color, ulong occupied)
-        {
-            // Gets the rook pair
-            Tuple<Rook, Rook> rookPair = GetRooks(pieces, color);
-
-            // If a rook is missing (captured) return false
-            if (rookPair.Item1 == null || rookPair.Item2 == null)
-                return false;
-
-            // Checks if the rooks are connected via bitboard
-            if ((rookPair.Item1.GenerateLegalMoves(occupied) & rookPair.Item2.GetPosition()) > 0)
-                return true;
-            
-            return false;
-        }
+       
 
 
         // Returns the bitmask of a possible castle.

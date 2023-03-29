@@ -228,7 +228,9 @@ namespace RealChess.Controller
 
             if (IsReal)
             {
+                
                 RealBoardController.UpdateReal(move);
+                RealBoardController.BalancePlayers();
                 RealController.ResetToMorale();
 
             }

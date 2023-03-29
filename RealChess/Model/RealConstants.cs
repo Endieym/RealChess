@@ -13,5 +13,8 @@ namespace RealChess.Model
         public const int EnPassantMorale = 15;
         public const int AdjacentToKing = 12;
         public const int RooksConnected = 8;
+        public const int BishopAndKnightBuff = 6;
+        public const int Positionbuff = 2;
+
     }
 }
