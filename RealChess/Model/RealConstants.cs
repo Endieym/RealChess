@@ -15,6 +15,6 @@ namespace RealChess.Model
         public const int RooksConnected = 8;
         public const int BishopAndKnightBuff = 6;
         public const int Positionbuff = 2;
-
+        public const int DefenseBuff = 2;
     }
 }

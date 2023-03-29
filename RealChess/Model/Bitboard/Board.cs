@@ -364,6 +364,11 @@ namespace RealChess.Model
             return this.bitBoard;
         }
 
+        public List<Move> GetAllMoves()
+        {
+            return movesList;
+        }
+
 
         public ulong GetAttacksMask(ChessPiece piece)
         {
@@ -499,6 +504,8 @@ namespace RealChess.Model
 
             return false;
         }
+
+
         public List<Move> GetCapturesPiece(ChessPiece piece)
         {
             List<Move> captureList = new List<Move>();

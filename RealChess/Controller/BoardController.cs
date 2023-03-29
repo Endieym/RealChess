@@ -1,4 +1,5 @@
 ﻿using RealChess.Model;
+using RealChess.Model.Bitboard;
 using RealChess.Model.ChessPieces;
 using RealChess.View;
 using System;
@@ -20,6 +21,7 @@ namespace RealChess.Controller
         internal static void SetBoard(Board board)
         {
             _gameBoard = board;
+            BoardLogic.SetBoard(board);
         }
 
         // Updates the data structure on the move of the piece.

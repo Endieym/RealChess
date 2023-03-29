@@ -12,6 +12,13 @@ namespace RealChess.Model.Bitboard
     internal static class BoardLogic
 
     {
+
+        private static Board _gameBoard;
+        
+        public static void SetBoard(Board board)
+        {
+            _gameBoard = board;
+        }
         // Gets the pieces of a specific player, and returns whether or not the rooks
         // are connected
         public static bool AreRooksConnected(Dictionary<int, ChessPiece> pieces, PieceColor color, ulong occupied)
@@ -62,9 +69,60 @@ namespace RealChess.Model.Bitboard
                 }
             }
 
+           
             return openFiles;
         }
 
-    
+        public static int CountDefenders(Player player, ChessPiece pieceUnderDefense )
+        {
+
+            var pieces = player.Pieces;
+
+            int defenderCount = 0;
+            ulong pieceMask = pieceUnderDefense.GetPosition();
+
+            foreach (var piece in pieces)
+            {
+                if (piece.Value.Type == PieceType.KING) continue; // Kings cannot be defenders
+
+                var pieceMoves = _gameBoard.GetAttacksMask(piece.Value);
+                if ((pieceMoves & pieceMask) > 0)
+                {
+                    defenderCount++;
+                }
+            }
+
+
+            return defenderCount;
+        }
+        public static int CountAttackers(Player opposingPlayer, ChessPiece pieceUnderAttack)
+        {
+
+            var pieces = opposingPlayer.Pieces;
+
+            int attackersCount = 0;
+            ulong pieceMask = pieceUnderAttack.GetPosition();
+
+            foreach (var piece in pieces)
+            {
+                if (piece.Value.Type == PieceType.KING) continue; // Kings cannot be attackers
+
+                var pieceMoves = _gameBoard.GetAttacksMask(piece.Value);
+                if ((pieceMoves & pieceMask)>0)
+                {
+                    attackersCount++;
+                }
+            }
+
+
+            return attackersCount;
+        }
+        
+        public static int EvaluateSafety()
+        {
+            return 0;
+        }
+
+
     }
 }

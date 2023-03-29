@@ -82,6 +82,7 @@ namespace RealChess.Model
             return attacks;
 
         }
+     
 
         // Changes the piece in a specific key
         public void SwitchPiece(int key, ChessPiece piece)
