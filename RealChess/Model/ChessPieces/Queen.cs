@@ -9,7 +9,7 @@ namespace RealChess.Model.ChessPieces
 {
     internal class Queen : ChessPiece
     {
-
+        public bool SacrificeBuff { get; set; }
         public override PieceType Type { get; set; } = PieceType.QUEEN;
         public override ushort Value { get; set; } = 9;
         public Queen() { }

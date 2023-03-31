@@ -64,6 +64,7 @@
     <Compile Include="Model\ChessPieces\Queen.cs" />
     <Compile Include="Model\ChessPieces\Knight.cs" />
     <Compile Include="Model\ChessPieces\Pawn.cs" />
+    <Compile Include="Model\ComputerPlay.cs" />
     <Compile Include="Model\Move.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Model\RealConstants.cs" />

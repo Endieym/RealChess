@@ -21,6 +21,7 @@ namespace RealChess.Model
         public bool DefendsCheck { get; set; }
         public bool IsQueenSideCastle { get; set; }
         public bool IsKingSideCastle { get; set; }
+        public bool IsPositiveCapture { get; set; }
 
         public enum MoveType
         {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.BoardOperations;
 using System.Collections.Specialized;
+using RealChess.Model.Bitboard;
 
 namespace RealChess.Model
 {
@@ -91,41 +92,7 @@ namespace RealChess.Model
 
         }
 
-        // Updates the morale 
-        public void UpdateReal(Move move)
-        {
-            var color = move.PieceMoved.Color;
-            if (move.IsEnPassantCapture)
-            {
-                if (color == PieceColor.WHITE)
-                {
-                    player1.EnPassant();
-                    player2.DecreaseMorale();
-                }
-                else
-                {
-                    player2.EnPassant();
-                    player1.DecreaseMorale();
-
-
-                }
-            }
-            else if (move.IsCapture)
-            {
-                if(color == PieceColor.WHITE)
-                {
-                    player1.IncreaseMorale();
-                    player2.DecreaseMorale();
-                }
-                else
-                {
-                    player2.IncreaseMorale();
-                    player1.DecreaseMorale();
-
-
-                }
-            }
-        }
+      
         // Updates the board according to a piece moving
         // ChessPiece piece, int oldKey, int newKey, bool isCapture
         public void UpdateBoard(Move move)
@@ -545,8 +512,13 @@ namespace RealChess.Model
 
                     }
 
+                    
+                    // Checks if the move is legal;
+                    // meaning that the king isn't in under attack after the move
                     if (IsMoveLegal(enPassant))
                         captureList.Add(enPassant);
+
+                    
                     movesMask &= ~(enPassantMask);
                 }
             }
@@ -589,7 +561,11 @@ namespace RealChess.Model
                 captureList.Add(newMove);
                 movesMask &= movesMask - 1; // reset LS1B
 
+                if (BoardLogic.GetCaptureValue(captureList[captureList.Count - 1].CapturedPiece, piece) > 0)
+                    captureList[captureList.Count - 1].IsPositiveCapture = true;
+
             }
+
 
             return captureList;
             

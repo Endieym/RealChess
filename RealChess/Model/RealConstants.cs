@@ -16,5 +16,6 @@ namespace RealChess.Model
         public const int BishopAndKnightBuff = 6;
         public const int Positionbuff = 2;
         public const int DefenseBuff = 2;
+        public const int SacrificeBuff = 10;
     }
 }

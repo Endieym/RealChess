@@ -124,7 +124,7 @@ namespace RealChess.Controller
         private static void LegalMoveControl_Move(object sender, TransferEventArgs e)
         {
             // Transfer the selected piece to the clicked panel
-            MovePiece(_currentPieceClicked, e.CurrentMove);           
+            MovePiece(e.CurrentMove);           
         }
 
         // Changes the pawn to the selected piece
@@ -154,30 +154,27 @@ namespace RealChess.Controller
             pieceSource.SetPiece(pieceSource.Piece);
 
         }
+        internal static ChessPieceControl GetPieceControl(int key)
+        {
+            Panel piecePanel = _panelBoard[key / 8, key % 8];
+
+            if (piecePanel.Controls[0] is ChessPieceControl)
+            {
+                return (ChessPieceControl)piecePanel.Controls[0];
+            }
+            return null;
+        }
 
         // Initiates the move of a piece, according to the control clicked
-        internal static void MovePiece(ChessPieceControl pieceSource, Move move)
+        internal static void MovePiece( Move move)
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
+
+            ChessPieceControl pieceSource = GetPieceControl(move.StartSquare);
             ClearLegalMoves(pieceSource);
 
-            if (move.IsPromotion)
-            {
-
-                PromotionForm frms2 = new PromotionForm
-                {
-                    StartPosition = FormStartPosition.CenterParent,
-                    Location = targetPanel.Location
-                };
-
-                frms2.ShowDialog();
-
-                SwitchPiece(pieceSource, frms2.PieceClicked,move.StartSquare);               
-                move = BoardController.PromotePiece(move, pieceSource.Piece);
-
-
-            }
+            
             if (move.IsEnPassantCapture)
                 key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;
 
@@ -224,7 +221,23 @@ namespace RealChess.Controller
                 }
                 
             }
-            
+            if (move.IsPromotion)
+            {
+
+                PromotionForm frms2 = new PromotionForm
+                {
+                    StartPosition = FormStartPosition.CenterParent,
+                    Location = targetPanel.Location
+                };
+
+                frms2.ShowDialog();
+
+                SwitchPiece(pieceSource, frms2.PieceClicked, move.StartSquare);
+                move = BoardController.PromotePiece(move, pieceSource.Piece);
+
+
+            }
+
 
             if (IsReal)
             {
