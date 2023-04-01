@@ -22,6 +22,8 @@ namespace RealChess.Controller
         {
             _gameBoard = board;
             BoardLogic.SetBoard(board);
+            ComputerPlay.SetBoard(board);
+
         }
 
         // Updates the data structure on the move of the piece.

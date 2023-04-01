@@ -18,6 +18,9 @@ namespace RealChess.Controller
     internal static class GameController
     {
         public static bool IsReal { get; set; }
+
+        private static PieceColor AiColor;
+        private static bool AiPlay;
         // Current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
 
@@ -36,6 +39,24 @@ namespace RealChess.Controller
             _gridSize = gridSize;
             _tileSize = tileSize;
             _panelBoard = panelBoard;
+            if (AiPlay && AiColor == PieceColor.WHITE)
+                ComputerPlay.PlayMove(PieceColor.WHITE);
+
+            turnColor = PieceColor.WHITE;
+        }
+
+        public static void SetAi(PieceColor color)
+        {
+            if(ChessForm.GetCurrentPiece() != null)
+                ClearLegalMoves(ChessForm.GetCurrentPiece());
+            AiColor = color;
+            AiPlay = true;
+            if (turnColor == color)
+                ComputerPlay.PlayMove(color);
+        }
+        public static void DisableAi()
+        {
+            AiPlay = false;
         }
 
         // Checks if a move is legal
@@ -166,7 +187,7 @@ namespace RealChess.Controller
         }
 
         // Initiates the move of a piece, according to the control clicked
-        internal static void MovePiece( Move move)
+        internal static void MovePiece(Move move)
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
@@ -313,13 +334,19 @@ namespace RealChess.Controller
                     if (move.PieceMoved.Color == PieceColor.WHITE)
                     {
                         HighlightCheck(PieceColor.BLACK);
-                        MessageBox.Show("Checkmate by WHITE!");
+                        MessageBox.Show("CHECKMATE","White won!");
+
+                        ChessForm.DisableClicks();
 
                     }
                     else 
                     {
                         HighlightCheck(PieceColor.WHITE);
-                        MessageBox.Show("Checkmate by BLACK!");
+                        MessageBox.Show("CHECKMATE", "Black won!");
+                        player.Play();
+
+                        ChessForm.DisableClicks();
+
 
                     }
                     break;
@@ -340,12 +367,25 @@ namespace RealChess.Controller
 
         }
 
+
         public static void EndTurn()
         {
             turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
                 PieceColor.WHITE;
 
             ChessForm.ResetPieceClicked();
+
+            if (AiPlay && turnColor == AiColor)
+                ComputerPlay.PlayMove(turnColor);
+
+        }
+
+        // Returns to the main form
+        public static void ReturnHomepage()
+        {
+            MainPage home = new MainPage();
+            Application.OpenForms[1].Close();
+            home.Show();
 
         }
 

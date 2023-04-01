@@ -27,7 +27,10 @@ namespace RealChess
         // current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
 
-        private static bool animationInProgress = false;
+        private static bool InProcess = false;
+
+        private static bool IsWhiteAi = false;
+        private static bool IsBlackAi = false;
         
         private const int tileSize = 65;
         private const int gridSize = 8;
@@ -35,7 +38,11 @@ namespace RealChess
         {
             InitializeComponent();
             this.Load += new EventHandler(ChessForm_Load);
+            whiteAI.CheckOnClick = true;
+            blackAI.CheckOnClick = true;
 
+            whiteAI.CheckedChanged += whiteAI_CheckedChanged;
+            blackAI.CheckedChanged += blackAI_CheckedChanged;
         }
 
         // Go back to main menu
@@ -52,7 +59,7 @@ namespace RealChess
         // event handler of Form Load... init things here
         private void ChessForm_Load(object sender, EventArgs e)
         {
-            
+            EnableClicks();
             var clr1 = Color.Green;
             var clr2 = Color.White;
             
@@ -123,7 +130,13 @@ namespace RealChess
 
 
         }
-        
+
+
+        public static bool IsColorAi(PieceColor color)
+        {
+            return color == PieceColor.WHITE ? IsWhiteAi: IsBlackAi;
+        }
+
         public void GenerateSideBar()
         {
             // Add the control to the form's controls
@@ -312,11 +325,11 @@ namespace RealChess
         }
         public static void DisableClicks()
         {
-            animationInProgress = true;
+            InProcess = true;
         }
         public static void EnableClicks()
         {
-            animationInProgress = false;
+            InProcess = false;
         }
 
         // Resets the current piece clicked to null
@@ -335,13 +348,41 @@ namespace RealChess
             _currentPieceClicked = null;
 
         }
+        public static ChessPieceControl GetCurrentPiece()
+        {
+            return _currentPieceClicked;
+        }
 
-        
+        private void whiteAI_CheckedChanged(object sender, EventArgs e)
+        {
+            if (whiteAI.Checked)
+            {
+                SetAi(PieceColor.WHITE);
+
+            }
+            else
+            {
+                DisableAi();
+            }
+        }
+
+        private void blackAI_CheckedChanged(object sender, EventArgs e)
+        {
+            if (blackAI.Checked)
+            {
+                SetAi(PieceColor.BLACK);
+                 
+            }
+            else
+            {
+                DisableAi();
+            }
+        }
 
         // Event handler for when the piece control is clicked
         private void PieceControl_Click(object sender, EventArgs e)
         {
-            if (animationInProgress)
+            if (InProcess)
                 return;
 
             MouseEventArgs mouseArgs = e as MouseEventArgs;
@@ -438,8 +479,7 @@ namespace RealChess
             
         }
 
-
-
+      
     }
 
 }
