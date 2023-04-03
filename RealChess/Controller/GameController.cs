@@ -241,7 +241,7 @@ namespace RealChess.Controller
                     return;
                 }
                 
-            }
+            }          
             if (move.IsPromotion)
             {
 
@@ -328,27 +328,11 @@ namespace RealChess.Controller
                     else
                         HighlightCheck(PieceColor.WHITE);
                     break;
+
                 case Move.MoveType.Checkmate:
                     player = new System.Media.SoundPlayer(Properties.Resources.Check);
 
-                    if (move.PieceMoved.Color == PieceColor.WHITE)
-                    {
-                        HighlightCheck(PieceColor.BLACK);
-                        MessageBox.Show("CHECKMATE","White won!");
-
-                        ChessForm.DisableClicks();
-
-                    }
-                    else 
-                    {
-                        HighlightCheck(PieceColor.WHITE);
-                        MessageBox.Show("CHECKMATE", "Black won!");
-                        player.Play();
-
-                        ChessForm.DisableClicks();
-
-
-                    }
+                    Checkmate(color);
                     break;
                 default:
                     player = new System.Media.SoundPlayer(Properties.Resources.move);
@@ -363,9 +347,23 @@ namespace RealChess.Controller
             }
 
             player.Play();
-            EndTurn();
+
+            if(move.Type != Move.MoveType.Checkmate)
+                EndTurn();
 
         }
+
+        public static void Checkmate(PieceColor color)
+        {
+            HighlightCheck(color);
+            MessageBox.Show("CHECKMATE", String.Format($"{0} won!",color.ToString()));
+            ((ChessForm)Application.OpenForms[1]).DisableSettings();
+            ChessForm.DisableClicks();
+            ChessForm.ResetPieceClicked();
+
+        }
+
+
 
 
         public static void EndTurn()

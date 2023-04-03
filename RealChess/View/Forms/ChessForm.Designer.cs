@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChessForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menu_home = new System.Windows.Forms.ToolStripMenuItem();
-            this.sETTINGSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blackAI = new System.Windows.Forms.ToolStripMenuItem();
             this.whiteAI = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,7 +42,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_home,
-            this.sETTINGSToolStripMenuItem});
+            this.SettingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(854, 27);
@@ -58,13 +58,15 @@
             this.menu_home.Text = "Home";
             this.menu_home.Click += new System.EventHandler(this.home_Click);
             // 
-            // sETTINGSToolStripMenuItem
+            // SettingsToolStripMenuItem
             // 
-            this.sETTINGSToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SettingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aIToolStripMenuItem});
-            this.sETTINGSToolStripMenuItem.Name = "sETTINGSToolStripMenuItem";
-            this.sETTINGSToolStripMenuItem.Size = new System.Drawing.Size(69, 23);
-            this.sETTINGSToolStripMenuItem.Text = "SETTINGS";
+            this.SettingsToolStripMenuItem.Font = new System.Drawing.Font("Stencil", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SettingsToolStripMenuItem.Image = global::RealChess.Properties.Resources.setting;
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(95, 23);
+            this.SettingsToolStripMenuItem.Text = "SETTINGS";
             // 
             // aIToolStripMenuItem
             // 
@@ -78,13 +80,13 @@
             // blackAI
             // 
             this.blackAI.Name = "blackAI";
-            this.blackAI.Size = new System.Drawing.Size(180, 22);
+            this.blackAI.Size = new System.Drawing.Size(116, 22);
             this.blackAI.Text = "BLACK";
             // 
             // whiteAI
             // 
             this.whiteAI.Name = "whiteAI";
-            this.whiteAI.Size = new System.Drawing.Size(180, 22);
+            this.whiteAI.Size = new System.Drawing.Size(116, 22);
             this.whiteAI.Text = "WHITE";
             // 
             // ChessForm
@@ -110,7 +112,7 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menu_home;
-        private System.Windows.Forms.ToolStripMenuItem sETTINGSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem blackAI;
         private System.Windows.Forms.ToolStripMenuItem whiteAI;

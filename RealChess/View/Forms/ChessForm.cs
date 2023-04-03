@@ -191,8 +191,6 @@ namespace RealChess
                     Width = 72,
                     TextAlign = ContentAlignment.MiddleCenter,
 
-
-
                 };
                 blackLabel.Location = new Point((blackPanel.Width - blackLabel.Width)/2, blackPic.Bottom + 11);
 
@@ -258,7 +256,6 @@ namespace RealChess
                     Width = 72,
                     TextAlign = ContentAlignment.MiddleCenter,
 
-
                 };
                 whiteLabel.Location = new Point((whitePanel.Width - whiteLabel.Width) / 2, whiteBar.Bottom + 20);
 
@@ -270,7 +267,6 @@ namespace RealChess
                     SizeMode = PictureBoxSizeMode.Zoom,
                     Anchor = AnchorStyles.None,
                     Name = "whitePic",
-
 
                 };
 
@@ -326,10 +322,16 @@ namespace RealChess
         public static void DisableClicks()
         {
             InProcess = true;
+            
         }
         public static void EnableClicks()
         {
             InProcess = false;
+        }
+
+        public void DisableSettings()
+        {
+            SettingsToolStripMenuItem.Enabled = false;
         }
 
         // Resets the current piece clicked to null
@@ -364,6 +366,7 @@ namespace RealChess
             {
                 DisableAi();
             }
+
         }
 
         private void blackAI_CheckedChanged(object sender, EventArgs e)
@@ -377,6 +380,7 @@ namespace RealChess
             {
                 DisableAi();
             }
+
         }
 
         // Event handler for when the piece control is clicked

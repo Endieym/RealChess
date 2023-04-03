@@ -132,6 +132,8 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button_play);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MainPage";
             this.Text = "   ";
             this.Load += new System.EventHandler(this.MainPage_Load);

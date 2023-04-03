@@ -152,9 +152,27 @@ namespace RealChess.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Castling {
+            get {
+                return ResourceManager.GetStream("Castling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
         internal static System.IO.UnmanagedMemoryStream Check {
             get {
                 return ResourceManager.GetStream("Check", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Checkmate {
+            get {
+                return ResourceManager.GetStream("Checkmate", resourceCulture);
             }
         }
         
@@ -175,6 +193,15 @@ namespace RealChess.Properties {
             get {
                 object obj = ResourceManager.GetObject("fightGif", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream GameStart {
+            get {
+                return ResourceManager.GetStream("GameStart", resourceCulture);
             }
         }
         
@@ -273,6 +300,16 @@ namespace RealChess.Properties {
         internal static System.Drawing.Bitmap RealLogo {
             get {
                 object obj = ResourceManager.GetObject("RealLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap setting {
+            get {
+                object obj = ResourceManager.GetObject("setting", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
