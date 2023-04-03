@@ -255,8 +255,8 @@ namespace RealChess.Model
             // Initialize the moves list
             List<Move> list = new List<Move>();
             
-            // Removes moves over friendly squares
-            finalMoves &= piece.Color == PieceColor.WHITE ? ~whiteBoard : ~blackBoard;
+            // Removes moves over occupied squares
+            finalMoves &= (~bitBoard);
 
             
             // checks for legal moves using the moves bitmask

@@ -44,7 +44,8 @@ namespace RealChess.Model
             List<Move> allMoves = _gameBoard.GetAllPlayerMoves(color);
             Random rnd = new Random();
             
-            return allMoves[rnd.Next(allMoves.Count)];
+            Move bestMove = allMoves[rnd.Next(allMoves.Count)];
+            return bestMove;
         }
     }
 }

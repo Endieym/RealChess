@@ -43,7 +43,7 @@ namespace RealChess.Model.ChessPieces
 
             return false;
         }
-
+        
         public ulong GetPosition()
         {
             return this.bitBoard;
