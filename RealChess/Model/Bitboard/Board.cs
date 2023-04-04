@@ -337,6 +337,7 @@ namespace RealChess.Model
         }
 
 
+        // Returns the attack bitmask for a specific piece
         public ulong GetAttacksMask(ChessPiece piece)
         {
 
@@ -345,6 +346,7 @@ namespace RealChess.Model
 
         }
 
+        // Checks if a move is legal ie the king is not under attack after the move
         public bool IsMoveLegal(Move newMove)
         {
             MakeTemporaryMove(newMove);
@@ -356,6 +358,7 @@ namespace RealChess.Model
             return !result;
         }
 
+        // Makes a temporary move on the board (only data without graphics)
         public void MakeTemporaryMove(Move move)
         {
             UpdateDataStructures(move);
@@ -364,6 +367,7 @@ namespace RealChess.Model
             bitBoard = blackBoard | whiteBoard;
         }
 
+        // Checks if a move results in checking the enemy king
         public bool IsMoveCheck(Move newMove)
         {
             //if (newMove.IsKingSideCastle)
@@ -390,13 +394,12 @@ namespace RealChess.Model
 
         }
 
+        // Undos the last move made
         public void UndoMove()
         {
             int index = movesList.Count - 1;
             Move oldMove = movesList[index];
-            
-            
-            
+                                   
             Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved);
             if (oldMove.IsKingSideCastle)
             {
@@ -428,6 +431,7 @@ namespace RealChess.Model
 
         }
 
+        // Undoes a capture made by a move
         public void UndoCapture(Move oldCapture)
         {
             var playerColor = oldCapture.PieceMoved.Color;
@@ -453,6 +457,8 @@ namespace RealChess.Model
                 this.whiteBoard |= (ulong)1 << newKey;
             }
         }
+
+        // Checks if a player has any legal moves
         public bool CanLegallyMove(PieceColor color)
         {
             var pieces = color == PieceColor.WHITE?
@@ -472,7 +478,7 @@ namespace RealChess.Model
             return false;
         }
 
-
+        // Returns a list of captures for a single piece
         public List<Move> GetCapturesPiece(ChessPiece piece)
         {
             List<Move> captureList = new List<Move>();
@@ -571,6 +577,7 @@ namespace RealChess.Model
             
         }
 
+        // Returns a list of every single legal move/ capture a player has ( by color)
         public List<Move> GetAllPlayerMoves(PieceColor color)
         {
             List<Move> allMoves = new List<Move>();
@@ -589,12 +596,14 @@ namespace RealChess.Model
             
             return allMoves;
         }
-
-
+         
+        // Gets the first player (white)
         public Player GetPlayer1()
         {
             return this.player1;
         }
+
+        // Gets the second player (black)
         public Player GetPlayer2()
         {
             return this.player2;

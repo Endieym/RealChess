@@ -1,4 +1,5 @@
 ﻿using RealChess.Controller;
+using RealChess.Model.Bitboard;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +16,14 @@ namespace RealChess.Model
     {
         private static Board _gameBoard;
 
+        private const int infinity = 999999;
+        private const int negativeInfinity = -infinity;
+
+        // Sets the game board
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
+            BoardEvaluation.SetBoard(board);
         }
 
         // Plays a move for a specific color
@@ -33,6 +39,8 @@ namespace RealChess.Model
             }
 
             stopwatch.Stop();
+
+
             ChessForm.EnableClicks();
 
             GameController.MovePiece(ChooseBestMove(playerColor));
@@ -42,10 +50,26 @@ namespace RealChess.Model
         public static Move ChooseBestMove(PieceColor color)
         {
             List<Move> allMoves = _gameBoard.GetAllPlayerMoves(color);
-            Random rnd = new Random();
-            
-            Move bestMove = allMoves[rnd.Next(allMoves.Count)];
+            //Random rnd = new Random();          
+            //Move bestMove = allMoves[rnd.Next(allMoves.Count)];
+            Move bestMove = null;
+            int moveScore;
+            int bestMoveScore = negativeInfinity;
+            foreach(Move move in allMoves)
+            {
+                _gameBoard.MakeTemporaryMove(move);
+                moveScore = BoardEvaluation.Evaluate(color);
+                if(moveScore > bestMoveScore)
+                {
+                    bestMove = move;
+                    bestMoveScore = moveScore;
+                }
+                _gameBoard.UndoMove();
+
+            }
             return bestMove;
         }
+
+
     }
 }
