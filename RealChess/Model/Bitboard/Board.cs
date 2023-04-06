@@ -438,22 +438,19 @@ namespace RealChess.Model
             var newKey = oldCapture.EndSquare;
             ChessPiece oldPiece = oldCapture.CapturedPiece;
 
+            if(oldCapture.IsEnPassantCapture)
+                newKey += playerColor == PieceColor.WHITE? 8: -8;
+            
             if (playerColor == PieceColor.WHITE)
             {
-
-                if (!oldCapture.IsEnPassantCapture)
-                    this.player2.AddPiece(oldPiece, newKey);
-                else
-                    this.player2.AddPiece(oldPiece, newKey + 8);
+                
+                this.player2.AddPiece(oldPiece, newKey);
                 this.blackBoard |= (ulong)1 << newKey;
 
             }
             else
             {
-                if (!oldCapture.IsEnPassantCapture)
-                    this.player1.AddPiece(oldPiece,newKey);
-                else
-                    this.player1.AddPiece(oldPiece,newKey - 8);
+                this.player1.AddPiece(oldPiece,newKey);
                 this.whiteBoard |= (ulong)1 << newKey;
             }
         }

@@ -13,13 +13,13 @@ namespace RealChess.Model.AI
         {
             if (move.IsCapture && !move.IsPositiveCapture)
                 return false;
-
-            if(move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
+            
+            else if(move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
             {
                 if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
                     return false;
             }
-            if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
+            else if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
                 return false;
 
 

@@ -227,8 +227,9 @@ namespace RealChess.Model.Bitboard
                 // Since it can be captured
                 defenseValue -= attackers[i].Value;
 
+                // If the piece capturing, is worth less than the piece captured
                 if (defenseValue > 0)
-                    return -defenseValue;
+                    return defenseValue;
 
             }
             return defenseValue;
