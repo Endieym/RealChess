@@ -9,6 +9,7 @@ namespace RealChess.Model.AI
 {
     internal static class MoveChecker
     {
+        // Returns if true a move is good, false if else
         public static bool IsGoodMove(Move move)
         {
             if (move.IsCapture && !move.IsPositiveCapture)

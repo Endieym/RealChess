@@ -92,6 +92,13 @@ namespace RealChess.Model
 
         }
 
+        public ulong GetPlayerAttacksAndOcuppied(PieceColor color)
+        {
+            ulong mask = GetPlayerMove(color);
+            mask |= color == PieceColor.WHITE ? whiteBoard : blackBoard;
+            return mask;
+        }
+
       
         // Updates the board according to a piece moving
         // ChessPiece piece, int oldKey, int newKey, bool isCapture
@@ -124,6 +131,7 @@ namespace RealChess.Model
             this.bitBoard = blackBoard | whiteBoard;
             if (IsKingUnderAttack(PieceColor.WHITE))
                 Console.WriteLine("Test!");
+
         }
 
         public void UpdateCaptures(Move move)
@@ -138,6 +146,7 @@ namespace RealChess.Model
                     newKey += 8;
 
                 }
+
                 this.player1.AddCapture(player2.Pieces[newKey]);
                 this.player2.DeletePiece(newKey);
                 this.blackBoard ^= (ulong)1 << newKey;
@@ -151,6 +160,7 @@ namespace RealChess.Model
                     newKey -= 8;
 
                 }
+
                 this.player2.AddCapture(player1.Pieces[newKey]);
                 this.player1.DeletePiece(newKey);
                 this.whiteBoard ^= (ulong)1 << newKey;   
@@ -309,7 +319,6 @@ namespace RealChess.Model
                 }
                 if (castleKing > 0)
                 {
-
                     Move castleMove = new Move((int)Math.Log(castleKing, 2), piece)
                     {
                         IsKingSideCastle = true
@@ -318,7 +327,6 @@ namespace RealChess.Model
                         castleMove.IsCheck = true;
 
                     list.Add(castleMove);
-
 
                 }
             }
@@ -377,7 +385,11 @@ namespace RealChess.Model
             MakeTemporaryMove(newMove);
 
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
-
+            if (result)
+            {
+                if (!CanLegallyMove(GetOppositeColor(newMove.PieceMoved.Color)))
+                    newMove.Type = Move.MoveType.Checkmate;
+            }
             UndoMove();
 
             return result;
@@ -512,6 +524,7 @@ namespace RealChess.Model
                     {
                         enPassant.IsCheck = true;
                         enPassant.Type = Move.MoveType.Check;
+                        
 
                     }
 
@@ -556,6 +569,7 @@ namespace RealChess.Model
                 {
                     newMove.IsCheck = true;
                     newMove.Type = Move.MoveType.Check;
+
 
                 }
                 if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))

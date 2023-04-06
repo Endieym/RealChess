@@ -27,5 +27,8 @@ namespace RealChess.Model
         public const int blackKingRook = 7;
         public const int whiteQueenRook = 56;
         public const int whiteKingRook = 63;
+
+        public const ulong Center = 0x1818000000;
+        public const ulong OuterCenter = 0x3c24243c0000;
     }
 }
