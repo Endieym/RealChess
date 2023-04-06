@@ -28,9 +28,26 @@ namespace RealChess.Model.Bitboard
         public static int Evaluate(PieceColor color)
         {
             // The difference between white's pieces and black's pieces (by value)
-            int evaluation = CountPieces(PieceColor.WHITE) - CountPieces(PieceColor.BLACK);
+            int evaluation = (CountPieces(PieceColor.WHITE) - CountPieces(PieceColor.BLACK)) * 100;
+            var blackPieces = blackPlayer.Pieces;
+            var whitePieces = whitePlayer.Pieces;
+            var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
 
             evaluation *= color == PieceColor.WHITE ? 1 : -1;
+
+            foreach (var piece in pieces.Values)
+            {
+                if(piece.Type != PieceType.PAWN && piece.Type != PieceType.KING)
+                {
+                    evaluation += BoardLogic.EvaluateSafety(piece);
+                }
+            }
+
+            //foreach (var piece in blackPieces.Values)
+            //{
+            //    evaluation -= BoardLogic.EvaluateSafety(piece);
+            //}
+
 
             return evaluation;
         }

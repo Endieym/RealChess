@@ -69,9 +69,10 @@
     <Compile Include="Controller\GameController.cs" />
     <Compile Include="Controller\RealBoardController.cs" />
     <Compile Include="Controller\RealController.cs" />
+    <Compile Include="Model\AI\MoveChecker.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />
-    <Compile Include="Model\Bitboard\BoardEvaluation.cs" />
+    <Compile Include="Model\AI\BoardEvaluation.cs" />
     <Compile Include="Model\Bitboard\BoardLogic.cs" />
     <Compile Include="Model\Bitboard\BoardOperations.cs" />
     <Compile Include="Model\ChessPieces\Bishop.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="Model\ChessPieces\Queen.cs" />
     <Compile Include="Model\ChessPieces\Knight.cs" />
     <Compile Include="Model\ChessPieces\Pawn.cs" />
-    <Compile Include="Model\ComputerPlay.cs" />
+    <Compile Include="Model\AI\ComputerPlay.cs" />
     <Compile Include="Model\Move.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Model\RealConstants.cs" />

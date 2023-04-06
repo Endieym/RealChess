@@ -1,0 +1,29 @@
+﻿using RealChess.Model.Bitboard;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RealChess.Model.AI
+{
+    internal static class MoveChecker
+    {
+        public static bool IsGoodMove(Move move)
+        {
+            if (move.IsCapture && !move.IsPositiveCapture)
+                return false;
+
+            if(move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
+            {
+                if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
+                    return false;
+            }
+            if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
+                return false;
+
+
+            return true;
+        }
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using RealChess.Controller;
+using RealChess.Model.AI;
 using RealChess.Model.Bitboard;
 using System;
 using System.Collections.Generic;
@@ -49,25 +50,58 @@ namespace RealChess.Model
         // Chooses the best move for a specific color
         public static Move ChooseBestMove(PieceColor color)
         {
+            Random rnd = new Random();          
+            List<Move> bestMoves = GetBestMovesList(color);
+
+            Move bestMove = bestMoves[rnd.Next(bestMoves.Count)];
+
+
+            return bestMove;
+        }
+
+        public static List<Move> GetBestMovesList(PieceColor color)
+        {
             List<Move> allMoves = _gameBoard.GetAllPlayerMoves(color);
-            //Random rnd = new Random();          
-            //Move bestMove = allMoves[rnd.Next(allMoves.Count)];
-            Move bestMove = null;
+
+            List<Move> bestMovesList = new List<Move>();
+
             int moveScore;
             int bestMoveScore = negativeInfinity;
-            foreach(Move move in allMoves)
+            foreach (Move move in allMoves)
             {
                 _gameBoard.MakeTemporaryMove(move);
                 moveScore = BoardEvaluation.Evaluate(color);
-                if(moveScore > bestMoveScore)
+                if (moveScore > bestMoveScore)
                 {
-                    bestMove = move;
-                    bestMoveScore = moveScore;
+                    if (MoveChecker.IsGoodMove(move))
+                    {
+                        bestMovesList.Clear();
+                        bestMovesList.Add(move);
+                        bestMoveScore = moveScore;
+                    }
+
+
+                }
+
+                else if (moveScore == bestMoveScore)
+                {
+                    if (MoveChecker.IsGoodMove(move))
+                        bestMovesList.Add(move);
+
                 }
                 _gameBoard.UndoMove();
+        
+                if (move.Type == Move.MoveType.Checkmate)
+                {
+                    bestMovesList.Clear();
+                    bestMovesList.Add(move);
+                    return bestMovesList;
+
+                }
 
             }
-            return bestMove;
+            return bestMovesList;
+
         }
 
 

@@ -87,7 +87,7 @@ namespace RealChess.Model.Bitboard
             // And adds the pieces which defend the given square to the list
             foreach (var piece in pieces.Values)
             {
-                if (piece.Type == PieceType.KING) continue; // Kings cannot be defenders
+                //if (piece.Type == PieceType.KING) continue; // Kings cannot be defenders
 
                 var pieceMoves = _gameBoard.GetAttacksMask(piece);
 
@@ -116,7 +116,7 @@ namespace RealChess.Model.Bitboard
             // And adds the pieces which attack the given square to the list
             foreach (var piece in pieces.Values)
             {
-                if (piece.Type == PieceType.KING) continue; // Kings cannot be attackers
+                //if (piece.Type == PieceType.KING) continue; // Kings cannot be attackers
 
                 var pieceMoves = _gameBoard.GetAttacksMask(piece);
 
@@ -155,13 +155,13 @@ namespace RealChess.Model.Bitboard
             
             // Gets the defenders and attackers on the piece
             List<ChessPiece> defenders = GetDefenders(defender, piece);
-            List<ChessPiece> attackers = GetAttackers(attacker, piece);          
+            List<ChessPiece> attackers = GetAttackers(attacker, piece);
 
 
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
 
-            return CalculateExchange(attackers, defenders, piece);
+            return -CalculateExchange(attackers, defenders, piece);
 
 
         }
@@ -206,6 +206,8 @@ namespace RealChess.Model.Bitboard
             // If the piece is not under attack or defense, return 0
             if (attackers.Count == 0 && defenders.Count == 0)
                 return 0;
+            if (attackers.Count == 0)
+                return -defenseValue;
             
             for (int i = 0; i < attackers.Count; i++)
             {
@@ -214,11 +216,14 @@ namespace RealChess.Model.Bitboard
                 if (i > 0)
                     defenseValue += defenders[i - 1].Value;
 
-                // Exchange between the last attacker, and the last defender
+                //// Exchange between the last attacker, and the last defender
+                //defenseValue = -defenseValue;
+
+                // If there are no more defenders, return 
                 if (defenders.ElementAtOrDefault(i) == null)
                     return defenseValue;
 
-                // If a defender still exists, add the attacker's value,
+                // If a defender still exists, subtract the attacker's value,
                 // Since it can be captured
                 defenseValue -= attackers[i].Value;
 
