@@ -77,7 +77,7 @@ namespace RealChess
             {
                 for (var col = 0; col < gridSize; col++)
                 {
-                   
+                    
                     // create new Panel control which will be one 
                     // chess board tile
                     var newPanel = new Panel
@@ -364,7 +364,7 @@ namespace RealChess
             }
             else
             {
-                DisableAi();
+                DisableAi(PieceColor.WHITE);
             }
 
         }
@@ -378,7 +378,7 @@ namespace RealChess
             }
             else
             {
-                DisableAi();
+                DisableAi(PieceColor.BLACK);
             }
 
         }

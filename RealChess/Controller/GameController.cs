@@ -19,7 +19,9 @@ namespace RealChess.Controller
     {
         public static bool IsReal { get; set; }
 
-        private static PieceColor AiColor;
+        public static bool WhiteAi { get; set; }
+        public static bool BlackAi { get; set; }
+
         private static bool AiPlay;
         // Current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
@@ -39,7 +41,7 @@ namespace RealChess.Controller
             _gridSize = gridSize;
             _tileSize = tileSize;
             _panelBoard = panelBoard;
-            if (AiPlay && AiColor == PieceColor.WHITE)
+            if (WhiteAi)
                 ComputerPlay.PlayMove(PieceColor.WHITE);
 
             turnColor = PieceColor.WHITE;
@@ -49,14 +51,20 @@ namespace RealChess.Controller
         {
             if(ChessForm.GetCurrentPiece() != null)
                 ClearLegalMoves(ChessForm.GetCurrentPiece());
-            AiColor = color;
+            if (color == PieceColor.WHITE)
+                WhiteAi = true;
+            else
+                BlackAi = true;
             AiPlay = true;
             if (turnColor == color)
                 ComputerPlay.PlayMove(color);
         }
-        public static void DisableAi()
+        public static void DisableAi(PieceColor color)
         {
-            AiPlay = false;
+            if (color == PieceColor.WHITE)
+                WhiteAi = false;
+            else
+                BlackAi = false;
         }
 
         // Checks if a move is legal
@@ -373,8 +381,14 @@ namespace RealChess.Controller
 
             ChessForm.ResetPieceClicked();
 
-            if (AiPlay && turnColor == AiColor)
-                ComputerPlay.PlayMove(turnColor);
+            if (AiPlay)
+            {
+                if(WhiteAi && turnColor == PieceColor.WHITE)
+                    ComputerPlay.PlayMove(turnColor);
+                else if(BlackAi && turnColor == PieceColor.BLACK)
+                    ComputerPlay.PlayMove(turnColor);
+
+            }
 
         }
 
