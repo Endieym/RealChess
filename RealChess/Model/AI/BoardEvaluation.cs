@@ -29,11 +29,10 @@ namespace RealChess.Model.Bitboard
         {
             // The difference between white's pieces and black's pieces (by value)
             int evaluation = (CountPieces(PieceColor.WHITE) - CountPieces(PieceColor.BLACK)) * 100;
-            var blackPieces = blackPlayer.Pieces;
-            var whitePieces = whitePlayer.Pieces;
+          
             var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
 
-            // Evaluates the differnece board control of white against black's.
+            // Evaluates the difference board control of white against black's.
             evaluation += EvaluateBoardControl(PieceColor.WHITE) - EvaluateBoardControl(PieceColor.BLACK);
             
             evaluation *= color == PieceColor.WHITE ? 1 : -1;
@@ -60,24 +59,36 @@ namespace RealChess.Model.Bitboard
         // Evaluates control of squares for a specific player
         public static int EvaluateBoardControl(PieceColor color)
         {
-            ulong attacks =  _gameBoard.GetPlayerAttacksAndOcuppied(color);
+            ulong attacks = _gameBoard.GetPlayerAttacksAndOcuppied(color);
+
             int countControl = 0;
             ulong centerControl = BitboardConstants.Center;
 
             centerControl &= attacks;
 
+            //List<Move> allMoves = _gameBoard.GetAllPlayerMoves(color);
+
+            //foreach(Move move in allMoves)
+            //{
+            //    if(((ulong)(1<<move.EndSquare) & centerControl) > 0)
+            //    {
+            //        countControl+=3;
+            //        continue;
+            //    }
+
+            //    countControl++;
+            //}
+
             while (centerControl != 0)
             {
                 centerControl &= centerControl - 1;// reset LS1B
-                countControl += 5;
+                countControl += 2;
             }
             while (attacks != 0)
             {
 
                 attacks &= attacks - 1; // reset LS1B
                 countControl++;
-
-
             }
 
             return countControl;

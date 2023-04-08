@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static RealChess.Model.BoardOperations;
+using static RealChess.Model.Bitboard.BoardOperations;
 
 namespace RealChess.Model.ChessPieces
 {

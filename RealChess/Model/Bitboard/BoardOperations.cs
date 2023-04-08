@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
-namespace RealChess.Model
+namespace RealChess.Model.Bitboard
 {
     internal static class BoardOperations
     {

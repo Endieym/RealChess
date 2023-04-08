@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static RealChess.Model.BoardOperations;
+using static RealChess.Model.Bitboard.BoardOperations;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Model.Bitboard
@@ -36,6 +36,13 @@ namespace RealChess.Model.Bitboard
                 return true;
 
             return false;
+        }
+
+        public static ulong GetKingPerimeter(PieceColor color)
+        {
+            King king = _gameBoard.GetKing(color);
+            return king.GenerateMovesMask();
+            
         }
 
         // Returns the number of open files on the board

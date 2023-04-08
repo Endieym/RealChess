@@ -75,6 +75,7 @@
     <Compile Include="Model\AI\BoardEvaluation.cs" />
     <Compile Include="Model\Bitboard\BoardLogic.cs" />
     <Compile Include="Model\Bitboard\BoardOperations.cs" />
+    <Compile Include="Model\Bitboard\BoardUpdate.cs" />
     <Compile Include="Model\ChessPieces\Bishop.cs" />
     <Compile Include="Model\ChessPieces\King.cs" />
     <Compile Include="Model\ChessPieces\Rook.cs" />

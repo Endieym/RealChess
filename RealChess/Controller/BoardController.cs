@@ -22,6 +22,7 @@ namespace RealChess.Controller
         {
             _gameBoard = board;
             BoardLogic.SetBoard(board);
+            BoardUpdate.SetBoard(board);
             ComputerPlay.SetBoard(board);
 
         }
