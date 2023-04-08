@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealChess.Model.ChessPieces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,39 +60,45 @@ namespace RealChess.Model.Bitboard
         // Evaluates control of squares for a specific player
         public static int EvaluateBoardControl(PieceColor color)
         {
-            ulong attacks = _gameBoard.GetPlayerAttacksAndOcuppied(color);
+            var pieces = color == PieceColor.WHITE? _gameBoard.GetPlayer1().Pieces:
+                _gameBoard.GetPlayer2().Pieces;
 
             int countControl = 0;
+            foreach(var piece in pieces.Values)
+            {
+                if (piece.Type == PieceType.KING) continue;// king shouldn't be active
+                countControl += EvaluatePieceMobility(piece, _gameBoard.BitBoard);
+            }
+
+            return countControl;
+        }
+
+        public static int EvaluatePieceMobility(ChessPiece piece, ulong ocuppied)
+        {
+            // Gets the possible moves bitmask for the piece
+            ulong attacks = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures() :
+                piece.GenerateLegalMoves(ocuppied);
+
+            attacks |= piece.GetPosition();
+
+            int mobility = 0;
             ulong centerControl = BitboardConstants.Center;
 
             centerControl &= attacks;
 
-            //List<Move> allMoves = _gameBoard.GetAllPlayerMoves(color);
-
-            //foreach(Move move in allMoves)
-            //{
-            //    if(((ulong)(1<<move.EndSquare) & centerControl) > 0)
-            //    {
-            //        countControl+=3;
-            //        continue;
-            //    }
-
-            //    countControl++;
-            //}
-
+            // Center is more valuable square to control
             while (centerControl != 0)
             {
                 centerControl &= centerControl - 1;// reset LS1B
-                countControl += 2;
+                mobility += 2;
             }
             while (attacks != 0)
             {
 
                 attacks &= attacks - 1; // reset LS1B
-                countControl++;
+                mobility++;
             }
-
-            return countControl;
+            return mobility;
         }
 
 
@@ -108,6 +115,8 @@ namespace RealChess.Model.Bitboard
                 
                 pieceCount += piece.Value;
             }
+
+
 
            
             

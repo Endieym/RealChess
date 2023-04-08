@@ -158,20 +158,19 @@ namespace RealChess.Model
         //public List<ulong> GetMovesMaskList(PieceColor color)
         //{
         //    var pieces = color == PieceColor.WHITE ? player1.Pieces : player2.Pieces;
-        //    List<ulong> movesMasks = new List<ulong>(); 
-            
-        //    var 
-        //    foreach(var piece in pieces.Values)
-        //    {
+        //    List<ulong> movesMasks = new List<ulong>();
 
+            
+        //    foreach (var piece in pieces.Values)
+        //    {
+        //        movesMasks.Add(piece.GenerateLegalMoves(bitBoard));
         //    }
 
-        //    return movesMasks
+        //    return movesMasks;
         //}
 
 
-        // Updates the board according to a piece moving
-        // ChessPiece piece, int oldKey, int newKey, bool isCapture
+        // Updates the board according to a move made      
         public void UpdateBoard(Move move)
         {
 
@@ -195,10 +194,11 @@ namespace RealChess.Model
                 player2.SwitchPiece(beforeKey, chessPiece);
             }
 
-            Move promotion = new Move(endKey, chessPiece);
-
-            promotion.IsCapture = move.IsCapture;
-            promotion.DefendsCheck = move.DefendsCheck;
+            Move promotion = new Move(endKey, chessPiece)
+            {
+                IsCapture = move.IsCapture,
+                DefendsCheck = move.DefendsCheck
+            };
 
             if (IsMoveCheck(promotion)) 
             {
@@ -210,8 +210,6 @@ namespace RealChess.Model
             return promotion;
 
         }
-
-
 
         public virtual List<Move> GetMovesPiece(ChessPiece piece)
         {                        
