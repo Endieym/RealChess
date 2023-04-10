@@ -34,8 +34,6 @@ namespace RealChess.Controller
         // Sets the panel board which represents all the squares on the chessboard
         public static void SetBoard(Panel[,] panelBoard, int tileSize, int gridSize)
         {
-            _gridSize = gridSize;
-            _tileSize = tileSize;
             _panelBoard = panelBoard;
             if (WhiteAi)
                 ComputerPlay.PlayMove(PieceColor.WHITE);
