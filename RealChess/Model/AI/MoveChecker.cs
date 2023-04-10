@@ -17,15 +17,16 @@ namespace RealChess.Model.AI
             
             else if(move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
             {
-                if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
+                if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
                     return false;
             }
-            else if (BoardLogic.EvaluateSafety(move.PieceMoved) < 0)
+            else if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
                 return false;
 
 
             return true;
         }
+
 
     }
 }

@@ -14,12 +14,12 @@ namespace RealChess.Model.Bitboard
     {
 
         private static Board _gameBoard;
-        
+
         // Sets the game board
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
-            
+
         }
         // Gets the pieces of a specific player, and returns whether or not the rooks
         // are connected
@@ -39,12 +39,12 @@ namespace RealChess.Model.Bitboard
             return false;
         }
 
-        
+
         public static ulong GetKingPerimeter(PieceColor color)
         {
             King king = _gameBoard.GetKing(color);
             return king.GenerateMovesMask();
-            
+
         }
 
         // Returns the number of open files on the board
@@ -54,7 +54,7 @@ namespace RealChess.Model.Bitboard
             var blackPieces = blackPlayer.Pieces;
 
             ulong occupiedMask = 0;
-            foreach(var piece in whitePieces)
+            foreach (var piece in whitePieces)
             {
                 if (piece.Value.Type == PieceType.PAWN)
                     occupiedMask |= piece.Value.GetPosition();
@@ -79,14 +79,14 @@ namespace RealChess.Model.Bitboard
                 }
             }
 
-           
+
             return openFiles;
         }
 
         public static bool IsThreefoldRepetition(string currentPos, List<string> positions)
         {
             int count = 0;
-            
+
             foreach (string pos in positions)
             {
                 if (pos == currentPos)
@@ -103,13 +103,14 @@ namespace RealChess.Model.Bitboard
         }
 
         // Returns a list of pieces which defend a specific piece
-        public static List<ChessPiece> GetDefenders(Player player, ChessPiece pieceUnderDefense )
+        public static List<ChessPiece> GetDefenders(Player player, ulong position)
         {
 
             var pieces = player.Pieces;
 
             List<ChessPiece> defenders = new List<ChessPiece>();
-            ulong pieceMask = pieceUnderDefense.GetPosition();
+
+            //ulong pieceMask = pieceUnderDefense.GetPosition();
 
             // Iterates over every piece of the player defending
             // And adds the pieces which defend the given square to the list
@@ -119,10 +120,10 @@ namespace RealChess.Model.Bitboard
 
                 var pieceMoves = _gameBoard.GetAttacksMask(piece);
 
-                if ((pieceMoves & pieceMask) > 0) defenders.Add(piece);
-                
+                if ((pieceMoves & position) > 0) defenders.Add(piece);
+
             }
-            
+
             //Sorts by the value of the defenders
             defenders.Sort();
             return defenders;
@@ -131,14 +132,14 @@ namespace RealChess.Model.Bitboard
 
         // Returns a list of pieces which attack a specific piece
 
-        public static List<ChessPiece> GetAttackers(Player opposingPlayer, ChessPiece pieceUnderAttack)
+        public static List<ChessPiece> GetAttackers(Player opposingPlayer, ulong position)
         {
 
             var pieces = opposingPlayer.Pieces;
 
             List<ChessPiece> attackers = new List<ChessPiece>();
 
-            ulong pieceMask = pieceUnderAttack.GetPosition();
+            //ulong pieceMask = pieceUnderAttack.GetPosition();
 
             // Iterates over every piece of the player attacking
             // And adds the pieces which attack the given square to the list
@@ -148,14 +149,14 @@ namespace RealChess.Model.Bitboard
 
                 var pieceMoves = _gameBoard.GetAttacksMask(piece);
 
-                if ((pieceMoves & pieceMask)>0) attackers.Add(piece);
-                
+                if ((pieceMoves & position) > 0) attackers.Add(piece);
+
             }
             // Sorts by the value of the attackers
             attackers.Sort();
             return attackers;
         }
-        
+
         // Counts the number of pieces defending a piece minus the number of attackers
         public static int CountSafety(ChessPiece piece)
         {
@@ -165,39 +166,42 @@ namespace RealChess.Model.Bitboard
             var attacker = piece.Color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
                  _gameBoard.GetPlayer1();
 
-            List<ChessPiece> defenders = GetDefenders(defender, piece);
-            List<ChessPiece> attackers = GetAttackers(attacker, piece);
+            List<ChessPiece> defenders = GetDefenders(defender, piece.GetPosition());
+            List<ChessPiece> attackers = GetAttackers(attacker, piece.GetPosition());
 
             return defenders.Count - attackers.Count;
 
         }
 
         // Evaluates the safety of a piece, by the worth of the defense and attack
-        public static int EvaluateSafety(ChessPiece piece)
+        public static int EvaluateSafety(PieceColor color, ulong position, int squareValue)
         {
-            var defender = piece.Color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
+            var defender = color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
                  _gameBoard.GetPlayer2();
-            
-            var attacker = piece.Color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
-                 _gameBoard.GetPlayer1();
-            
-            // Gets the defenders and attackers on the piece
-            List<ChessPiece> defenders = GetDefenders(defender, piece);
-            List<ChessPiece> attackers = GetAttackers(attacker, piece);
 
+            var attacker = color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
+                 _gameBoard.GetPlayer1();
+
+            // Gets the defenders and attackers on the piece
+            List<ChessPiece> defenders = GetDefenders(defender, position);
+            List<ChessPiece> attackers = GetAttackers(attacker, position);
 
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
 
-            return -CalculateExchange(attackers, defenders, piece);
-
+            return -CalculateExchange(attackers, defenders, squareValue);
 
         }
 
-        // Returns the value of the capture
-        public static int CaptureValue(ChessPiece pieceCaptured, ChessPiece pieceAttacking)
+        public static int EvaluateSquareControl(PieceColor color, ulong position)
         {
-            return EvaluateSafety(pieceCaptured) - pieceAttacking.Value;
+            return EvaluateSafety(color, position, 0);
+        }
+
+
+        public static int EvaluatePieceSafety(ChessPiece piece)
+        {
+            return EvaluateSafety(piece.Color, piece.GetPosition(), piece.Value);
         }
 
         // Returns the value of the capture
@@ -212,8 +216,8 @@ namespace RealChess.Model.Bitboard
 
 
             // Gets the defenders and attackers on the piece
-            List<ChessPiece> defenders = GetDefenders(defender, pieceCaptured);
-            List<ChessPiece> attackers = GetAttackers(attacker, pieceCaptured);
+            List<ChessPiece> defenders = GetDefenders(defender, pieceCaptured.GetPosition());
+            List<ChessPiece> attackers = GetAttackers(attacker, pieceCaptured.GetPosition());
 
 
             // Puts the piece attacking at the first exchange order
@@ -221,46 +225,81 @@ namespace RealChess.Model.Bitboard
             attackers.Insert(0, pieceAttacking);
 
             // Calculates the exchange and returns the outcome
-            return CalculateExchange(attackers, defenders, pieceCaptured);
+            return CalculateExchange(attackers, defenders, pieceCaptured.Value);
 
         }
 
-        public static int CalculateExchange(List<ChessPiece> attackers, List<ChessPiece> defenders, ChessPiece pieceCaptured)
+        public static int CalculateExchange(List<ChessPiece> attackers, List<ChessPiece> defenders, int squareValue)
         {
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
-            int defenseValue = pieceCaptured.Value;
-            
+
             // If the piece is not under attack or defense, return 0
             if (attackers.Count == 0 && defenders.Count == 0)
                 return 0;
             if (attackers.Count == 0)
-                return -defenseValue;
-            
+                return -squareValue;
+
             for (int i = 0; i < attackers.Count; i++)
             {
                 // Add the defender's value
                 // Since it can be captured
                 if (i > 0)
-                    defenseValue += defenders[i - 1].Value;
+                    squareValue += defenders[i - 1].Value;
 
                 //// Exchange between the last attacker, and the last defender
                 //defenseValue = -defenseValue;
 
                 // If there are no more defenders, return 
                 if (defenders.ElementAtOrDefault(i) == null)
-                    return defenseValue;
+                    return squareValue;
 
                 // If a defender still exists, subtract the attacker's value,
                 // Since it can be captured
-                defenseValue -= attackers[i].Value;
+                squareValue -= attackers[i].Value;
 
                 // If the piece capturing, is worth less than the piece captured
-                if (defenseValue > 0)
-                    return defenseValue;
+                if (squareValue > 0)
+                    return squareValue;
 
             }
-            return defenseValue;
+            return squareValue;
+
+        }
+        /// <summary>
+        /// Checks if the game has transitioned to middlegame from opening - castled
+        /// </summary>
+        /// <returns>True if finished opening</returns>
+        public static bool FinishedOpening()
+        {
+
+            if (_gameBoard.GetPlayer1().GetKing().Castled && _gameBoard.GetPlayer2().GetKing().Castled)
+                return true;
+            
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the game has transitioned to endgame
+        /// </summary>
+        /// <returns>Returns true if in endgame</returns>
+        public static bool FinishedMiddleGame()
+        {
+
+            int whiteMaterial = BoardEvaluation.ValuePieces(PieceColor.WHITE);
+            int blackMaterial = BoardEvaluation.ValuePieces(PieceColor.BLACK);
+
+            if (whiteMaterial <= 12 && blackMaterial <= 12)
+                return true;
+
+            return false;
+        }
+
+        public enum GamePhase
+        {
+            Opening,
+            Middlegame,
+            Endgame
 
         }
 

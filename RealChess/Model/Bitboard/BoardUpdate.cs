@@ -48,6 +48,8 @@ namespace RealChess.Model.Bitboard
             if (move.IsCapture)
                 UpdateCaptures(move);
 
+            UpdatePhase();
+
         }
 
         // Updates the board class according to the move played
@@ -224,6 +226,17 @@ namespace RealChess.Model.Bitboard
             }
 
 
+        }
+
+        // Updates the game phase indicator
+        public static void UpdatePhase()
+        {
+            if (_gameBoard.CurrentPhase == BoardLogic.GamePhase.Opening)
+                if (BoardLogic.FinishedOpening()) _gameBoard.CurrentPhase = BoardLogic.GamePhase.Middlegame;
+
+            else if (_gameBoard.CurrentPhase == BoardLogic.GamePhase.Middlegame)
+                    if (BoardLogic.FinishedMiddleGame()) _gameBoard.CurrentPhase = BoardLogic.GamePhase.Endgame;
+        
         }
 
     }

@@ -29,10 +29,6 @@ namespace RealChess.Controller
         // The panel board
         private static Panel[,] _panelBoard;
 
-        private static int _tileSize;
-
-        private static int _gridSize;
-
         private static PieceColor turnColor = PieceColor.WHITE;
 
         // Sets the panel board which represents all the squares on the chessboard

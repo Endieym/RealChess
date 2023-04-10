@@ -41,9 +41,7 @@ namespace RealChess.Model
 
             stopwatch.Stop();
 
-
             ChessForm.EnableClicks();
-
             GameController.MovePiece(ChooseBestMove(playerColor));
         }
         
@@ -76,7 +74,8 @@ namespace RealChess.Model
             foreach (Move move in allMoves)
             {
                 _gameBoard.MakeTemporaryMove(move);
-                moveScore = BoardEvaluation.Evaluate(color);
+                moveScore = BoardEvaluation.EvaluateForPlayer(color);
+
                 if (move.Type == Move.MoveType.Draw)
                     moveScore = 0;
 

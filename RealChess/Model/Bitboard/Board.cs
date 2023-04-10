@@ -8,6 +8,7 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.Bitboard.BoardOperations;
 using System.Collections.Specialized;
 using RealChess.Model.Bitboard;
+using static RealChess.Model.Bitboard.BoardLogic;
 
 namespace RealChess.Model
 {
@@ -68,11 +69,13 @@ namespace RealChess.Model
             }
         }
 
+
         Player player1;
         Player player2;
         UInt64 bitBoard;
         UInt64 whiteBoard;
         UInt64 blackBoard;
+        internal GamePhase CurrentPhase { get; set; }
 
         List<Move> movesList;
         List<string> positions;
