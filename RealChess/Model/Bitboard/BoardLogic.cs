@@ -81,6 +81,25 @@ namespace RealChess.Model.Bitboard
             return openFiles;
         }
 
+        public static bool IsThreefoldRepetition(string currentPos, List<string> positions)
+        {
+            int count = 0;
+            
+            foreach (string pos in positions)
+            {
+                if (pos == currentPos)
+                {
+                    count++;
+                    if (count >= 3)
+                    {
+                        return true; // Threefold repetition
+                    }
+                }
+            }
+
+            return false; // Not a threefold repetition
+        }
+
         // Returns a list of pieces which defend a specific piece
         public static List<ChessPiece> GetDefenders(Player player, ChessPiece pieceUnderDefense )
         {

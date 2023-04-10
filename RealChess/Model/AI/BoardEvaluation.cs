@@ -47,7 +47,6 @@ namespace RealChess.Model.Bitboard
             }
 
             
-
             //foreach (var piece in blackPieces.Values)
             //{
             //    evaluation -= BoardLogic.EvaluateSafety(piece);

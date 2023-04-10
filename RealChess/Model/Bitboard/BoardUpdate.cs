@@ -102,11 +102,11 @@ namespace RealChess.Model.Bitboard
 
 
             _gameBoard.GetAllMoves().Add(move);
-
+            _gameBoard.GetAllStates().Add(GetBoardStateString(_gameBoard));
 
         }
 
-
+        // Updates player's dictionaries in the case of a captured piece
         public static void UpdateCaptures(Move move)
         {
             var playerColor = move.PieceMoved.Color;
@@ -153,7 +153,11 @@ namespace RealChess.Model.Bitboard
         public static void UndoMove()
         {
             var movesList = _gameBoard.GetAllMoves();
+            var positionsList = _gameBoard.GetAllStates();
+
+            int posIndx = positionsList.Count;
             int index = movesList.Count - 1;
+
             Move oldMove = movesList[index];
 
             Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved);
@@ -179,9 +183,15 @@ namespace RealChess.Model.Bitboard
             }
 
             UpdateDataStructures(undoMove);
+
+            // Removes the last moves made (Checked move and Undone move)
             movesList.RemoveAt(index + 1);
             movesList.RemoveAt(index);
 
+            // Removes the last state made
+            positionsList.RemoveAt(posIndx);
+            positionsList.RemoveAt(posIndx - 1);
+            
             if (oldMove.IsCapture)
                 UndoCapture(oldMove);
 

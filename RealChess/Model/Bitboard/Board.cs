@@ -75,7 +75,7 @@ namespace RealChess.Model
         UInt64 blackBoard;
 
         List<Move> movesList;
-        
+        List<string> positions;
 
         public Board()
         {
@@ -86,8 +86,10 @@ namespace RealChess.Model
             this.bitBoard = 0;
             this.whiteBoard = 0;
             this.blackBoard = 0;
+
             movesList = new List<Move>();
-            
+            positions = new List<string>();
+
             foreach (var item in player1.Pieces)
             {
                 this.whiteBoard |= (ulong)1 << item.Key;
@@ -200,12 +202,8 @@ namespace RealChess.Model
                 DefendsCheck = move.DefendsCheck
             };
 
-            if (IsMoveCheck(promotion)) 
-            {
-                promotion.IsCheck = true;
-                promotion.Type = Move.MoveType.Check;
-
-            }
+            CheckMove(promotion);
+           
 
             return promotion;
 
@@ -240,11 +238,9 @@ namespace RealChess.Model
                 }
                 if (IsKingUnderAttack(piece.Color))
                     newMove.DefendsCheck = true;
-                if (IsMoveCheck(newMove))
-                {
-                    newMove.IsCheck = true;
-                    newMove.Type = Move.MoveType.Check;
-                }
+                CheckMove(newMove);
+                
+                 
                 if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, finalMoves))
                     newMove.IsPromotion = true;
 
@@ -269,8 +265,9 @@ namespace RealChess.Model
                     {
                         IsQueenSideCastle = true
                     };
-                    if (IsMoveCheck(castleMove))
-                        castleMove.IsCheck = true;
+
+                    CheckMove(castleMove);
+                       
                     list.Add(castleMove);
 
                 }
@@ -280,8 +277,8 @@ namespace RealChess.Model
                     {
                         IsKingSideCastle = true
                     };
-                    if (IsMoveCheck(castleMove))
-                        castleMove.IsCheck = true;
+                    CheckMove(castleMove);
+                        
 
                     list.Add(castleMove);
 
@@ -299,6 +296,11 @@ namespace RealChess.Model
         public List<Move> GetAllMoves()
         {
             return movesList;
+        }
+
+        public List<string> GetAllStates()
+        {
+            return positions;
         }
 
 
@@ -330,22 +332,37 @@ namespace RealChess.Model
             if (move.IsCapture)
                 BoardUpdate.UpdateCaptures(move);
             bitBoard = blackBoard | whiteBoard;
+
         }
 
-        // Checks if a move results in checking the enemy king
-        public bool IsMoveCheck(Move newMove)
+        // Checks if a move results in checking the enemy king, or checkmating
+        public bool CheckMove(Move newMove)
         {
             //if (newMove.IsKingSideCastle)
             //{
             //    MakeTemporaryMove(new Move(newMove.EndSquare -1, Rook))
             //}
             MakeTemporaryMove(newMove);
-
+            
+            
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
+
             if (result)
             {
+                newMove.IsCheck = true;
+
                 if (!CanLegallyMove(GetOppositeColor(newMove.PieceMoved.Color)))
                     newMove.Type = Move.MoveType.Checkmate;
+                else
+                    newMove.Type = Move.MoveType.Check;
+
+            }
+            
+            
+            else if (BoardLogic.IsThreefoldRepetition(GetBoardStateString(this), positions))
+            {
+                newMove.IsDrawByRepetiton = true;
+                newMove.Type = Move.MoveType.Draw;
             }
             UndoMove();
 
@@ -425,18 +442,12 @@ namespace RealChess.Model
                         enPassant.CapturedPiece = player2.Pieces[capturedPieceIndex];
                     else
                         enPassant.CapturedPiece = player1.Pieces[capturedPieceIndex];
-                    
-                    // Checks if the enpassant is a check
-                    if (IsMoveCheck(enPassant))
+
+
+                    // Checks if the enpassant is a check  
+                    CheckMove(enPassant);
                   
-                    {
-                        enPassant.IsCheck = true;
-                        enPassant.Type = Move.MoveType.Check;
-                        
-
-                    }
-
-                    
+   
                     // Checks if the move is legal;
                     // meaning that the king isn't in under attack after the move
                     if (IsMoveLegal(enPassant))
@@ -473,13 +484,8 @@ namespace RealChess.Model
                 if (IsKingUnderAttack(piece.Color))
                     newMove.DefendsCheck = true;
 
-                if (IsMoveCheck(newMove))
-                {
-                    newMove.IsCheck = true;
-                    newMove.Type = Move.MoveType.Check;
-
-
-                }
+                CheckMove(newMove);
+               
                 if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
                     newMove.IsPromotion = true;
 

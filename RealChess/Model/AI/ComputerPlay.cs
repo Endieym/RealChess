@@ -71,21 +71,24 @@ namespace RealChess.Model
             {
                 _gameBoard.MakeTemporaryMove(move);
                 moveScore = BoardEvaluation.Evaluate(color);
+                if (move.Type == Move.MoveType.Draw)
+                    moveScore = 0;
+
+                else if (!MoveChecker.IsGoodMove(move))
+                    moveScore -= move.PieceMoved.Value * 100;
+
                 if (moveScore > bestMoveScore)
                 {
-                    if (MoveChecker.IsGoodMove(move))
-                    {
+                    
                         bestMovesList.Clear();
                         bestMovesList.Add(move);
                         bestMoveScore = moveScore;
-                    }
 
 
                 }
 
                 else if (moveScore == bestMoveScore)
                 {
-                    if (MoveChecker.IsGoodMove(move))
                         bestMovesList.Add(move);
 
                 }

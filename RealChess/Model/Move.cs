@@ -22,14 +22,15 @@ namespace RealChess.Model
         public bool IsQueenSideCastle { get; set; }
         public bool IsKingSideCastle { get; set; }
         public bool IsPositiveCapture { get; set; }
-
+        public bool IsDrawByRepetiton { get; set; }
+        public bool IsStalemate { get; set; }
         public enum MoveType
         {
             Normal,
             Capture,
             Check,
             Checkmate,
-            Stalemate,
+            Draw,
             Castle
         }
         public MoveType Type { get; set; }

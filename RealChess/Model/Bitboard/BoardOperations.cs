@@ -138,6 +138,50 @@ namespace RealChess.Model.Bitboard
             return 0x0101010101010101UL << file;
         }
 
+        // Returns the position in chess format (a1,h7.. etc)
+        public static string GetPositionString(int row, int col)
+        {
+            // Convert the row and column to their corresponding letter and number, respectively
+            var colLetter = (char)('a' + col);
+            var rowNumber = 8 - row;
+
+            // Concatenate the letter and number to create the position string
+            return $"{colLetter}{rowNumber}";
+        }
+
+        // Returns piece position in chess format (Ra1, Ka5.. etc)
+        public static string GetPiecePositionString(ChessPiece piece)
+        {
+            int key = (int)Math.Log(piece.GetPosition(), 2);
+
+            int row = key / 8;
+            int col = key % 8;
+
+            return $"{piece.Type.ToString().Substring(0,1)}{GetPositionString(row,col)}";
+        }
+
+        // Returns the notation for the entire chess board
+        public static string GetBoardStateString(Board board)
+        {
+            var whitePieces = board.WhitePlayer.Pieces;
+            var blackPieces = board.BlackPlayer.Pieces;
+
+            string boardState = "";
+
+            foreach (var piece in blackPieces.Values)
+            {
+                boardState += GetPiecePositionString(piece);
+            }
+
+            foreach (var piece in whitePieces.Values)
+            {
+                boardState += GetPiecePositionString(piece);
+            }
+
+            return boardState;
+        }
+
+
         public static ulong RankMask(int rank)
         {
             return 0xFFUL << (rank * 8);

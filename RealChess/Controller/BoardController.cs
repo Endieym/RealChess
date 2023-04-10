@@ -50,11 +50,6 @@ namespace RealChess.Controller
             return _gameBoard.GetKingPos(color);
         }
 
-        internal static bool IsMoveCheck(Move move)
-        {
-            return _gameBoard.IsMoveCheck(move);
-        }
-
         internal static Move PromotePiece(Move move, ChessPiece piece)
         {
             return _gameBoard.MakePromotionMove(move, piece);

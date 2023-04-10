@@ -26,5 +26,6 @@ namespace RealChess.Model.AI
 
             return true;
         }
+
     }
 }

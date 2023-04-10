@@ -308,6 +308,7 @@ namespace RealChess.Controller
                 c.BackColor = Color.Red;
             }
         }
+
         internal static void FinalizeMove(Move move)
         {
 
@@ -317,10 +318,11 @@ namespace RealChess.Controller
             var color = move.PieceMoved.Color == PieceColor.WHITE ?
                 PieceColor.BLACK : PieceColor.WHITE;
             if (!BoardController.HasLegalMoves(color)&&
-                move.IsCheck)
+                !move.IsCheck)
             {
-                move.Type = Move.MoveType.Checkmate;
+                move.Type = Move.MoveType.Draw;
             }
+                
             System.Media.SoundPlayer player;
             switch (move.Type)
             {
@@ -338,10 +340,25 @@ namespace RealChess.Controller
                     break;
 
                 case Move.MoveType.Checkmate:
-                    player = new System.Media.SoundPlayer(Properties.Resources.Check);
+                    player = new System.Media.SoundPlayer(Properties.Resources.Checkmate);
 
-                    Checkmate(color);
+                    player.Play();
+
+                    Checkmate(move.PieceMoved.Color);
                     break;
+                    
+                case Move.MoveType.Draw:
+                    player = new System.Media.SoundPlayer(Properties.Resources.Checkmate);
+
+                    player.Play();
+
+                    if (move.IsStalemate)
+                        Draw("Stalemate");
+                    else if (move.IsDrawByRepetiton)
+                        Draw("Repetition");
+
+                    break;
+
                 default:
                     player = new System.Media.SoundPlayer(Properties.Resources.move);
                     
@@ -354,21 +371,42 @@ namespace RealChess.Controller
                 
             }
 
-            player.Play();
 
-            if(move.Type != Move.MoveType.Checkmate)
+
+            if (move.Type != Move.MoveType.Checkmate && move.Type != Move.MoveType.Draw)
+            {
+                player.Play();
                 EndTurn();
+
+            }
+
 
         }
 
+        // Makes a checkmate message appear and ends the game
         public static void Checkmate(PieceColor color)
         {
             HighlightCheck(color);
-            MessageBox.Show("CHECKMATE", String.Format($"{0} won!",color.ToString()));
+
+            MessageBox.Show(String.Format("{0} won!",color.ToString()), "CHECKMATE");
+            EndGame();
+
+        }
+
+        // Makes a draw message appear and ends the game
+        public static void Draw(string reason)
+        {
+            MessageBox.Show("By "+reason,"DRAW");
+            EndGame();
+        }
+
+        public static void EndGame()
+        {
+
+
             ((ChessForm)Application.OpenForms[1]).DisableSettings();
             ChessForm.DisableClicks();
             ChessForm.ResetPieceClicked();
-
         }
 
 
