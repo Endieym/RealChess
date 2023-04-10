@@ -19,6 +19,7 @@ namespace RealChess.Model.Bitboard
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
+            
         }
         // Gets the pieces of a specific player, and returns whether or not the rooks
         // are connected
@@ -38,6 +39,7 @@ namespace RealChess.Model.Bitboard
             return false;
         }
 
+        
         public static ulong GetKingPerimeter(PieceColor color)
         {
             King king = _gameBoard.GetKing(color);

@@ -55,7 +55,7 @@ namespace RealChess.Model.Bitboard
         {
             var playerColor = move.PieceMoved.Color;
             
-
+            
             var oldKey = move.StartSquare;
             var newKey = move.EndSquare;
             ulong oldBitmask = (ulong)1 << oldKey;
@@ -86,6 +86,7 @@ namespace RealChess.Model.Bitboard
                 player.UpdatePiece(newKey + 1, oldKey + 1);
                 playerBoard ^= newBitmask << 1; // Removes old rook position
                 playerBoard |= oldBitmask << 1; // Adds new rook position
+                ((King)move.PieceMoved).Castled = true;
             }
 
             else if (move.IsQueenSideCastle)
@@ -93,6 +94,8 @@ namespace RealChess.Model.Bitboard
                 player.UpdatePiece(newKey - 2, oldKey - 1);
                 playerBoard ^= newBitmask >> 2; // Removes old rook position
                 playerBoard |= oldBitmask >> 1; // Adds new rook position
+                ((King)move.PieceMoved).Castled = true;
+
             }
 
             if (playerColor == PieceColor.WHITE)

@@ -59,6 +59,12 @@ namespace RealChess.Model
             return bestMove;
         }
 
+
+        /// <summary>
+        /// Returns a list of the best possible moves according to evaluation
+        /// </summary>
+        /// <param name="color"> The color of the player</param>
+        /// <returns></returns>
         public static List<Move> GetBestMovesList(PieceColor color)
         {
             List<Move> allMoves = _gameBoard.GetAllPlayerMoves(color);
@@ -76,6 +82,9 @@ namespace RealChess.Model
 
                 else if (!MoveChecker.IsGoodMove(move))
                     moveScore -= move.PieceMoved.Value * 100;
+
+                if (GameController.IsReal && move.PieceMoved.Type != PieceType.KING)
+                   moveScore += RealBoardController.CalculateSuccess(move) /10;
 
                 if (moveScore > bestMoveScore)
                 {

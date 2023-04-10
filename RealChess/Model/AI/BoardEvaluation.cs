@@ -10,6 +10,8 @@ namespace RealChess.Model.Bitboard
 {
     internal static class BoardEvaluation
     {
+        public static int EndGameWeight { get; set; }
+
         private static Board _gameBoard;
         private static Player whitePlayer;
         private static Player blackPlayer;
@@ -22,22 +24,28 @@ namespace RealChess.Model.Bitboard
             blackPlayer = board.GetPlayer2();
         }
 
-        // Evaluates the board for a player,
+
+        /// <summary>
+        ///  Evaluates the board for a player,
         // 0 is a draw,
         // a negative number means better position for black,
         // a positive means better for white
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public static int Evaluate(PieceColor color)
         {
             // The difference between white's pieces and black's pieces (by value)
-            int evaluation = (CountPieces(PieceColor.WHITE) - CountPieces(PieceColor.BLACK)) * 100;
+            int evaluation = (ValuePieces(PieceColor.WHITE) - ValuePieces(PieceColor.BLACK)) * 100;
           
             var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
-
+            
             // Evaluates the difference board control of white against black's.
             evaluation += EvaluateBoardControl(PieceColor.WHITE) - EvaluateBoardControl(PieceColor.BLACK);
             
             evaluation *= color == PieceColor.WHITE ? 1 : -1;
             
+            // Evaluates safety of every piece
             foreach (var piece in pieces.Values)
             {
                 if(piece.Type != PieceType.PAWN && piece.Type != PieceType.KING)
@@ -52,8 +60,8 @@ namespace RealChess.Model.Bitboard
             //    evaluation -= BoardLogic.EvaluateSafety(piece);
             //}
 
-
             return evaluation;
+
         }
 
         // Evaluates control of squares for a specific player
@@ -102,7 +110,7 @@ namespace RealChess.Model.Bitboard
 
 
         // Counts pieces and their values of a specific coloured player
-        public static int CountPieces(PieceColor color)
+        public static int ValuePieces(PieceColor color)
         {
             int pieceCount = 0;
 
@@ -121,6 +129,11 @@ namespace RealChess.Model.Bitboard
             
             return pieceCount;
 
+        }
+
+        public static int EvaluateKingSafety(PieceColor color)
+        {
+            return 0;
         }
 
     }
