@@ -39,6 +39,28 @@ namespace RealChess.Model.Bitboard
             return false;
         }
 
+        /// <summary>
+        /// Method which checks if a move revokes castling rights
+        /// </summary>
+        /// <param name="move"></param>
+        /// <returns></returns>
+        public static bool RevokesCastlingRights(Move move)
+        {
+            // If king is already castled
+            if (_gameBoard.GetKing(move.PieceMoved.Color).Castled)
+                return false;
+
+            // If the move is a normal king move, it revokes rights
+            if (move.PieceMoved.Type == PieceType.KING &&
+                !(move.IsKingSideCastle || move.IsQueenSideCastle))
+                return true;
+            // If the move is a rook move, it revokes castling rights
+            else if (move.PieceMoved.Type == PieceType.ROOK)
+                return true;
+
+            return false;
+        }
+
 
         public static ulong GetKingPerimeter(PieceColor color)
         {

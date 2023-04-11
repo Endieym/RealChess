@@ -427,6 +427,8 @@ namespace RealChess.Controller
         // Returns to the main form
         public static void ReturnHomepage()
         {
+            DisableAi(PieceColor.WHITE);
+            DisableAi(PieceColor.BLACK);
             MainPage home = new MainPage();
             Application.OpenForms[1].Close();
             home.Show();

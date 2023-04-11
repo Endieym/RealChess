@@ -31,6 +31,6 @@ namespace RealChess.Model
         public const ulong Center = 0x1818000000;
         public const ulong OuterCenter = 0x3c24243c0000;
 
-        
+        public const int MovePenalty = 50;        
     }
 }

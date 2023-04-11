@@ -77,7 +77,7 @@ namespace RealChess.Model.Bitboard
                 player = _gameBoard.BlackPlayer;
                 playerBoard = _gameBoard.BlackBoard;
             }
-
+            
             player.UpdatePiece(oldKey, newKey); // Updates the piece position in the player dictionary
             
             playerBoard ^= oldBitmask; // Removes previous position
