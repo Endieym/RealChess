@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 using static RealChess.Model.Bitboard.BoardLogic;
 
 namespace RealChess.Model.AI
@@ -15,8 +16,10 @@ namespace RealChess.Model.AI
         {
             if (move.IsCapture && !move.IsPositiveCapture)
                 return false;
-            
-            else if(move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
+
+            else if (move.IsPositiveCapture)
+                return true;
+            else if (move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
             {
                 if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
                     return false;
@@ -29,14 +32,13 @@ namespace RealChess.Model.AI
             return true;
         }
 
-        public static bool IsGoodForPhase(Move move, GamePhase phase) 
+        public static bool IsBadForPhase(Move move, GamePhase phase) 
         { 
             if(phase == GamePhase.Opening)
             {
                 if (BoardLogic.RevokesCastlingRights(move))
-                    return false;
-                if (move.IsQueenSideCastle || move.IsKingSideCastle)
                     return true;
+                
 
             }
             else if(phase == GamePhase.Middlegame)
@@ -48,7 +50,7 @@ namespace RealChess.Model.AI
 
             }
 
-            return true;
+            return false;
         
         
         

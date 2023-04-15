@@ -13,6 +13,9 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
+    /// <summary>
+    /// Class responsible for game UI when in "Real" mode
+    /// </summary>
     internal static class RealController
     {
         private static Panel sidePanel;
@@ -32,7 +35,10 @@ namespace RealChess.Controller
         
 
 
-        
+        /// <summary>
+        /// Sets the controls from the side panel
+        /// </summary>
+        /// <param name="panel">Side panel</param>
         public static void SetSidePanel(Panel panel)
         {
             sidePanel = panel;
@@ -50,6 +56,10 @@ namespace RealChess.Controller
             vsPic = sidePanel.Controls.Find("vsPic", true).FirstOrDefault() as PictureBox;
         }
 
+        /// <summary>
+        /// Starts capture animation
+        /// </summary>
+        /// <param name="move">Capture tried</param>
         public static void ShowMove(Move move)
         {
             ChessForm.DisableClicks();
@@ -98,14 +108,16 @@ namespace RealChess.Controller
         }
 
         
-
+        /// <summary>
+        /// Shows the piece on the sidebar
+        /// </summary>
+        /// <param name="piece">Piece clicked</param>
         public static void ShowPiece(ChessPiece piece)
         {
-            
-            if(piece.Color == ChessPiece.PieceColor.WHITE)
+
+            if (piece.Color == ChessPiece.PieceColor.WHITE)
                 ShowWhite();
-                
-            
+
             else
                 ShowBlack();
                 
@@ -115,6 +127,10 @@ namespace RealChess.Controller
             SetMoralePiece(piece);
         }
 
+        /// <summary>
+        /// Sets the morale of a piece
+        /// </summary>
+        /// <param name="piece"></param>
         public static void SetMoralePiece(ChessPiece piece)
         {
             var success = RealBoardController.GetPieceMorale(piece);
@@ -122,6 +138,10 @@ namespace RealChess.Controller
 
         }
 
+        /// <summary>
+        /// Sets the morale of the move(success rate)
+        /// </summary>
+        /// <param name="move">Move tried</param>
         public static void SetMoraleMove(Move move)
         {
             // Gets the morale for both players
@@ -130,6 +150,12 @@ namespace RealChess.Controller
             SetMorale(success, move.PieceMoved.Color);
 
         }
+
+        /// <summary>
+        /// Sets the morale of a player 
+        /// </summary>
+        /// <param name="morale">Morale number</param>
+        /// <param name="color">Player number</param>
         public static void SetMorale(int morale, PieceColor color)
         {
             if (color == PieceColor.WHITE)
@@ -145,6 +171,10 @@ namespace RealChess.Controller
                 blackPercent.Text = morale.ToString() + '%';
             }
         }
+
+        /// <summary>
+        /// Resets sidebar to original
+        /// </summary>
         public static void ResetToMorale()
         {
             whitePanel.Visible = true;
@@ -174,6 +204,11 @@ namespace RealChess.Controller
             
             vsPic.Image = (Image)Properties.Resources.ResourceManager.GetObject("vsLogo");
         }
+
+        /// <summary>
+        /// Changes the label of the sidebar to piece type
+        /// </summary>
+        /// <param name="piece"></param>
         public static void ChangeLabel(ChessPiece piece)
         {
             var label = piece.Color == ChessPiece.PieceColor.WHITE ? whiteLabel :
@@ -182,6 +217,7 @@ namespace RealChess.Controller
             var first = char.ToUpper(text[0]);
             label.Text = first + text.Substring(1);
         }
+
         public static void ChangePicture(ChessPiece piece)
         {
             var picBox = piece.Color == ChessPiece.PieceColor.WHITE ? whitePic :

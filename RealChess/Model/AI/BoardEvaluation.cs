@@ -10,6 +10,9 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Model.Bitboard
 {
+    /// <summary>
+    /// Class responsible for evaluation of the board
+    /// </summary>
     internal static class BoardEvaluation
     {
         public static int EndGameWeight { get; set; }
@@ -51,8 +54,11 @@ namespace RealChess.Model.Bitboard
             
             evaluation += EvaluateKingSafety(PieceColor.WHITE) - EvaluateKingSafety(PieceColor.BLACK);
 
-            evaluation += EvaluatePieceDevelopment(PieceColor.WHITE) - EvaluatePieceDevelopment(PieceColor.BLACK);
+            int openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 2 : 1;
+            // Evaluates piece development for both players
+            evaluation += (EvaluatePieceDevelopment(PieceColor.WHITE) - EvaluatePieceDevelopment(PieceColor.BLACK))* openingWeight;
 
+            // Evaluates safety of all player's ieces
             evaluation += EvaluatePiecesSafety(PieceColor.WHITE) - EvaluatePiecesSafety(PieceColor.BLACK);
             //foreach (var piece in whitePieces)
             //{
@@ -69,7 +75,11 @@ namespace RealChess.Model.Bitboard
         }
 
 
-
+        /// <summary>
+        /// Evaluates the board position for a specific player
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>The evaluation as a number</returns>
         public static int EvaluateForPlayer(PieceColor color)
         {
             var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
@@ -90,7 +100,11 @@ namespace RealChess.Model.Bitboard
             return evaluation;
         }
 
-        // Evaluates control of squares for a specific player
+        /// <summary>
+        /// Evaluates control of squares for a specific player
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>The evaluation as a number</returns>
         public static int EvaluateBoardControl(PieceColor color)
         {
             var pieces = color == PieceColor.WHITE? _gameBoard.GetPlayer1().Pieces:
@@ -139,7 +153,11 @@ namespace RealChess.Model.Bitboard
             return mobility;
         }
 
-        // Counts pieces and their values of a specific coloured player
+        /// <summary>
+        /// Counts pieces and their values of a specific coloured player
+        /// </summary>
+        /// <param name="color">player color</param>
+        /// <returns>Count (value) of pieces</returns>
         public static int ValuePieces(PieceColor color)
         {
             int pieceCount = 0;
@@ -155,6 +173,12 @@ namespace RealChess.Model.Bitboard
         
             return pieceCount;
         }
+
+        /// <summary>
+        /// Evaluates the safety of all pieces of a player
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>The number evaluation</returns>
         public static int EvaluatePiecesSafety(PieceColor color)
         {
             int safety = 0;
@@ -174,7 +198,11 @@ namespace RealChess.Model.Bitboard
 
         }
 
-        
+        /// <summary>
+        /// Evaluates the safety of the king of a player
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>The evaluation as a number</returns>
         public static int EvaluateKingSafety(PieceColor color)
         {
             ulong kingPerimeter = BoardLogic.GetKingPerimeter(color);
@@ -216,6 +244,11 @@ namespace RealChess.Model.Bitboard
 
         }
 
+        /// <summary>
+        /// Evaluates the development a player has with their pieces
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>The evaluation as a number</returns>
         public static int EvaluatePieceDevelopment(PieceColor color)
         {
             var pieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
@@ -242,8 +275,5 @@ namespace RealChess.Model.Bitboard
             }
             return development;
         }
-
-        
-
     }
 }

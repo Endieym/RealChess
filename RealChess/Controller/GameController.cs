@@ -15,6 +15,10 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
+    /// <summary>
+    /// Controller responsible for player interacts
+    /// and updating the chess game according to moves
+    /// </summary>
     internal static class GameController
     {
         public static bool IsReal { get; set; }
@@ -41,6 +45,10 @@ namespace RealChess.Controller
             turnColor = PieceColor.WHITE;
         }
 
+        /// <summary>
+        /// Sets the Ai of a specific color
+        /// </summary>
+        /// <param name="color">Ai color</param>
         public static void SetAi(PieceColor color)
         {
             if(ChessForm.GetCurrentPiece() != null)
@@ -53,6 +61,11 @@ namespace RealChess.Controller
             if (turnColor == color)
                 ComputerPlay.PlayMove(color);
         }
+
+        /// <summary>
+        /// Disables Ai play
+        /// </summary>
+        /// <param name="color">Ai color</param>
         public static void DisableAi(PieceColor color)
         {
             if (color == PieceColor.WHITE)
@@ -61,21 +74,30 @@ namespace RealChess.Controller
                 BlackAi = false;
         }
 
-        // Checks if a move is legal
-        internal static bool IsLegalMove(ChessPieceControl pieceSource, Panel targetPanel)
-        {
-            foreach (ChessPieceControl c in targetPanel.Controls)
-                if (c.Equals(pieceSource) || c.Piece.Color == pieceSource.Piece.Color)
-                    return false;
-            return true;
-        }
+        //// Checks if a move is legal
+        //internal static bool IsLegalMove(ChessPieceControl pieceSource, Panel targetPanel)
+        //{
+        //    foreach (ChessPieceControl c in targetPanel.Controls)
+        //        if (c.Equals(pieceSource) || c.Piece.Color == pieceSource.Piece.Color)
+        //            return false;
+        //    return true;
+        //}
 
+        /// <summary>
+        /// Checks if the piece clicked on the board 
+        /// is its turn to play
+        /// </summary>
+        /// <param name="pieceSource">Piece control clicked</param>
+        /// <returns></returns>
         internal static bool IsTurn(ChessPieceControl pieceSource)
         {
             return pieceSource.Piece.Color == turnColor;
         }
 
-        // Highlights the legal squares the current piece can traverse to
+        /// <summary>
+        /// Highlights the legal squares the current piece can traverse to
+        /// </summary>
+        /// <param name="pieceSource">Piece clicked</param>
         internal static void ShowLegalMoves(ChessPieceControl pieceSource)
         {
             // Gets both the legal moves and captures of the clicked piece control
@@ -111,6 +133,10 @@ namespace RealChess.Controller
             
         }
 
+        /// <summary>
+        /// Clears the legal moves a clicked piece has
+        /// </summary>
+        /// <param name="pieceSource">Piece clicked</param>
         internal static void ClearLegalMoves(ChessPieceControl pieceSource)
         {
             // Gets both the legal moves and captures of the clicked piece control
@@ -143,14 +169,23 @@ namespace RealChess.Controller
         }
 
 
-
+        /// <summary>
+        /// Event handler responsible for transferring move info
+        /// </summary>
+        /// <param name="sender">Legal move control clicked</param>
+        /// <param name="e">Event info</param>
         private static void LegalMoveControl_Move(object sender, TransferEventArgs e)
         {
             // Transfer the selected piece to the clicked panel
             MovePiece(e.CurrentMove);           
         }
 
-        // Changes the pawn to the selected piece
+        /// <summary>
+        /// Changes the pawn to the selected piece
+        /// </summary>
+        /// <param name="pieceSource">Original pawn control</param>
+        /// <param name="type">New piece type</param>
+        /// <param name="key">New piece location</param>
         internal static void SwitchPiece(ChessPieceControl pieceSource, PieceType type, int key)
         {
             var colorBefore = pieceSource.Piece.Color;
@@ -177,6 +212,12 @@ namespace RealChess.Controller
             pieceSource.SetPiece(pieceSource.Piece);
 
         }
+
+        /// <summary>
+        /// Gets a piece control according to key (0-63)
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>The piece control</returns>
         internal static ChessPieceControl GetPieceControl(int key)
         {
             Panel piecePanel = _panelBoard[key / 8, key % 8];
@@ -188,7 +229,11 @@ namespace RealChess.Controller
             return null;
         }
 
-        // Initiates the move of a piece, according to the control clicked
+        /// <summary>
+        /// Initiates the move of a piece,
+        /// according to the control clicked
+        /// </summary>
+        /// <param name="move">Move made</param>
         internal static void MovePiece(Move move)
         {
             int key = move.EndSquare;
@@ -286,6 +331,11 @@ namespace RealChess.Controller
             FinalizeMove(move);
             
         }
+
+        /// <summary>
+        /// Removes the highlight over the king of a player
+        /// </summary>
+        /// <param name="color">Player color</param>
         internal static void RemoveHighlight(PieceColor color)
         {
             int key = BoardController.GetKingPos(color);
@@ -294,6 +344,11 @@ namespace RealChess.Controller
                 c.BackColor = Color.Transparent;
             }
         }
+
+        /// <summary>
+        /// Highlights the check made over a player's king
+        /// </summary>
+        /// <param name="color">Player color</param>
         internal static void HighlightCheck(PieceColor color)
         {
             int key = BoardController.GetKingPos(color);
@@ -303,6 +358,12 @@ namespace RealChess.Controller
             }
         }
 
+        /// <summary>
+        /// Finalizes the move made,
+        /// Updating data structure, playing move sound and 
+        /// ending the turn
+        /// </summary>
+        /// <param name="move">Move made</param>
         internal static void FinalizeMove(Move move)
         {
 
@@ -377,7 +438,10 @@ namespace RealChess.Controller
 
         }
 
-        // Makes a checkmate message appear and ends the game
+        /// <summary>
+        /// Makes a checkmate message appear and ends the game
+        /// </summary>
+        /// <param name="color">Player won</param>
         public static void Checkmate(PieceColor color)
         {
             HighlightCheck(color);
@@ -387,13 +451,19 @@ namespace RealChess.Controller
 
         }
 
-        // Makes a draw message appear and ends the game
+        /// <summary>
+        /// Makes a draw message appear and ends the game
+        /// </summary>
+        /// <param name="reason">Reason for draw</param>
         public static void Draw(string reason)
         {
             MessageBox.Show("By "+reason,"DRAW");
             EndGame();
         }
 
+        /// <summary>
+        /// Ends the game, closes the form
+        /// </summary>
         public static void EndGame()
         {
 
@@ -405,7 +475,9 @@ namespace RealChess.Controller
 
 
 
-
+        /// <summary>
+        /// Ends the turn, updates turncolor
+        /// </summary>
         public static void EndTurn()
         {
             turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
@@ -424,7 +496,10 @@ namespace RealChess.Controller
 
         }
 
-        // Returns to the main form
+        /// <summary>
+        /// Returns to the main form
+        /// and disables Ai
+        /// </summary>
         public static void ReturnHomepage()
         {
             DisableAi(PieceColor.WHITE);
@@ -434,8 +509,5 @@ namespace RealChess.Controller
             home.Show();
 
         }
-
-
-
     }
 }

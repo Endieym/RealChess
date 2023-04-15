@@ -13,11 +13,15 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
 {
-    
+    /// <summary>
+    /// Controller responsible for interacting 
+    /// and updating the data structure
+    /// </summary>
     internal static class BoardController
     {
         private static Board _gameBoard;
 
+        // Sets the game board for all models using it
         internal static void SetBoard(Board board)
         {
             _gameBoard = board;
@@ -27,7 +31,10 @@ namespace RealChess.Controller
 
         }
 
-        // Updates the data structure on the move of the piece.
+        /// <summary>
+        /// Updates the data structure on the move of the piece.
+        /// </summary>
+        /// <param name="move">Move made</param>
         internal static void UpdateBoard(Move move)
         {
 
@@ -35,36 +42,69 @@ namespace RealChess.Controller
 
         }
 
+        /// <summary>
+        /// Checks if a player has any legal moves
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>Returns true if has, false if not</returns>
         internal static bool HasLegalMoves(PieceColor color)
         {
             return _gameBoard.CanLegallyMove(color);
         }
+
 
         internal static bool IsInCheck(PieceColor color)
         {
             return _gameBoard.IsKingUnderAttack(color);
         }
 
+        /// <summary>
+        /// Gets the king's position for a player
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>King position on the board</returns>
         internal static int GetKingPos(PieceColor color)
         {
             return _gameBoard.GetKingPos(color);
         }
 
+        /// <summary>
+        /// Makes a promotion move
+        /// </summary>
+        /// <param name="move">Original pawn move</param>
+        /// <param name="piece">Piece chosen as a promotion</param>
+        /// <returns>The new promotion move</returns>
         internal static Move PromotePiece(Move move, ChessPiece piece)
         {
             return _gameBoard.MakePromotionMove(move, piece);
         }
 
-
+        /// <summary>
+        /// Gets the possible moves a piece has
+        /// </summary>
+        /// <param name="piece">Piece chosen</param>
+        /// <returns>List of moves</returns>
         internal static List<Move> GetMovesList(ChessPiece piece)
         {
             return _gameBoard.GetMovesPiece(piece);
         }
+
+        /// <summary>
+        /// Gets all captures a piece has
+        /// </summary>
+        /// <param name="piece">Piece chosen</param>
+        /// <returns>A list of the captures</returns>
         internal static List<Move> GetCapturesList(ChessPiece piece)
         {
             return _gameBoard.GetCapturesPiece(piece);
         }
 
+        /// <summary>
+        /// Creates a piece according to row and column
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns>The piece creates</returns>
         internal static ChessPiece GetPieceForSquare(int row, int col)
         {
             ChessPiece chessPiece;
@@ -103,6 +143,13 @@ namespace RealChess.Controller
             return chessPiece;
         }
 
+        /// <summary>
+        /// Gets the type of the piece (Pawn, Knight, Bishop)
+        /// According to the position of the piece (row,col)
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns>The type of the piece as enum</returns>
         internal static PieceType GetTypeByPos(int row, int col)
         {
            
@@ -127,6 +174,13 @@ namespace RealChess.Controller
             return PieceType.PAWN;
          
         }
+
+        /// <summary>
+        /// Gets the color of a piece based on its position(row,col)
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns>The color as enum</returns>
         internal static PieceColor GetColorByPos(int row, int col)
         {
             if (row == 0 || row == 1)

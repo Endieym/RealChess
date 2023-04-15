@@ -73,6 +73,7 @@ namespace RealChess.Model
             int bestMoveScore = negativeInfinity;
             foreach (Move move in allMoves)
             {
+                
                 _gameBoard.MakeTemporaryMove(move);
                 moveScore = BoardEvaluation.EvaluateForPlayer(color);
 
@@ -80,11 +81,11 @@ namespace RealChess.Model
                     moveScore = 0;
 
                 else if (!MoveChecker.IsGoodMove(move))
-                    moveScore -= move.PieceMoved.Value * 100;
-                if (!MoveChecker.IsGoodForPhase(move, _gameBoard.CurrentPhase))
+                    moveScore = -(move.PieceMoved.Value * 100);
+
+                if (MoveChecker.IsBadForPhase(move, _gameBoard.CurrentPhase))
                     moveScore -= BitboardConstants.MovePenalty;
-                else
-                    moveScore += BitboardConstants.MovePenalty;
+                
                 
                 if (GameController.IsReal && move.PieceMoved.Type != PieceType.KING)
                    moveScore += RealBoardController.CalculateSuccess(move) /10;

@@ -8,6 +8,10 @@ using static RealChess.Model.RealConstants;
 
 namespace RealChess.Controller
 {
+    /// <summary>
+    /// Controller responsible for interacting and updating
+    /// Data structures when playing "Real" Mode
+    /// </summary>
     internal class RealBoardController
     {
         private static Board _gameBoard;
@@ -20,7 +24,11 @@ namespace RealChess.Controller
             lastSuccessfullMoves = new List<Move>();
         }
 
-        // Updates the morale of players according to the move made
+        /// <summary>
+        /// Updates the morale of players according
+        /// to the move made
+        /// </summary>
+        /// <param name="move">Move made</param>
         internal static void UpdateReal(Move move)
         {
             lastSuccessfullMoves.Add(move);
@@ -54,13 +62,19 @@ namespace RealChess.Controller
             
         }
 
-        // Gets the morale of a player of specific color
+        /// <summary>
+        /// Gets the morale of a player of specific color
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>Morale as a number</returns>
         internal static int GetPlayerMorale(PieceColor color)
         {
             return _gameBoard.GetMorale(color);
         }
 
-        // Balances the morale when getting too far away
+        /// <summary>
+        /// Balances the morale when getting too far away
+        /// </summary>
         internal static void BalancePlayers()
         {
             var player1 = _gameBoard.GetPlayer1();
@@ -84,7 +98,11 @@ namespace RealChess.Controller
 
         }
 
-        // Returns the morale of the piece
+        /// <summary>
+        /// Returns the morale of the piece
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <returns>Piece morale as a number</returns>
         internal static int GetPieceMorale(ChessPiece piece)
         {
             // A king always has perfect morale
@@ -143,7 +161,11 @@ namespace RealChess.Controller
             return successRate;
         }
 
-        // Returns the success rate of a specific attack
+        /// <summary>
+        /// Returns the success rate of a specific attack
+        /// </summary>
+        /// <param name="move">Attack</param>
+        /// <returns>The success rate as a number</returns>
         internal static int CalculateSuccess(Move move)
         {
             // Any moves which defend check or are en passnt,
@@ -160,15 +182,16 @@ namespace RealChess.Controller
             return successRate ;
         }
 
-        // Tries a moves and returns if successfull
+        /// <summary>
+        /// Tries a moves and returns if successfull
+        /// </summary>
+        /// <param name="move">Move tried</param>
+        /// <returns>True if successful, false if else</returns>
         internal static bool TryMove(Move move)
         {
- 
             Random rnd = new Random();
             double randomNum = rnd.NextDouble();
-
             return randomNum <= ((float)CalculateSuccess(move) /100);
         }
-
     }
 }

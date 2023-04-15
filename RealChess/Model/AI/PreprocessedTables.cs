@@ -60,11 +60,11 @@ namespace RealChess.Model.AI
         {
             -20,-10,-10, -5, -5,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
-            -10,  0,  5,  5,  5,  5,  0,-10,
-             -5,  0,  5,  5,  5,  5,  0, -5,
-              0,  0,  5,  5,  5,  5,  0, -5,
-            -10,  5,  5,  5,  5,  5,  0,-10,
-            -10,  0,  5,  0,  0,  0,  0,-10,
+            -10,  0,  10,  10,  10,  10,  0,-10,
+             -5,  0,  10,  10,  10,  10,  0, -5,
+              0,  0,  10,  10,  10,  10,  0, -5,
+            -10,  10,  10,  10,  10,  10,  0,-10,
+            -10,  0,  10,  0,  0,  0,  0,-10,
             -20,-10,-10, -5, -5,-10,-10,-20
         };
 
@@ -101,13 +101,13 @@ namespace RealChess.Model.AI
 
                     squareTable = PawnTable;
                     break;
-                    
+
                 case PieceType.BISHOP:
                     squareTable = BishopTable;
                     break;
 
                 case PieceType.KNIGHT:
-                    squareTable =KnightTable;
+                    squareTable = KnightTable;
                     break;
 
                 case PieceType.ROOK:
@@ -119,7 +119,8 @@ namespace RealChess.Model.AI
                     break;
 
                 case PieceType.KING:
-                    if (phase == GamePhase.Middlegame)
+                    if (phase == GamePhase.Middlegame || 
+                        phase == GamePhase.Opening)
                         squareTable = KingMiddleTable;
                     else if (phase == GamePhase.Endgame)
                         squareTable = KingEndTable;
