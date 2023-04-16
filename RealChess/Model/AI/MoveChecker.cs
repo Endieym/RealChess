@@ -19,11 +19,7 @@ namespace RealChess.Model.AI
 
             else if (move.IsPositiveCapture)
                 return true;
-            else if (move.PieceMoved.Type == ChessPieces.ChessPiece.PieceType.QUEEN)
-            {
-                if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
-                    return false;
-            }
+          
             else if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
                 return false;
 

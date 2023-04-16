@@ -202,7 +202,6 @@ namespace RealChess.Model
 
             BoardUpdate.UpdateBoard(move);
                 
-            this.bitBoard = blackBoard | whiteBoard;
             
 
         }
@@ -379,6 +378,10 @@ namespace RealChess.Model
         {
             MakeTemporaryMove(newMove);
 
+            if(newMove.PieceMoved.Type == PieceType.KING && newMove.PieceMoved.Color == PieceColor.WHITE)
+            {
+                Console.Write("Hey");
+            }
             bool result = IsKingUnderAttack(newMove.PieceMoved.Color);
 
             UndoMove();
@@ -420,6 +423,11 @@ namespace RealChess.Model
             if (result)
             {
                 newMove.IsCheck = true;
+                // Checks the king
+
+                
+                GetKing(GetOppositeColor(newMove.PieceMoved.Color)).InCheck = true;
+                
 
                 // If the enemy king is in check and the player has
                 // no legal moves, the original check is a checkmate
@@ -438,6 +446,9 @@ namespace RealChess.Model
             }
 
             // Undoes the temporary move made
+            if(result)
+                GetKing(GetOppositeColor(newMove.PieceMoved.Color)).InCheck = false;
+
             UndoMove();
 
             return result;
@@ -580,11 +591,12 @@ namespace RealChess.Model
                 if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
                     newMove.IsPromotion = true;
 
+                if (BoardLogic.GetCaptureValue(newMove.CapturedPiece, piece) > 0)
+                    newMove.IsPositiveCapture = true;
+                
                 captureList.Add(newMove);
-                movesMask &= movesMask - 1; // reset LS1B
 
-                if (BoardLogic.GetCaptureValue(captureList[captureList.Count - 1].CapturedPiece, piece) > 0)
-                    captureList[captureList.Count - 1].IsPositiveCapture = true;
+                movesMask &= movesMask - 1; // reset LS1B
 
             }
 

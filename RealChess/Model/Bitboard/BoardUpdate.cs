@@ -108,6 +108,7 @@ namespace RealChess.Model.Bitboard
 
             _gameBoard.GetAllMoves().Add(move);
             _gameBoard.GetAllStates().Add(GetBoardStateString(_gameBoard));
+            _gameBoard.BitBoard = _gameBoard.BlackBoard | _gameBoard.WhiteBoard;
 
         }
 
@@ -152,6 +153,8 @@ namespace RealChess.Model.Bitboard
             else
                 _gameBoard.WhiteBoard = enemyBoard;
 
+            _gameBoard.BitBoard = _gameBoard.BlackBoard | _gameBoard.WhiteBoard;
+
         }
 
         // Undos the last move made
@@ -189,7 +192,7 @@ namespace RealChess.Model.Bitboard
 
             UpdateDataStructures(undoMove);
 
-            // Removes the last moves made (Checked move and Undone move)
+            // Removes the last two moves made (Checked move and Undone move)
             movesList.RemoveAt(index + 1);
             movesList.RemoveAt(index);
 

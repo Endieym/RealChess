@@ -101,6 +101,9 @@ namespace RealChess.Model
         // Updates a pieces' location (key) in the dictionary
         public void UpdatePiece(int oldKey, int newKey)
         {
+            if (newKey == 53)
+                Console.Write("Check");
+
             var piece = pieces[oldKey];
 
             // Checks if the piece is a king, if so, update king position for player

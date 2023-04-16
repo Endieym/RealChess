@@ -256,12 +256,16 @@ namespace RealChess.Model.Bitboard
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
 
+
+            if (attackers.Count == 0)
+                return 0;
+
             // If the piece is not under attack or defense, return 0
             if (attackers.Count == 0 && defenders.Count == 0)
                 return 0;
-            if (attackers.Count == 0)
-                return -squareValue;
 
+            
+            
             for (int i = 0; i < attackers.Count; i++)
             {
                 // Add the defender's value
@@ -282,7 +286,7 @@ namespace RealChess.Model.Bitboard
 
                 // If the piece capturing, is worth less than the piece captured
                 if (squareValue > 0)
-                    return squareValue;
+                    return squareValue * 100;
 
             }
             return squareValue;

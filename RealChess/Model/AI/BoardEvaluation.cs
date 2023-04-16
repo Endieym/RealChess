@@ -37,14 +37,14 @@ namespace RealChess.Model.Bitboard
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static int Evaluate()
+        public static double Evaluate()
         {
             var whitePieces = _gameBoard.GetPlayer1().Pieces.Values;
             var blackPieces = _gameBoard.GetPlayer2().Pieces.Values;
             
             
             // The difference between white's pieces and black's pieces (by value)
-            int evaluation = (ValuePieces(PieceColor.WHITE) - ValuePieces(PieceColor.BLACK)) * 100;
+            double evaluation = (ValuePieces(PieceColor.WHITE) - ValuePieces(PieceColor.BLACK)) * 100;
           
             
             // Evaluates the difference board control of white against black's.
@@ -54,7 +54,7 @@ namespace RealChess.Model.Bitboard
             
             evaluation += EvaluateKingSafety(PieceColor.WHITE) - EvaluateKingSafety(PieceColor.BLACK);
 
-            int openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 2 : 1;
+            double openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 1 : 0.5;
             // Evaluates piece development for both players
             evaluation += (EvaluatePieceDevelopment(PieceColor.WHITE) - EvaluatePieceDevelopment(PieceColor.BLACK))* openingWeight;
 
@@ -80,11 +80,11 @@ namespace RealChess.Model.Bitboard
         /// </summary>
         /// <param name="color">Player color</param>
         /// <returns>The evaluation as a number</returns>
-        public static int EvaluateForPlayer(PieceColor color)
+        public static double EvaluateForPlayer(PieceColor color)
         {
             var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
             
-            int evaluation = Evaluate();
+            double evaluation = Evaluate();
 
             evaluation *= color == PieceColor.WHITE ? 1 : -1;
 
@@ -117,7 +117,7 @@ namespace RealChess.Model.Bitboard
                 countControl += EvaluatePieceMobility(piece, _gameBoard.BitBoard);
             }
 
-            return countControl;
+            return countControl ;
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace RealChess.Model.Bitboard
             {
                 if (piece.Type != PieceType.PAWN && piece.Type != PieceType.KING)
                 {
-                    safety += BoardLogic.EvaluatePieceSafety(piece) * 20;
+                    safety += BoardLogic.EvaluatePieceSafety(piece);
                 }
             }
             return safety;
@@ -263,8 +263,8 @@ namespace RealChess.Model.Bitboard
                 {
                     if (piece.Type != PieceType.PAWN &&
                         piece.Type != PieceType.KNIGHT &&
-                        piece.Type != PieceType.BISHOP&&
-                        piece.Type != PieceType.QUEEN) continue;
+                        piece.Type != PieceType.BISHOP
+                        ) continue;
 
                 }
                 int index = (int)Math.Log(piece.GetPosition(),2);
