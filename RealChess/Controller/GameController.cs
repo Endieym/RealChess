@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.Bitboard.BoardOperations;
 
 namespace RealChess.Controller
 {
@@ -444,7 +445,8 @@ namespace RealChess.Controller
         /// <param name="color">Player won</param>
         public static void Checkmate(PieceColor color)
         {
-            HighlightCheck(color);
+            
+            HighlightCheck(GetOppositeColor(color));
 
             MessageBox.Show(String.Format("{0} won!",color.ToString()), "CHECKMATE");
             EndGame();
