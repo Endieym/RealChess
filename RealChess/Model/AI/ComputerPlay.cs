@@ -1,5 +1,6 @@
 ﻿using RealChess.Controller;
 using RealChess.Model.AI;
+using RealChess.Model.AI.Book;
 using RealChess.Model.Bitboard;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace RealChess.Model
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
+            BookReader.InitialiseDatabases();
             BoardEvaluation.SetBoard(board);
         }
 
