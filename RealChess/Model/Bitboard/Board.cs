@@ -9,11 +9,12 @@ using static RealChess.Model.Bitboard.BoardOperations;
 using System.Collections.Specialized;
 using RealChess.Model.Bitboard;
 using static RealChess.Model.Bitboard.BoardLogic;
+using RealChess.Model.AI.Book;
 
 namespace RealChess.Model
 {
     /// <summary>
-    /// This class represents the game board 
+    /// This class represents the game board data structure
     /// </summary>
     public class Board
     {
@@ -81,6 +82,7 @@ namespace RealChess.Model
 
         List<Move> movesList;
         List<string> positions;
+        
 
         /// <summary>
         /// Constructor for Board class, initialize
@@ -201,8 +203,10 @@ namespace RealChess.Model
         {
 
             BoardUpdate.UpdateBoard(move);
-                
+            BookReader.UpdateGames(movesList);
+            BookReader.PrintGames();
             
+
 
         }
         /// <summary>

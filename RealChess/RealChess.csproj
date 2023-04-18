@@ -76,6 +76,7 @@
     <Compile Include="Controller\RealBoardController.cs" />
     <Compile Include="Controller\RealController.cs" />
     <Compile Include="Model\AI\Book\BookReader.cs" />
+    <Compile Include="Model\AI\Book\MoveTranslator.cs" />
     <Compile Include="Model\AI\MoveChecker.cs" />
     <Compile Include="Model\AI\PreprocessedTables.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />

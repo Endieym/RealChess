@@ -49,7 +49,7 @@ namespace RealChess.Model.Bitboard
                 UpdateCaptures(move);
 
             UpdatePhase();
-
+            
         }
 
         // Updates the board class according to the move played

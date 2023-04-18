@@ -24,6 +24,8 @@ namespace RealChess.Model
         public bool IsPositiveCapture { get; set; }
         public bool IsDrawByRepetiton { get; set; }
         public bool IsStalemate { get; set; }
+
+        
         public enum MoveType
         {
             Normal,
@@ -38,8 +40,9 @@ namespace RealChess.Model
 
         public Move()
         {
-
+            
         }
+
         public Move(int endSquare, ChessPiece piece)
         {
             EndSquare = endSquare;

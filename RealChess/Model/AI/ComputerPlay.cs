@@ -18,6 +18,8 @@ namespace RealChess.Model
     {
         private static Board _gameBoard;
 
+        private static bool inBook = true;
+
         private const int infinity = 999999;
         private const int negativeInfinity = -infinity;
 
@@ -25,7 +27,8 @@ namespace RealChess.Model
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
-            BookReader.InitialiseDatabases();
+            BookReader.InitialiseDatabases();   
+            MoveTranslator.SetBoard(board);
             BoardEvaluation.SetBoard(board);
         }
 
@@ -51,12 +54,24 @@ namespace RealChess.Model
         public static Move ChooseBestMove(PieceColor color)
         {
             Random rnd = new Random();          
-            List<Move> bestMoves = GetBestMovesList(color);
+
+            List<Move> bestMoves = inBook ? GetBookMoves(color): GetBestMovesList(color);
 
             Move bestMove = bestMoves[rnd.Next(bestMoves.Count)];
-
-
+            
             return bestMove;
+        }
+
+        public static List<Move> GetBookMoves(PieceColor color)
+        {
+            var moves = BookReader.GetPossibleBookMoves(color, _gameBoard.GetAllMoves(), _gameBoard.GetAllPlayerMoves(color));
+            if (moves.Count == 0)
+            {
+                inBook = false;
+                moves = GetBestMovesList(color);
+
+            }
+            return moves;
         }
 
 
@@ -86,8 +101,6 @@ namespace RealChess.Model
                 }
                 moveScore = BoardEvaluation.EvaluateForPlayer(color);
 
-                
-
                 if (!MoveChecker.IsGoodMove(move))
                 {
                     moveScore -= (move.PieceMoved.Value * 100);
@@ -106,12 +119,10 @@ namespace RealChess.Model
                     moveScore = 0;
 
                 if (moveScore > bestMoveScore)
-                {
-                    
+                {                   
                         bestMovesList.Clear();
                         bestMovesList.Add(move);
                         bestMoveScore = moveScore;
-
 
                 }
 
