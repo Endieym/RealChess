@@ -208,6 +208,7 @@ namespace RealChess.Controller
                     pieceSource.Piece = new Bishop(key);
                     break;
             }
+
             pieceSource.Piece.Color = colorBefore;
             pieceSource.Piece.UpdatePosition(key);
             pieceSource.SetPiece(pieceSource.Piece);

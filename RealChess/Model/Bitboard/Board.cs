@@ -220,6 +220,7 @@ namespace RealChess.Model
         {
             var endKey = move.EndSquare;
             var beforeKey = move.StartSquare;
+            
             if (chessPiece.Color == PieceColor.WHITE)
             {
                 player1.SwitchPiece(beforeKey, chessPiece);
@@ -312,7 +313,8 @@ namespace RealChess.Model
 
                     Move castleMove = new Move((int)Math.Log(castleQueen, 2), piece)
                     {
-                        IsQueenSideCastle = true
+                        IsQueenSideCastle = true,
+                        Type = Move.MoveType.Castle
                     };
 
                     CheckMove(castleMove);
@@ -324,7 +326,9 @@ namespace RealChess.Model
                 {
                     Move castleMove = new Move((int)Math.Log(castleKing, 2), piece)
                     {
-                        IsKingSideCastle = true
+                        IsKingSideCastle = true,
+                        Type = Move.MoveType.Castle
+
                     };
                     CheckMove(castleMove);
                         
@@ -420,10 +424,7 @@ namespace RealChess.Model
         /// <returns></returns>
         public bool CheckMove(Move newMove)
         {
-            //if (newMove.IsKingSideCastle)
-            //{
-            //    MakeTemporaryMove(new Move(newMove.EndSquare -1, Rook))
-            //}
+          
             MakeTemporaryMove(newMove);
                         
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));

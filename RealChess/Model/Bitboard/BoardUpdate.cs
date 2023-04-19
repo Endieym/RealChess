@@ -169,30 +169,31 @@ namespace RealChess.Model.Bitboard
 
             Move oldMove = movesList[index];
 
-            
 
-            Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved);
-            undoMove.StartSquare = oldMove.EndSquare;
 
-            if (oldMove.IsKingSideCastle)
+            Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved)
             {
-                int pos = oldMove.StartSquare + 1;
-                var piece = oldMove.PieceMoved.Color == PieceColor.WHITE ?
-                    _gameBoard.WhitePlayer.Pieces[pos] :
-                    _gameBoard.BlackPlayer.Pieces[pos];
+                StartSquare = oldMove.EndSquare
+            };
 
-                UpdateDataStructures(new Move(pos + 2, piece));
+            int rookPos = oldMove.StartSquare;
 
-            }
-            if (oldMove.IsQueenSideCastle)
+            int oldRookPos;
+
+            if (oldMove.Type == Move.MoveType.Castle)
             {
-                int pos = oldMove.StartSquare - 1;
+                rookPos += oldMove.IsKingSideCastle ? 1 : -1;
+                oldRookPos = rookPos;
+
+                oldRookPos += oldMove.IsKingSideCastle ? 2 : -3;
+
                 var piece = oldMove.PieceMoved.Color == PieceColor.WHITE ?
-                    _gameBoard.WhitePlayer.Pieces[pos] :
-                    _gameBoard.BlackPlayer.Pieces[pos];
+                    _gameBoard.WhitePlayer.Pieces[rookPos] :
+                    _gameBoard.BlackPlayer.Pieces[rookPos];
 
-                UpdateDataStructures(new Move(pos - 3, piece));
+                UpdateDataStructures(new Move(oldRookPos, piece));
 
+                ((King)oldMove.PieceMoved).Castled = false;
             }
 
             UpdateDataStructures(undoMove);

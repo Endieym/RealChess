@@ -1,9 +1,11 @@
-﻿using System;
+﻿using RealChess.Model.Bitboard;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 
 namespace RealChess.Model.AI.Evaluation
 {
@@ -48,6 +50,71 @@ namespace RealChess.Model.AI.Evaluation
                     bishopCount++;
             }
             return bishopCount;
+
+        }
+
+        public static int EvaluateKingPerimeter(PieceColor color, ulong kingPerimeter)
+        {
+            var player = color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
+                _gameBoard.GetPlayer2();
+
+            var enemy = color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
+                _gameBoard.GetPlayer1();
+
+            int kingSafety = 0;
+
+            
+            foreach (var piece in player.Pieces.Values)
+            {
+                if ((piece.GetPosition() & kingPerimeter) > 0)
+                {
+                    kingSafety += BoardLogic.EvaluatePieceSafety(piece);
+                    kingPerimeter ^= piece.GetPosition();
+                }
+            }
+
+            foreach (var piece in enemy.Pieces.Values)
+            {
+                if ((piece.GetPosition() & kingPerimeter) > 0)
+                {
+                    kingSafety -= piece.Value;
+                    kingPerimeter ^= piece.GetPosition();
+                }
+            }
+
+            while (kingPerimeter > 0)
+            {
+                ulong position = kingPerimeter & ~(kingPerimeter - 1);
+                kingSafety += BoardLogic.EvaluateSquareControl(color, position);
+                kingPerimeter &= kingPerimeter - 1;
+            }
+
+            return kingSafety;
+
+        }
+
+        public static int PawnShield(PieceColor color ,ulong kingPerimeter)
+        {
+            var playerPieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
+                _gameBoard.GetPlayer2().Pieces;
+
+            int pawnShield = 1;
+
+            ulong pawnPos = (kingPerimeter & KingSidePawns) > 0 ? KingSidePawns : QueenSidePawns;
+           
+            if (color == PieceColor.BLACK) pawnPos >>= 40;
+            pawnPos |= color == PieceColor.WHITE ? pawnPos >> 8 : pawnPos << 8;
+            
+            foreach (var piece in playerPieces.Values)
+            {
+                if (piece.Type == PieceType.PAWN && (piece.GetPosition() & kingPerimeter) > 0
+                    && (piece.GetPosition() & pawnPos) > 0)
+                    pawnShield *= pawnShieldBuff; 
+                
+            }
+
+
+            return pawnShield;
         }
 
 

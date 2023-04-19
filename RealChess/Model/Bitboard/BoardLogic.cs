@@ -270,10 +270,14 @@ namespace RealChess.Model.Bitboard
                 // Add the defender's value
                 // Since it can be captured
                 if (i > 0)
+                {
+                    // If another attacker exists, king can't take back.
                     if (defenders[i - 1].Type == PieceType.KING)
-                        return squareValue;
-                    
+                        return squareValue + attackers[i-1].Value;
+
                     squareValue += defenders[i - 1].Value;
+                }
+                    
 
                 //// Exchange between the last attacker, and the last defender
                 //defenseValue = -defenseValue;

@@ -206,44 +206,20 @@ namespace RealChess.Model.Bitboard
         /// <returns>The evaluation as a number</returns>
         public static int EvaluateKingSafety(PieceColor color)
         {
-            ulong kingPerimeter = BoardLogic.GetKingPerimeter(color);
+            ulong kingPerimeter = GetKingPerimeter(color);
 
-            var player = color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
-                _gameBoard.GetPlayer2();
+            int kingSafety = SubEvaluations.EvaluateKingPerimeter(color, kingPerimeter);
 
-            var enemy = color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
-                _gameBoard.GetPlayer1();
+            ulong safeSides = KingSidePawns | QueenSidePawns;
 
-            int kingSafety = 0;
-
-            foreach (var piece in player.Pieces.Values)
-            {
-                if ((piece.GetPosition() & kingPerimeter) > 0)
-                {
-                    kingSafety += BoardLogic.EvaluatePieceSafety(piece);
-                    kingPerimeter ^= piece.GetPosition();
-                }
-            }
-
-            foreach (var piece in enemy.Pieces.Values)
-            {
-                if ((piece.GetPosition() & kingPerimeter) > 0)
-                {
-                    kingSafety -= piece.Value;
-                    kingPerimeter ^= piece.GetPosition();
-                }
-            }
-
-            while (kingPerimeter > 0)
-            {
-                ulong position = kingPerimeter & ~(kingPerimeter - 1);
-                kingSafety += BoardLogic.EvaluateSquareControl(color, position);
-                kingPerimeter &= kingPerimeter - 1;
-            }
+            if ((_gameBoard.GetKing(color).GetPosition() & safeSides) > 0) 
+                kingSafety += SubEvaluations.PawnShield(color, kingPerimeter);
 
             return kingSafety;
 
         }
+
+     
 
 
         /// <summary>

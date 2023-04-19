@@ -11,11 +11,15 @@ namespace RealChess.Model.AI.Evaluation
         public const ulong Center = 0x1818000000;
         public const ulong OuterCenter = 0x3c24243c0000;
 
+        public const ulong KingSidePawns = 0xe0000000000000;
+        public const ulong QueenSidePawns = 0x7000000000000;
+
         public const int movePenalty = 50;
 
         public const int infinity = 99999999;
         public const int negativeInfinity = -infinity;
 
         public const int BishopPairBuff = 50;
+        public const int pawnShieldBuff = 2;
     }
 }

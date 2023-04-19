@@ -72,6 +72,7 @@ namespace RealChess.Model.AI
                 moveScore = 0;
 
             return moveScore;
+
         }
 
         public static Move ChooseBestPromotion(Move move)
@@ -83,7 +84,10 @@ namespace RealChess.Model.AI
             {
                 if (!(p == PieceType.PAWN || p == PieceType.KING))
                 {
-                    var tempMove = BoardController.PromotePiece(move, BoardController.GetPieceByType(p));
+                    var piece = BoardController.GetPieceByType(p);
+                    piece.Color = move.PieceMoved.Color;
+
+                    var tempMove = BoardController.PromotePiece(move, piece);
 
                     _gameBoard.MakeTemporaryMove(tempMove);
 
@@ -100,13 +104,12 @@ namespace RealChess.Model.AI
                         bestPromotion = tempMove;
                         bestPromotionScore = tempScore;
                     }
+
+                    BoardUpdate.UndoPromotion(move);
+                    _gameBoard.UndoMove();
                 }
 
                 
-
-
-                BoardUpdate.UndoPromotion(move);
-                _gameBoard.UndoMove();
             }
             _gameBoard.MakePromotionMove(bestPromotion, bestPromotion.PieceMoved);
             return bestPromotion;
