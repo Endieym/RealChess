@@ -57,6 +57,10 @@ namespace RealChess.Model.AI.Book
             foreach (var game in games) 
             {
                 var masterMoves = game.MoveText.GetMoves().ToList();
+
+                if (masterMoves.ElementAtOrDefault(currentMoves.Count) == null) continue;
+
+
                 var lastMove = masterMoves.ElementAt(currentMoves.Count);
 
                 moves.Add(lastMove);
@@ -71,6 +75,7 @@ namespace RealChess.Model.AI.Book
             List<Move> moves = new List<Move>();
 
             var masterMoves = GetBookMoves(color, currentMoves);
+            
             foreach (var move in possibleMoves)
             {
                 foreach (var masterMove in masterMoves)
@@ -117,29 +122,29 @@ namespace RealChess.Model.AI.Book
             GamesQuantity = MatchingBlackGames.Count + MatchingWhiteGames.Count;
         }
 
-        public static void PrintGames()
-        {
-            Console.Clear();
-            foreach(var game in MatchingBlackGames)
-            {
-                Console.WriteLine(game);
-            }
+        //public static void PrintGames()
+        //{
+        //    Console.Clear();
+        //    foreach(var game in MatchingBlackGames)
+        //    {
+        //        Console.WriteLine(game);
+        //    }
 
-            foreach (var game in MatchingWhiteGames)
-            {
-                Console.WriteLine(game);
-            }
+        //    foreach (var game in MatchingWhiteGames)
+        //    {
+        //        Console.WriteLine(game);
+        //    }
 
-            Console.WriteLine();
-            Console.WriteLine(GamesQuantity);
-        }
+        //    Console.WriteLine();
+        //    Console.WriteLine(GamesQuantity);
+        //}
 
-        public static void TestGame(List<Move> moves)
-        {
-            var game = MatchingBlackGames[0];
+        //public static void TestGame(List<Move> moves)
+        //{
+        //    var game = MatchingBlackGames[0];
 
-            Console.WriteLine(GamesEqual(game, moves));
-        }
+        //    Console.WriteLine(GamesEqual(game, moves));
+        //}
 
         public static bool GamesEqual(Game masterGame, List<Move> moves)
         {
