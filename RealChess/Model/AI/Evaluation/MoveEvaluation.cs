@@ -82,25 +82,28 @@ namespace RealChess.Model.AI
 
             foreach (PieceType p in Enum.GetValues(typeof(PieceType)))
             {
-                if (p == PieceType.PAWN || p == PieceType.KING) continue;
-
-                var tempMove = BoardController.PromotePiece(move, BoardController.GetPieceByType(p));
-
-                _gameBoard.MakeTemporaryMove(tempMove);
-
-                var tempScore = GetEvaluationForMove(tempMove);
-
-                if (tempMove.Type == Move.MoveType.Checkmate)
+                if (!(p == PieceType.PAWN || p == PieceType.KING))
                 {
-                    bestPromotionScore = infinity;
-                    bestPromotion = tempMove;
+                    var tempMove = BoardController.PromotePiece(move, BoardController.GetPieceByType(p));
 
+                    _gameBoard.MakeTemporaryMove(tempMove);
+
+                    var tempScore = GetEvaluationForMove(tempMove);
+
+                    if (tempMove.Type == Move.MoveType.Checkmate)
+                    {
+                        bestPromotionScore = infinity;
+                        bestPromotion = tempMove;
+
+                    }
+                    if (tempScore > bestPromotionScore)
+                    {
+                        bestPromotion = tempMove;
+                        bestPromotionScore = tempScore;
+                    }
                 }
-                if (tempScore > bestPromotionScore)
-                {
-                    bestPromotion = tempMove;
-                    bestPromotionScore = tempScore;
-                }
+
+                
 
 
                 BoardUpdate.UndoPromotion(move);

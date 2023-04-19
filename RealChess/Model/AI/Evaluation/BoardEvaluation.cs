@@ -118,8 +118,8 @@ namespace RealChess.Model.Bitboard
             int countControl = 0;
             foreach(var piece in pieces.Values)
             {
-                if (piece.Type == PieceType.KING) continue;// king shouldn't be active
-                countControl += EvaluatePieceMobility(piece, _gameBoard.BitBoard);
+                if (!(piece.Type == PieceType.KING))// king shouldn't be active
+                    countControl += EvaluatePieceMobility(piece, _gameBoard.BitBoard);
             }
 
             return countControl ;
@@ -261,18 +261,19 @@ namespace RealChess.Model.Bitboard
 
             foreach(var piece in pieces.Values) 
             {
-               if(currentPhase == GamePhase.Opening)
-                {
-                    if (piece.Type != PieceType.PAWN &&
+               if(!(currentPhase == GamePhase.Opening &&
+                    piece.Type != PieceType.PAWN &&
                         piece.Type != PieceType.KNIGHT &&
                         piece.Type != PieceType.BISHOP
-                        ) continue;
-
-                }
+                        ))
+                { 
                 int index = (int)Math.Log(piece.GetPosition(),2);
+
                 if (piece.Color == PieceColor.BLACK)
                     index = 63 - index;
+
                 development += PreprocessedTables.PieceSquareTable(piece.Type, currentPhase)[index];
+                }
 
             }
             return development;

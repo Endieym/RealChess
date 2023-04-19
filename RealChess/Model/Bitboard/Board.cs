@@ -281,21 +281,19 @@ namespace RealChess.Model
                 // determine bit index, also referred as BitScan
                 int bitIndex = (int)Math.Log(finalMoves & ~(finalMoves - 1), 2);
                 Move newMove = new Move(bitIndex, piece);
-                if (!IsMoveLegal(newMove))
-                {
-                    finalMoves &= finalMoves - 1; // reset LS1B
-                    continue;
+                if (IsMoveLegal(newMove))
+                {                 
+                    if (IsKingUnderAttack(piece.Color))
+                        newMove.DefendsCheck = true;
+                    CheckMove(newMove);
 
+
+                    if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, finalMoves))
+                        newMove.IsPromotion = true;
+
+                    list.Add(newMove);
                 }
-                if (IsKingUnderAttack(piece.Color))
-                    newMove.DefendsCheck = true;
-                CheckMove(newMove);
                 
-                 
-                if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, finalMoves))
-                    newMove.IsPromotion = true;
-
-                list.Add(newMove);
                 finalMoves &= finalMoves - 1; // reset LS1B
             }
 
@@ -586,33 +584,27 @@ namespace RealChess.Model
                     newMove.CapturedPiece = player1.Pieces[bitIndex];
 
 
-                if (!IsMoveLegal(newMove))
+                if (IsMoveLegal(newMove))
                 {
-                    movesMask &= movesMask - 1; // reset LS1B
-                    continue;
+                    if (IsKingUnderAttack(piece.Color))
+                        newMove.DefendsCheck = true;
+
+                    CheckMove(newMove);
+
+                    if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
+                        newMove.IsPromotion = true;
+
+                    if (BoardLogic.GetCaptureValue(newMove.CapturedPiece, piece) > 0)
+                        newMove.IsPositiveCapture = true;
+
+                    captureList.Add(newMove);
 
                 }
-                
-                if (IsKingUnderAttack(piece.Color))
-                    newMove.DefendsCheck = true;
-
-                CheckMove(newMove);
-               
-                if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
-                    newMove.IsPromotion = true;
-
-                if (BoardLogic.GetCaptureValue(newMove.CapturedPiece, piece) > 0)
-                    newMove.IsPositiveCapture = true;
-                
-                captureList.Add(newMove);
-
                 movesMask &= movesMask - 1; // reset LS1B
 
             }
 
-
-            return captureList;
-            
+            return captureList;           
         }
 
         /// <summary>
