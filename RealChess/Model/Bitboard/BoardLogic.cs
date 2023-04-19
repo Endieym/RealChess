@@ -286,7 +286,7 @@ namespace RealChess.Model.Bitboard
 
                 // If the piece capturing, is worth less than the piece captured
                 if (squareValue > 0)
-                    return squareValue * 100;
+                    return squareValue;
 
             }
             return squareValue;
@@ -312,8 +312,8 @@ namespace RealChess.Model.Bitboard
         public static bool FinishedMiddleGame()
         {
 
-            int whiteMaterial = BoardEvaluation.ValuePieces(PieceColor.WHITE);
-            int blackMaterial = BoardEvaluation.ValuePieces(PieceColor.BLACK);
+            int whiteMaterial = BoardEvaluation.EvaluateMaterial(PieceColor.WHITE);
+            int blackMaterial = BoardEvaluation.EvaluateMaterial(PieceColor.BLACK);
 
             if (whiteMaterial <= 12 && blackMaterial <= 12)
                 return true;

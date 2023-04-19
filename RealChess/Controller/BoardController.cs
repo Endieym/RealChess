@@ -109,37 +109,50 @@ namespace RealChess.Controller
         {
             ChessPiece chessPiece;
             PieceType pieceType = GetTypeByPos(row, col);
+
+            chessPiece = GetPieceByType(pieceType);
+
+            chessPiece.UpdatePosition(row, col);
+
+            chessPiece.Color = GetColorByPos(row, col);
+            return chessPiece;
+        }
+
+        public static ChessPiece GetPieceByType(PieceType pieceType)
+        {
+            ChessPiece chessPiece;
+
             switch (pieceType)
             {
                 case PieceType.PAWN:
-                    chessPiece = new Pawn(row, col);
+                    chessPiece = new Pawn();
                     break;
 
                 case PieceType.KNIGHT:
-                    chessPiece = new Knight(row, col);
+                    chessPiece = new Knight();
                     break;
 
                 case PieceType.BISHOP:
-                    chessPiece = new Bishop(row, col);
+                    chessPiece = new Bishop();
                     break;
 
                 case PieceType.ROOK:
-                    chessPiece = new Rook(row, col);
+                    chessPiece = new Rook();
                     break;
 
                 case PieceType.QUEEN:
-                    chessPiece = new Queen(row, col);
+                    chessPiece = new Queen();
                     break;
 
                 case PieceType.KING:
-                    chessPiece = new King(row, col);
+                    chessPiece = new King();
                     break;
 
                 default:
                     chessPiece = null;
                     break;
             }
-            chessPiece.Color = GetColorByPos(row, col);
+
             return chessPiece;
         }
 

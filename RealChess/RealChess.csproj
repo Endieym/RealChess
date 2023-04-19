@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7CD99D9E-5EE3-493E-8813-9CA1F4375123}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>RealChess</RootNamespace>
     <AssemblyName>RealChess</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
@@ -77,11 +77,14 @@
     <Compile Include="Controller\RealController.cs" />
     <Compile Include="Model\AI\Book\BookReader.cs" />
     <Compile Include="Model\AI\Book\MoveTranslator.cs" />
+    <Compile Include="Model\AI\Evaluation\EvaluationConstants.cs" />
+    <Compile Include="Model\AI\Evaluation\SubEvaluations.cs" />
     <Compile Include="Model\AI\MoveChecker.cs" />
+    <Compile Include="Model\AI\Evaluation\MoveEvaluation.cs" />
     <Compile Include="Model\AI\PreprocessedTables.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />
-    <Compile Include="Model\AI\BoardEvaluation.cs" />
+    <Compile Include="Model\AI\Evaluation\BoardEvaluation.cs" />
     <Compile Include="Model\Bitboard\BoardLogic.cs" />
     <Compile Include="Model\Bitboard\BoardOperations.cs" />
     <Compile Include="Model\Bitboard\BoardUpdate.cs" />

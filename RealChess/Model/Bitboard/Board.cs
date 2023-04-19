@@ -204,7 +204,8 @@ namespace RealChess.Model
 
             BoardUpdate.UpdateBoard(move);
             BookReader.UpdateGames(movesList);
-            BookReader.PrintGames();
+
+            //BookReader.PrintGames();
             
 
 
@@ -231,9 +232,15 @@ namespace RealChess.Model
 
             Move promotion = new Move(endKey, chessPiece)
             {
+                StartSquare = move.StartSquare,
                 IsCapture = move.IsCapture,
-                DefendsCheck = move.DefendsCheck
+                DefendsCheck = move.DefendsCheck,
+                CapturedPiece = move.CapturedPiece,
+                IsPositiveCapture = true,
+                IsPromotion = true,
+                PromotedPiece = chessPiece.Type
             };
+
             // Checks for special properties of the move
             // Check, Checkmate or draw
             CheckMove(promotion);
@@ -420,8 +427,7 @@ namespace RealChess.Model
             //    MakeTemporaryMove(new Move(newMove.EndSquare -1, Rook))
             //}
             MakeTemporaryMove(newMove);
-            
-            
+                        
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
 
             if (result)
@@ -441,8 +447,7 @@ namespace RealChess.Model
                     newMove.Type = Move.MoveType.Check;
 
             }
-            
-            
+                        
             else if (BoardLogic.IsThreefoldRepetition(GetBoardStateString(this), positions))
             {
                 newMove.IsDrawByRepetiton = true;
@@ -454,7 +459,6 @@ namespace RealChess.Model
                 GetKing(GetOppositeColor(newMove.PieceMoved.Color)).InCheck = false;
 
             UndoMove();
-
             return result;
 
         }
@@ -488,6 +492,8 @@ namespace RealChess.Model
 
 
         }
+
+        
 
 
         /// <summary>

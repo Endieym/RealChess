@@ -292,16 +292,27 @@ namespace RealChess.Controller
             }          
             if (move.IsPromotion)
             {
+                PieceType promotedPiece;
 
-                PromotionForm frms2 = new PromotionForm
+                if((WhiteAi && turnColor == PieceColor.WHITE) || (BlackAi && turnColor == PieceColor.BLACK))
                 {
-                    StartPosition = FormStartPosition.CenterParent,
-                    Location = targetPanel.Location
-                };
+                    promotedPiece = move.PromotedPiece;
+                }
 
-                frms2.ShowDialog();
+                else
+                {
+                    PromotionForm promotionForm = new PromotionForm
+                    {
+                        StartPosition = FormStartPosition.CenterParent,
+                        Location = targetPanel.Location
+                    };
 
-                SwitchPiece(pieceSource, frms2.PieceClicked, move.StartSquare);
+                    promotionForm.ShowDialog();
+                    promotedPiece = promotionForm.PieceClicked;
+                }
+                
+
+                SwitchPiece(pieceSource, promotedPiece, move.StartSquare);
                 move = BoardController.PromotePiece(move, pieceSource.Piece);
 
 
@@ -469,7 +480,9 @@ namespace RealChess.Controller
         public static void EndGame()
         {
 
-
+            AiPlay = false;
+            WhiteAi = false;
+            BlackAi = false;
             ((ChessForm)Application.OpenForms[1]).DisableSettings();
             ChessForm.DisableClicks();
             ChessForm.ResetPieceClicked();

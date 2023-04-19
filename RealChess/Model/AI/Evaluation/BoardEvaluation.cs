@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.Bitboard.BoardLogic;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.AI.Evaluation.EvaluationConstants;
+using RealChess.Model.AI.Evaluation;
 
 namespace RealChess.Model.Bitboard
 {
@@ -20,12 +22,15 @@ namespace RealChess.Model.Bitboard
         private static Player whitePlayer;
         private static Player blackPlayer;
 
+        public static double Evaluation { get; set; }
+
         // Sets the game board and players
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
             whitePlayer = board.GetPlayer1();
             blackPlayer = board.GetPlayer2();
+            SubEvaluations.SetBoard(board);
         }
 
 
@@ -44,7 +49,7 @@ namespace RealChess.Model.Bitboard
             
             
             // The difference between white's pieces and black's pieces (by value)
-            double evaluation = (ValuePieces(PieceColor.WHITE) - ValuePieces(PieceColor.BLACK)) * 100;
+            double evaluation = (EvaluateMaterial(PieceColor.WHITE) - EvaluateMaterial(PieceColor.BLACK)) * 100;
           
             
             // Evaluates the difference board control of white against black's.
@@ -135,7 +140,7 @@ namespace RealChess.Model.Bitboard
             attacks |= piece.GetPosition();
 
             int mobility = 0;
-            ulong centerControl = BitboardConstants.Center;
+            ulong centerControl = Center;
 
             centerControl &= attacks;
 
@@ -158,20 +163,16 @@ namespace RealChess.Model.Bitboard
         /// </summary>
         /// <param name="color">player color</param>
         /// <returns>Count (value) of pieces</returns>
-        public static int ValuePieces(PieceColor color)
+        public static int EvaluateMaterial(PieceColor color)
         {
-            int pieceCount = 0;
+            int MaterialEvaluation = 0;
 
-            var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
+            MaterialEvaluation += SubEvaluations.CountMaterial(color);
 
-            // Counts value of pieces on a specific player
-            foreach(var piece in pieces.Values)
-            {
-                
-                pieceCount += piece.Value;
-            }
-        
-            return pieceCount;
+            if (SubEvaluations.CountBishopPair(color) >= 2)
+                MaterialEvaluation += BishopPairBuff;
+
+            return MaterialEvaluation;
         }
 
         /// <summary>
@@ -243,6 +244,7 @@ namespace RealChess.Model.Bitboard
             return kingSafety;
 
         }
+
 
         /// <summary>
         /// Evaluates the development a player has with their pieces

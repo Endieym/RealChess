@@ -157,7 +157,9 @@ namespace RealChess.Model.Bitboard
             int row = key / 8;
             int col = key % 8;
 
-            return $"{piece.Type.ToString().Substring(0,1)}{GetPositionString(row,col)}";
+            char color = piece.Color == PieceColor.WHITE ? 'W' : 'B';
+
+            return $"{color}{piece.Type.ToString().Substring(0,1)}{GetPositionString(row,col)}";
         }
 
         // Returns the notation for the entire chess board
@@ -170,12 +172,12 @@ namespace RealChess.Model.Bitboard
 
             foreach (var piece in blackPieces.Values)
             {
-                boardState += GetPiecePositionString(piece);
+                    boardState += GetPiecePositionString(piece);
             }
 
             foreach (var piece in whitePieces.Values)
             {
-                boardState += GetPiecePositionString(piece);
+                    boardState += GetPiecePositionString(piece);
             }
 
             return boardState;

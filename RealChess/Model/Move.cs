@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Model
 {
@@ -11,6 +12,8 @@ namespace RealChess.Model
     {
         public ChessPiece PieceMoved { get; set; }
         public ChessPiece CapturedPiece { get; set; }
+        public PieceType PromotedPiece { get; set; }
+
         public int StartSquare { get; set; }
         public int EndSquare { get; set; }
         public bool IsCapture { get; set; }

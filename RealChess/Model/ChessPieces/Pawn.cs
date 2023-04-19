@@ -11,6 +11,8 @@ namespace RealChess.Model.ChessPieces
         public override PieceType Type { get; set; } = PieceType.PAWN;
         public override ushort Value { get; set; } = 1;
         public Pawn() { }
+        
+        public Pawn(int key): base(key) { }
 
         public Pawn(int row, int col) : base(row, col) { }
 

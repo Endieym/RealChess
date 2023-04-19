@@ -18,8 +18,7 @@ namespace RealChess.Model.ChessPieces
 
         public ChessPiece(int row, int col)
         {
-            int key = row * Board.SIZE + col;
-            this.bitBoard = (UInt64)1 << key;
+            UpdatePosition(row,col);
         }
 
         public ChessPiece(int key)
@@ -30,6 +29,12 @@ namespace RealChess.Model.ChessPieces
 
         public void UpdatePosition(int key)
         {
+            this.bitBoard = (ulong)1 << key;
+        }
+
+        public void UpdatePosition(int row, int col)
+        {
+            int key = row * Board.SIZE + col;
             this.bitBoard = (ulong)1 << key;
         }
 

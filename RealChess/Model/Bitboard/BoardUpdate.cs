@@ -49,6 +49,7 @@ namespace RealChess.Model.Bitboard
                 UpdateCaptures(move);
 
             UpdatePhase();
+            BoardEvaluation.Evaluation = BoardEvaluation.Evaluate();
             
         }
 
@@ -168,7 +169,11 @@ namespace RealChess.Model.Bitboard
 
             Move oldMove = movesList[index];
 
+            
+
             Move undoMove = new Move(oldMove.StartSquare, oldMove.PieceMoved);
+            undoMove.StartSquare = oldMove.EndSquare;
+
             if (oldMove.IsKingSideCastle)
             {
                 int pos = oldMove.StartSquare + 1;
@@ -228,6 +233,16 @@ namespace RealChess.Model.Bitboard
                 _gameBoard.WhiteBoard |= (ulong)1 << newKey;
             }
 
+        }
+
+        public static void UndoPromotion(Move move)
+        {
+            move.PieceMoved = new Pawn(move.EndSquare);
+
+            var player = move.PieceMoved.Color == PieceColor.WHITE ? _gameBoard.WhitePlayer :
+                _gameBoard.BlackPlayer;
+            
+            player.SwitchPiece(move.EndSquare, move.PieceMoved);
 
         }
 

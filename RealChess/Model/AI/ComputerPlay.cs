@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 
 namespace RealChess.Model
 {
@@ -20,8 +21,7 @@ namespace RealChess.Model
 
         private static bool inBook = true;
 
-        private const int infinity = 999999;
-        private const int negativeInfinity = -infinity;
+ 
 
         // Sets the game board
         public static void SetBoard(Board board)
@@ -30,6 +30,7 @@ namespace RealChess.Model
             BookReader.InitialiseDatabases();   
             MoveTranslator.SetBoard(board);
             BoardEvaluation.SetBoard(board);
+            MoveEvaluation.SetBoard(board);
         }
 
         // Plays a move for a specific color
@@ -90,45 +91,27 @@ namespace RealChess.Model
             double bestMoveScore = negativeInfinity;
             foreach (Move move in allMoves)
             {
+                Move tempMove = move;
+
                 if (move.IsPromotion)
-                {
-
-                }
-                else
-                {
-                    _gameBoard.MakeTemporaryMove(move);
-
-                }
-                moveScore = BoardEvaluation.EvaluateForPlayer(color);
-
-                if (!MoveChecker.IsGoodMove(move))
-                {
-                    moveScore -= (move.PieceMoved.Value * 100);
-
-                    if (moveScore > 0)
-                        moveScore *= -1;
-                }
-
-                if (MoveChecker.IsBadForPhase(move, _gameBoard.CurrentPhase))
-                    moveScore -= BitboardConstants.MovePenalty;              
+                    tempMove = MoveEvaluation.ChooseBestPromotion(move);
+                    
                 
-                if (GameController.IsReal && move.PieceMoved.Type != PieceType.KING)
-                   moveScore += RealBoardController.CalculateSuccess(move) /10;
+                _gameBoard.MakeTemporaryMove(tempMove);
+                moveScore = MoveEvaluation.GetEvaluationForMove(tempMove);
                 
-                if (move.Type == Move.MoveType.Draw)
-                    moveScore = 0;
 
                 if (moveScore > bestMoveScore)
                 {                   
                         bestMovesList.Clear();
-                        bestMovesList.Add(move);
+                        bestMovesList.Add(tempMove);
                         bestMoveScore = moveScore;
 
                 }
 
                 else if (moveScore == bestMoveScore)
                 {
-                        bestMovesList.Add(move);
+                        bestMovesList.Add(tempMove);
 
                 }
 
@@ -137,7 +120,7 @@ namespace RealChess.Model
                 if (move.Type == Move.MoveType.Checkmate)
                 {
                     bestMovesList.Clear();
-                    bestMovesList.Add(move);
+                    bestMovesList.Add(tempMove);
                     return bestMovesList;
 
                 }
@@ -146,6 +129,8 @@ namespace RealChess.Model
             return bestMovesList;
 
         }
+
+        
            
 
     }
