@@ -264,13 +264,15 @@ namespace RealChess.Model.Bitboard
             if (attackers.Count == 0 && defenders.Count == 0)
                 return 0;
 
-            
-            
+                        
             for (int i = 0; i < attackers.Count; i++)
             {
                 // Add the defender's value
                 // Since it can be captured
                 if (i > 0)
+                    if (defenders[i - 1].Type == PieceType.KING)
+                        return squareValue;
+                    
                     squareValue += defenders[i - 1].Value;
 
                 //// Exchange between the last attacker, and the last defender

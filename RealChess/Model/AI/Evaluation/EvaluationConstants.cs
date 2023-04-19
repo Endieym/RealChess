@@ -13,7 +13,7 @@ namespace RealChess.Model.AI.Evaluation
 
         public const int movePenalty = 50;
 
-        public const int infinity = 999999;
+        public const int infinity = 99999999;
         public const int negativeInfinity = -infinity;
 
         public const int BishopPairBuff = 50;

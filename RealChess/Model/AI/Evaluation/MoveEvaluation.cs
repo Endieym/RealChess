@@ -41,9 +41,9 @@ namespace RealChess.Model.AI
 
             moveScore += MoveChecker.MoveBuffer(move);
 
-            int PiecesSafety = BoardEvaluation.EvaluatePiecesSafety(color);
+            int PiecesSafety = BoardEvaluation.EvaluatePiecesSafety(color) * 100;
 
-            int PieceMovedSafety = BoardLogic.EvaluatePieceSafety(move.PieceMoved);
+            int PieceMovedSafety = BoardLogic.EvaluatePieceSafety(move.PieceMoved) * 100;
 
             moveScore += PiecesSafety;
 
@@ -57,8 +57,7 @@ namespace RealChess.Model.AI
             {
                 if (MoveChecker.ShouldTrade(move))
                     moveScore += movePenalty;
-
-                
+            
             }
 
             if (PieceMovedSafety < 0)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using static RealChess.Model.Bitboard.BoardLogic;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
-using RealChess.Model.AI.Evaluation;
+using RealChess.Model.AI.Evaluation;  
 
 namespace RealChess.Model.Bitboard
 {
