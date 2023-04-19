@@ -49,7 +49,7 @@ namespace RealChess.Model.Bitboard
             
             
             // The difference between white's pieces and black's pieces (by value)
-            double evaluation = (EvaluateMaterial(PieceColor.WHITE) - EvaluateMaterial(PieceColor.BLACK)) * 100;
+            double evaluation = EvaluateMaterial(PieceColor.WHITE) - EvaluateMaterial(PieceColor.BLACK);
           
             
             // Evaluates the difference board control of white against black's.
@@ -167,7 +167,7 @@ namespace RealChess.Model.Bitboard
         {
             int MaterialEvaluation = 0;
 
-            MaterialEvaluation += SubEvaluations.CountMaterial(color);
+            MaterialEvaluation += SubEvaluations.CountMaterial(color) * 100;
 
             if (SubEvaluations.CountBishopPair(color) >= 2)
                 MaterialEvaluation += BishopPairBuff;

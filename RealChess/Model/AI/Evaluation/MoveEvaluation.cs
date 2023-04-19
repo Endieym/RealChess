@@ -89,6 +89,13 @@ namespace RealChess.Model.AI
                 _gameBoard.MakeTemporaryMove(tempMove);
 
                 var tempScore = GetEvaluationForMove(tempMove);
+
+                if (tempMove.Type == Move.MoveType.Checkmate)
+                {
+                    bestPromotionScore = infinity;
+                    bestPromotion = tempMove;
+
+                }
                 if (tempScore > bestPromotionScore)
                 {
                     bestPromotion = tempMove;
@@ -99,7 +106,7 @@ namespace RealChess.Model.AI
                 BoardUpdate.UndoPromotion(move);
                 _gameBoard.UndoMove();
             }
-
+            _gameBoard.MakePromotionMove(bestPromotion, bestPromotion.PieceMoved);
             return bestPromotion;
         }
 

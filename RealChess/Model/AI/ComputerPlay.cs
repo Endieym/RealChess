@@ -100,7 +100,7 @@ namespace RealChess.Model
                 _gameBoard.MakeTemporaryMove(tempMove);
                 moveScore = MoveEvaluation.GetEvaluationForMove(tempMove);
                 
-
+                
                 if (moveScore > bestMoveScore)
                 {                   
                         bestMovesList.Clear();
@@ -114,6 +114,9 @@ namespace RealChess.Model
                         bestMovesList.Add(tempMove);
 
                 }
+
+                if (tempMove.IsPromotion)
+                    BoardUpdate.UndoPromotion(tempMove);
 
                 _gameBoard.UndoMove();
         
