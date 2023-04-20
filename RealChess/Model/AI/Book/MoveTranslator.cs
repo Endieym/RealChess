@@ -21,17 +21,16 @@ namespace RealChess.Model.AI.Book
         public static Move CopyMasterMove(PieceColor color, ilf.pgn.Data.Move masterMove)
         {  
             Move move = new Move();
-            if(masterMove.OriginSquare != null)
-            {
+            if(masterMove.OriginSquare != null)            
                 move.StartSquare = CopySquare(masterMove.OriginSquare);
-            }
-
-            move.EndSquare = CopySquare(masterMove.TargetSquare);
+            
+            
+            if(masterMove.TargetSquare != null)
+                move.EndSquare = CopySquare(masterMove.TargetSquare);
 
             AddProperties(color, masterMove, move);
 
             return move;
-
 
         }
 
@@ -39,6 +38,22 @@ namespace RealChess.Model.AI.Book
         {
             var player = color == PieceColor.WHITE ? _gameBoard.WhitePlayer : _gameBoard.WhitePlayer;
             var enemy = color == PieceColor.WHITE ? _gameBoard.BlackPlayer : _gameBoard.BlackPlayer;
+
+            if (masterMove.ToString().Equals("O-O"))
+            {
+                move.IsKingSideCastle = true;
+                move.Type = Move.MoveType.Castle;
+                move.StartSquare = _gameBoard.GetKingPos(color);
+                move.EndSquare = move.StartSquare + 2;
+            }
+
+            else if (masterMove.ToString().Equals("O-O-O"))
+            {
+                move.IsQueenSideCastle = true;
+                move.Type = Move.MoveType.Castle;
+                move.StartSquare = _gameBoard.GetKingPos(color);
+                move.EndSquare = move.StartSquare - 2;
+            }
 
             move.PieceMoved = player.Pieces[move.StartSquare];
 
@@ -49,11 +64,15 @@ namespace RealChess.Model.AI.Book
                 move.CapturedPiece = enemy.Pieces[move.EndSquare];
             }
 
+            
+
             if ((bool)masterMove.IsCheck)
             {
                 move.Type = Move.MoveType.Check;
                 move.IsCheck = true;
             }
+            
+            
 
         }
 
@@ -107,9 +126,12 @@ namespace RealChess.Model.AI.Book
                 if (!SquaresEqual(masterMove.OriginSquare, gameMove.StartSquare))
                     return false;
             }
-
-            if (!SquaresEqual(masterMove.TargetSquare, gameMove.EndSquare))
-                return false;
+            if(masterMove.TargetSquare != null)
+            {
+                if (!SquaresEqual(masterMove.TargetSquare, gameMove.EndSquare))
+                    return false;
+            }
+            
 
             if (masterMove.Piece != null)
             {

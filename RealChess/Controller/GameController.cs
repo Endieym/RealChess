@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.Bitboard.BoardOperations;
+using RealChess.Model.AI;
 
 namespace RealChess.Controller
 {
@@ -424,6 +425,13 @@ namespace RealChess.Controller
                         Draw("Stalemate");
                     else if (move.IsDrawByRepetiton)
                         Draw("Repetition");
+
+                    break;
+
+                case Move.MoveType.Castle:
+                    player = new System.Media.SoundPlayer(Properties.Resources.Castling);
+
+                    player.Play();
 
                     break;
 

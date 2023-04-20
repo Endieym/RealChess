@@ -1,4 +1,5 @@
 ﻿using RealChess.Model;
+using RealChess.Model.AI;
 using RealChess.Model.Bitboard;
 using RealChess.Model.ChessPieces;
 using RealChess.View;
