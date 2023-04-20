@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
+using RealChess.Model.AI.Evaluation;
 
-namespace RealChess.Model
+namespace RealChess.Model.AI
 {
     internal static class ComputerPlay
     {
@@ -39,7 +40,7 @@ namespace RealChess.Model
             ChessForm.DisableClicks();
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-
+            
             while (stopwatch.ElapsedMilliseconds < 700)
             {
                 Application.DoEvents();

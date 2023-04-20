@@ -1,4 +1,5 @@
-﻿using RealChess.Model.ChessPieces;
+﻿using RealChess.Model.AI.Evaluation;
+using RealChess.Model.ChessPieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -226,6 +227,24 @@ namespace RealChess.Model.Bitboard
             return EvaluateSafety(piece.Color, piece.GetPosition(), piece.Value);
         }
 
+        public static List<ChessPiece> GetHangingPieces(PieceColor color)
+        {
+            var playerPieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
+                _gameBoard.GetPlayer2().Pieces;
+
+            List<ChessPiece> hangingList = new List<ChessPiece>();
+
+            foreach(var piece in playerPieces.Values)
+            {
+                if (EvaluatePieceSafety(piece) < 0)
+                    hangingList.Add(piece);
+            }
+
+            hangingList.Sort();
+
+            return hangingList;
+        }
+
         // Returns the value of the capture
         public static int GetCaptureValue(ChessPiece pieceCaptured, ChessPiece pieceAttacking)
         {
@@ -318,10 +337,10 @@ namespace RealChess.Model.Bitboard
         public static bool FinishedMiddleGame()
         {
 
-            int whiteMaterial = BoardEvaluation.EvaluateMaterial(PieceColor.WHITE);
-            int blackMaterial = BoardEvaluation.EvaluateMaterial(PieceColor.BLACK);
+            int materialOnBoard = MajorEvaluations.EvaluatePlayerMaterial(PieceColor.WHITE);
+            materialOnBoard += MajorEvaluations.EvaluatePlayerMaterial(PieceColor.BLACK);
 
-            if (whiteMaterial <= 12 && blackMaterial <= 12)
+            if (materialOnBoard <= 24)
                 return true;
 
             return false;
