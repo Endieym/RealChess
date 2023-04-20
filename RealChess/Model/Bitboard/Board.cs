@@ -447,7 +447,7 @@ namespace RealChess.Model
 
             }
                         
-            else if (BoardLogic.IsThreefoldRepetition(GetBoardStateString(this), positions))
+            if (BoardLogic.IsThreefoldRepetition(GetBoardStateString(this), positions))
             {
                 newMove.IsDrawByRepetiton = true;
                 newMove.Type = Move.MoveType.Draw;

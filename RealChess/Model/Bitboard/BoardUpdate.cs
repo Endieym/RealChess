@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.Bitboard.BoardOperations;
 using RealChess.Model.ChessPieces;
+using RealChess.Model.AI.Evaluation;
 
 namespace RealChess.Model.Bitboard
 {
@@ -238,7 +239,11 @@ namespace RealChess.Model.Bitboard
 
         public static void UndoPromotion(Move move)
         {
-            move.PieceMoved = new Pawn(move.EndSquare);
+            move.PieceMoved = new Pawn(move.EndSquare)
+            {
+                HasMoved = true,
+                Color = move.PieceMoved.Color
+            };
 
             var player = move.PieceMoved.Color == PieceColor.WHITE ? _gameBoard.WhitePlayer :
                 _gameBoard.BlackPlayer;
