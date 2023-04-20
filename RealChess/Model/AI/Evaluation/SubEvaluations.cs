@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
+using RealChess.Model.ChessPieces;
 
 namespace RealChess.Model.AI.Evaluation
 {
@@ -104,17 +105,55 @@ namespace RealChess.Model.AI.Evaluation
            
             if (color == PieceColor.BLACK) pawnPos >>= 40;
             pawnPos |= color == PieceColor.WHITE ? pawnPos >> 8 : pawnPos << 8;
-            
-            foreach (var piece in playerPieces.Values)
+
+            var pieces = playerPieces.Values.ToList();
+            pieces.Sort();
+
+            int index = 0;
+
+            while(pieces.Count > index && pieces[index].Type == PieceType.PAWN)
             {
-                if (piece.Type == PieceType.PAWN && (piece.GetPosition() & kingPerimeter) > 0
-                    && (piece.GetPosition() & pawnPos) > 0)
-                    pawnShield *= pawnShieldBuff; 
-                
+                var piecePos = pieces[index++].GetPosition();
+
+                if ((piecePos & kingPerimeter) > 0
+                    && (piecePos & pawnPos) > 0)
+                    pawnShield *= pawnShieldBuff;
+
             }
-
-
             return pawnShield;
+        }
+
+        /// <summary>
+        /// Function which evaluates piece mobility
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <param name="ocuppied">Ocuppied board</param>
+        /// <returns></returns>
+        public static int EvaluatePieceMobility(ChessPiece piece, ulong ocuppied)
+        {
+            // Gets the possible moves bitmask for the piece
+            ulong attacks = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures() :
+                piece.GenerateLegalMoves(ocuppied);
+
+            attacks |= piece.GetPosition();
+
+            int mobility = 0;
+            ulong centerControl = Center;
+
+            centerControl &= attacks;
+
+            // Center is more valuable square to control
+            while (centerControl != 0)
+            {
+                centerControl &= centerControl - 1;// reset LS1B
+                mobility += 2;
+            }
+            while (attacks != 0)
+            {
+                attacks &= attacks - 1; // reset LS1B
+                mobility++;
+            }
+            return mobility;
         }
 
 

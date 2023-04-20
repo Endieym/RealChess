@@ -20,6 +20,6 @@ namespace RealChess.Model.AI.Evaluation
         public const int negativeInfinity = -infinity;
 
         public const int BishopPairBuff = 50;
-        public const int pawnShieldBuff = 2;
+        public const int pawnShieldBuff = 3;
     }
 }

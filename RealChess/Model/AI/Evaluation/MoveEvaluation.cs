@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 
-namespace RealChess.Model.AI
+namespace RealChess.Model.AI.Evaluation
 {
     internal static class MoveEvaluation
     {
@@ -27,25 +27,17 @@ namespace RealChess.Model.AI
 
             double moveScore = BoardEvaluation.EvaluateForPlayer(color);
 
-            if (move.IsCapture)
-                Console.WriteLine("3e1");
+            //if (MoveChecker.IsBadCapture(move))
+            //{
+            //    moveScore -= (move.PieceMoved.Value * 100);
 
-            if (MoveChecker.IsBadCapture(move))
-            {
-                moveScore -= (move.PieceMoved.Value * 100);
-
-                if (moveScore > 0)
-                    moveScore *= -1;
-            }
+            //    if (moveScore > 0)
+            //        moveScore *= -1;
+            //}
 
 
-            moveScore += MoveChecker.MoveBuffer(move);
-
-            int PiecesSafety = BoardEvaluation.EvaluatePiecesSafety(color) * 100;
-
-            int PieceMovedSafety = BoardLogic.EvaluatePieceSafety(move.PieceMoved) * 100;
-
-            moveScore += PiecesSafety;
+            moveScore += MoveChecker.MoveBonus(move);
+            moveScore -= MoveChecker.MovePenalty(move);
 
             if (MoveChecker.IsBadForPhase(move, _gameBoard.CurrentPhase))
                 moveScore -= movePenalty;
@@ -53,26 +45,10 @@ namespace RealChess.Model.AI
             if (GameController.IsReal && move.PieceMoved.Type != PieceType.KING)
                 moveScore += RealBoardController.CalculateSuccess(move) / 10;
 
-            if (MoveChecker.IsTrade(move))
-            {
-                if (MoveChecker.ShouldTrade(move))
-                    moveScore += movePenalty;
-            
-            }
-
-            if (PieceMovedSafety < 0)
-            {
-                if(move.IsPositiveCapture || MoveChecker.IsTrade(move))
-                    moveScore += PieceMovedSafety * -1;
-
-            }
-
-
             if (move.Type == Move.MoveType.Draw)
                 moveScore = 0;
 
             return moveScore;
-
         }
 
         public static Move ChooseBestPromotion(Move move)
@@ -114,6 +90,5 @@ namespace RealChess.Model.AI
             _gameBoard.MakePromotionMove(bestPromotion, bestPromotion.PieceMoved);
             return bestPromotion;
         }
-
     }
 }

@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.Bitboard.BoardLogic;
 using static RealChess.Model.ChessPieces.ChessPiece;
-using static RealChess.Model.AI.Evaluation.EvaluationConstants;
-using RealChess.Model.AI.Evaluation;  
+using static RealChess.Model.AI.Evaluation.MajorEvaluations;
 
-namespace RealChess.Model.Bitboard
+
+namespace RealChess.Model.AI.Evaluation
 {
     /// <summary>
     /// Class responsible for evaluation of the board
@@ -19,19 +19,19 @@ namespace RealChess.Model.Bitboard
     {
         public static int EndGameWeight { get; set; }
         private static Board _gameBoard;
-        private static Player whitePlayer;
-        private static Player blackPlayer;
 
         public static double Evaluation { get; set; }
+        public static int MaterialCount { get; set; }
 
         // Sets the game board and players
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
-            whitePlayer = board.GetPlayer1();
-            blackPlayer = board.GetPlayer2();
+
+            MajorEvaluations.SetBoard(board);
             SubEvaluations.SetBoard(board);
         }
+
 
 
         /// <summary>
@@ -44,36 +44,24 @@ namespace RealChess.Model.Bitboard
         /// <returns></returns>
         public static double Evaluate()
         {
-            var whitePieces = _gameBoard.GetPlayer1().Pieces.Values;
-            var blackPieces = _gameBoard.GetPlayer2().Pieces.Values;
-            
-            
-            // The difference between white's pieces and black's pieces (by value)
-            double evaluation = EvaluateMaterial(PieceColor.WHITE) - EvaluateMaterial(PieceColor.BLACK);
-          
-            
-            // Evaluates the difference board control of white against black's.
-            evaluation += EvaluateBoardControl(PieceColor.WHITE) - EvaluateBoardControl(PieceColor.BLACK);
 
+            // The difference between white's pieces and black's pieces (by value)
+            double evaluation = EvaluateMaterial();
+
+
+            // Evaluates the difference board control of white against black's.
+            evaluation += EvaluateBoardControl();
             // Evaluates king safety
-            
-            evaluation += EvaluateKingSafety(PieceColor.WHITE) - EvaluateKingSafety(PieceColor.BLACK);
+
+            evaluation += EvaluateKingSafety();
 
             double openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 1 : 0.5;
             // Evaluates piece development for both players
-            evaluation += (EvaluatePieceDevelopment(PieceColor.WHITE) - EvaluatePieceDevelopment(PieceColor.BLACK))* openingWeight;
+
+            evaluation += EvaluatePieceDevelopment(openingWeight);
 
             // Evaluates safety of all player's ieces
-            evaluation += EvaluatePiecesSafety(PieceColor.WHITE) - EvaluatePiecesSafety(PieceColor.BLACK);
-            //foreach (var piece in whitePieces)
-            //{
-            //    evaluation += BoardLogic.EvaluatePieceSafety(piece);
-            //}
-
-            //foreach (var piece in blackPieces)
-            //{
-            //    evaluation -= BoardLogic.EvaluatePieceSafety(piece);
-            //}
+            evaluation += EvaluatePiecesSafety();
 
             return evaluation;
 
@@ -87,172 +75,42 @@ namespace RealChess.Model.Bitboard
         /// <returns>The evaluation as a number</returns>
         public static double EvaluateForPlayer(PieceColor color)
         {
-            var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
             
             double evaluation = Evaluate();
 
             evaluation *= color == PieceColor.WHITE ? 1 : -1;
 
-            //// Evaluates safety of every piece
-            //foreach (var piece in pieces.Values)
-            //{
-            //    if (piece.Type != PieceType.PAWN && piece.Type != PieceType.KING)
-            //    {
-            //        evaluation += BoardLogic.EvaluatePieceSafety(piece) * 4;
-            //    }
-            //}
 
             return evaluation;
         }
 
-        /// <summary>
-        /// Evaluates control of squares for a specific player
-        /// </summary>
-        /// <param name="color">Player color</param>
-        /// <returns>The evaluation as a number</returns>
-        public static int EvaluateBoardControl(PieceColor color)
+        public static int EvaluateMaterial()
         {
-            var pieces = color == PieceColor.WHITE? _gameBoard.GetPlayer1().Pieces:
-                _gameBoard.GetPlayer2().Pieces;
-
-            int countControl = 0;
-            foreach(var piece in pieces.Values)
-            {
-                if (!(piece.Type == PieceType.KING))// king shouldn't be active
-                    countControl += EvaluatePieceMobility(piece, _gameBoard.BitBoard);
-            }
-
-            return countControl ;
+            return EvaluatePlayerMaterial(PieceColor.WHITE) - EvaluatePlayerMaterial(PieceColor.BLACK);
         }
 
-        /// <summary>
-        /// Function which evaluates piece mobility
-        /// </summary>
-        /// <param name="piece"></param>
-        /// <param name="ocuppied">Ocuppied board</param>
-        /// <returns></returns>
-        public static int EvaluatePieceMobility(ChessPiece piece, ulong ocuppied)
+        public static int EvaluateBoardControl()
         {
-            // Gets the possible moves bitmask for the piece
-            ulong attacks = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures() :
-                piece.GenerateLegalMoves(ocuppied);
-
-            attacks |= piece.GetPosition();
-
-            int mobility = 0;
-            ulong centerControl = Center;
-
-            centerControl &= attacks;
-
-            // Center is more valuable square to control
-            while (centerControl != 0)
-            {
-                centerControl &= centerControl - 1;// reset LS1B
-                mobility += 2;
-            }
-            while (attacks != 0)
-            {
-                attacks &= attacks - 1; // reset LS1B
-                mobility++;
-            }
-            return mobility;
-        }
-
-        /// <summary>
-        /// Counts pieces and their values of a specific coloured player
-        /// </summary>
-        /// <param name="color">player color</param>
-        /// <returns>Count (value) of pieces</returns>
-        public static int EvaluateMaterial(PieceColor color)
-        {
-            int MaterialEvaluation = 0;
-
-            MaterialEvaluation += SubEvaluations.CountMaterial(color) * 100;
-
-            if (SubEvaluations.CountBishopPair(color) >= 2)
-                MaterialEvaluation += BishopPairBuff;
-
-            return MaterialEvaluation;
-        }
-
-        /// <summary>
-        /// Evaluates the safety of all pieces of a player
-        /// </summary>
-        /// <param name="color">Player color</param>
-        /// <returns>The number evaluation</returns>
-        public static int EvaluatePiecesSafety(PieceColor color)
-        {
-            int safety = 0;
-
-            var pieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
-                _gameBoard.GetPlayer2().Pieces;
-
-            // Evaluates safety of every piece
-            foreach (var piece in pieces.Values)
-            {
-                if (piece.Type != PieceType.PAWN && piece.Type != PieceType.KING)
-                {
-                    safety += BoardLogic.EvaluatePieceSafety(piece);
-                }
-            }
-            return safety;
+            return EvaluatePlayerControl(PieceColor.WHITE) - EvaluatePlayerControl(PieceColor.BLACK);
 
         }
 
-        /// <summary>
-        /// Evaluates the safety of the king of a player
-        /// </summary>
-        /// <param name="color">Player color</param>
-        /// <returns>The evaluation as a number</returns>
-        public static int EvaluateKingSafety(PieceColor color)
+        public static int EvaluateKingSafety()
         {
-            ulong kingPerimeter = GetKingPerimeter(color);
-
-            int kingSafety = SubEvaluations.EvaluateKingPerimeter(color, kingPerimeter);
-
-            ulong safeSides = KingSidePawns | QueenSidePawns;
-
-            if ((_gameBoard.GetKing(color).GetPosition() & safeSides) > 0) 
-                kingSafety += SubEvaluations.PawnShield(color, kingPerimeter);
-
-            return kingSafety;
-
+            return EvaluatePlayerKingSafety(PieceColor.WHITE) - EvaluatePlayerKingSafety(PieceColor.BLACK);
         }
 
-     
-
-
-        /// <summary>
-        /// Evaluates the development a player has with their pieces
-        /// </summary>
-        /// <param name="color">Player color</param>
-        /// <returns>The evaluation as a number</returns>
-        public static int EvaluatePieceDevelopment(PieceColor color)
+        public static double EvaluatePieceDevelopment(double openingWeight)
         {
-            var pieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
-                _gameBoard.GetPlayer2().Pieces;
-
-            int development = 0;
-            GamePhase currentPhase = _gameBoard.CurrentPhase;
-
-            foreach(var piece in pieces.Values) 
-            {
-               if(!(currentPhase == GamePhase.Opening &&
-                    piece.Type != PieceType.PAWN &&
-                        piece.Type != PieceType.KNIGHT &&
-                        piece.Type != PieceType.BISHOP
-                        ))
-                { 
-                int index = (int)Math.Log(piece.GetPosition(),2);
-
-                if (piece.Color == PieceColor.BLACK)
-                    index = 63 - index;
-
-                development += PreprocessedTables.PieceSquareTable(piece.Type, currentPhase)[index];
-                }
-
-            }
-            return development;
+            return (EvaluatePlayerDevelopment(PieceColor.WHITE) - EvaluatePlayerDevelopment(PieceColor.BLACK))
+                * openingWeight;
         }
+
+        public static int EvaluatePiecesSafety()
+        {
+            return (EvaluatePlayerSafety(PieceColor.WHITE) - EvaluatePlayerSafety(PieceColor.BLACK)) * 80;
+        }
+
+
     }
 }
