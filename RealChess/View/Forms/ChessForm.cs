@@ -49,9 +49,7 @@ namespace RealChess
         private void home_Click(object sender, EventArgs e)
         {
 
-            MainPage home = new MainPage();
-            home.Show();
-            this.Hide();
+            ReturnHomepage();
 
         }
         

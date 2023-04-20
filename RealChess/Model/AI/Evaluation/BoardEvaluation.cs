@@ -108,7 +108,7 @@ namespace RealChess.Model.AI.Evaluation
 
         public static int EvaluatePiecesSafety()
         {
-            return (EvaluatePlayerSafety(PieceColor.WHITE) - EvaluatePlayerSafety(PieceColor.BLACK)) * 80;
+            return (EvaluatePlayerDanger(PieceColor.BLACK) - EvaluatePlayerDanger(PieceColor.WHITE)) * 20;
         }
 
 

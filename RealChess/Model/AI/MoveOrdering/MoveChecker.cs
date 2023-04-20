@@ -26,6 +26,7 @@ namespace RealChess.Model.AI
                     buff += move.CapturedPiece.Value * 100;
                 }
             }
+
             if(move.IsKingSideCastle || move.IsQueenSideCastle)
             {
                 buff += EvaluationConstants.movePenalty;
@@ -40,11 +41,31 @@ namespace RealChess.Model.AI
         public static int MovePenalty(Move move)
         {
             int debuff = 0;
-            
+
+            debuff += FalseThreat(move);
 
             debuff += HangingPenalty(move);
 
             return debuff;
+        }
+
+        public static int FalseThreat(Move move)
+        {
+            int antiThreatValue = 0;
+            var threatenedPieces = ThreatenedPieces(move);
+
+            if(EvaluatePieceSafety(move.PieceMoved) < 0)
+            {
+                foreach (var piece in threatenedPieces)
+                {
+                    var safety = EvaluatePieceSafety(piece);
+
+                    if (safety < 0)
+                        antiThreatValue -= safety;
+                }
+            }
+
+            return antiThreatValue;
         }
 
         public static int HangingPenalty(Move move)
@@ -66,6 +87,9 @@ namespace RealChess.Model.AI
                 if (move.IsPositiveCapture || IsTrade(move))
                     debuff = 0;
             }
+
+            else if (ThreatningValue(move) > hangingPiece.Value)
+                debuff = 0;
             
             return debuff;
         }
@@ -87,8 +111,6 @@ namespace RealChess.Model.AI
         //    else if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
         //        flag = true;
 
-
-
         //    return flag;
         //}
 
@@ -99,6 +121,22 @@ namespace RealChess.Model.AI
 
             return hangingList.Max();
 
+        }
+
+        public static int ThreatningValue(Move move)
+        {
+            int value = 0;
+
+            var threatned = BoardLogic.ThreatenedPieces(move);
+
+            foreach(var piece in threatned)
+            {
+                var threatnedValue = EvaluatePieceSafety(piece);
+                if (threatnedValue < 0)
+                    value += threatnedValue;
+            }
+
+            return value *-1;
         }
 
 

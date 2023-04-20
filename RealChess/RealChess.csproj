@@ -78,9 +78,10 @@
     <Compile Include="Model\AI\Book\BookReader.cs" />
     <Compile Include="Model\AI\Book\MoveTranslator.cs" />
     <Compile Include="Model\AI\Evaluation\EvaluationConstants.cs" />
+    <Compile Include="Model\AI\Evaluation\MajorEvaluations.cs" />
     <Compile Include="Model\AI\Evaluation\SubEvaluations.cs" />
-    <Compile Include="Model\AI\MoveChecker.cs" />
-    <Compile Include="Model\AI\Evaluation\MoveEvaluation.cs" />
+    <Compile Include="Model\AI\MoveOrdering\MoveChecker.cs" />
+    <Compile Include="Model\AI\MoveOrdering\MoveEvaluation.cs" />
     <Compile Include="Model\AI\PreprocessedTables.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />

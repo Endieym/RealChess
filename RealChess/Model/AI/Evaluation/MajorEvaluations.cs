@@ -40,6 +40,14 @@ namespace RealChess.Model.AI.Evaluation
             return countControl;
         }
 
+        public static int EvaluatePlayerDanger(PieceColor color)
+        {
+            var safety = EvaluatePlayerSafety(color);
+
+            return Math.Min(safety, 0);
+
+        }
+
         
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace RealChess.Model.AI.Evaluation
             // Evaluates safety of every piece
             foreach (var piece in pieces.Values)
             {
-                if (piece.Type != PieceType.PAWN && piece.Type != PieceType.KING)
+                if (piece.Type != PieceType.KING)
                 {
                     safety += BoardLogic.EvaluatePieceSafety(piece);
                 }

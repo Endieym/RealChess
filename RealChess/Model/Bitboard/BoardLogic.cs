@@ -112,7 +112,7 @@ namespace RealChess.Model.Bitboard
 
             foreach (string pos in positions)
             {
-                if (pos == currentPos)
+                if (pos.Equals(currentPos))
                 {
                     count++;
                     if (count >= 3)
@@ -283,7 +283,8 @@ namespace RealChess.Model.Bitboard
             if (attackers.Count == 0 && defenders.Count == 0)
                 return 0;
 
-                        
+            int originalValue = squareValue;  
+            
             for (int i = 0; i < attackers.Count; i++)
             {
                 // Add the defender's value
@@ -303,7 +304,7 @@ namespace RealChess.Model.Bitboard
 
                 // If there are no more defenders, return 
                 if (defenders.ElementAtOrDefault(i) == null)
-                    return squareValue;
+                    return originalValue;
 
                 // If a defender still exists, subtract the attacker's value,
                 // Since it can be captured
@@ -317,6 +318,32 @@ namespace RealChess.Model.Bitboard
             return squareValue;
 
         }
+
+        public static List<ChessPiece> ThreatenedPieces(Move move)
+        {
+            // Gets the masks for the captures, according to piece type
+            ulong movesMask = _gameBoard.GetAttacksMask(move.PieceMoved);
+
+            // Checks colliding squares with enemy
+            movesMask &= move.PieceMoved.Color == PieceColor.WHITE ? _gameBoard.BlackBoard :
+                _gameBoard.WhiteBoard;
+
+            var enemyPieces = (move.PieceMoved.Color == PieceColor.WHITE ? _gameBoard.BlackPlayer :
+                _gameBoard.WhitePlayer).Pieces;
+
+            List<ChessPiece> threatenedPieces = new List<ChessPiece>();
+
+            foreach(var enemyPiece in enemyPieces.Values)
+            {
+                if ((enemyPiece.GetPosition() & movesMask) > 0)
+                    threatenedPieces.Add(enemyPiece);
+            }
+
+            return threatenedPieces;
+            
+        }
+
+
         /// <summary>
         /// Checks if the game has transitioned to middlegame from opening - castled
         /// </summary>

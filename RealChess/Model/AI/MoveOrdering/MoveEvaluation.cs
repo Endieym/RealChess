@@ -35,6 +35,7 @@ namespace RealChess.Model.AI.Evaluation
             //        moveScore *= -1;
             //}
 
+            moveScore += MajorEvaluations.EvaluatePlayerSafety(color);
 
             moveScore += MoveChecker.MoveBonus(move);
             moveScore -= MoveChecker.MovePenalty(move);

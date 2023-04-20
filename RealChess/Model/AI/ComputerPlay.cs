@@ -99,6 +99,9 @@ namespace RealChess.Model.AI
                     
                 
                 _gameBoard.MakeTemporaryMove(tempMove);
+                if (move.EndSquare == 36)
+                    Console.Write("helo");
+
                 moveScore = MoveEvaluation.GetEvaluationForMove(tempMove);
                 
                 
