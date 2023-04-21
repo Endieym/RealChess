@@ -608,6 +608,8 @@ namespace RealChess.Model
             return captureList;           
         }
 
+        
+
         /// <summary>
         /// Returns a list of every single legal move/
         /// capture a player has ( by color)

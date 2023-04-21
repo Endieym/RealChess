@@ -160,13 +160,17 @@ namespace RealChess.Model.Bitboard
 
             var pieces = opposingPlayer.Pieces;
 
-            List<ChessPiece> attackers = new List<ChessPiece>();
+            return GetInfluencers(pieces.Values.ToList(), position);
+        }
 
-            //ulong pieceMask = pieceUnderAttack.GetPosition();
+        public static List<ChessPiece> GetInfluencers(List<ChessPiece> pieces, ulong position)
+        {
+
+            List<ChessPiece> attackers = new List<ChessPiece>();
 
             // Iterates over every piece of the player attacking
             // And adds the pieces which attack the given square to the list
-            foreach (var piece in pieces.Values)
+            foreach (var piece in pieces)
             {
                 //if (piece.Type == PieceType.KING) continue; // Kings cannot be attackers
 
@@ -177,37 +181,41 @@ namespace RealChess.Model.Bitboard
             }
             // Sorts by the value of the attackers
             attackers.Sort();
+
             return attackers;
         }
 
         // Counts the number of pieces defending a piece minus the number of attackers
         public static int CountSafety(ChessPiece piece)
         {
-            var defender = piece.Color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
-                 _gameBoard.GetPlayer2();
+            var defenderPieces = GetPieces(piece.Color).ToList();
+            var attackerPieces = GetPieces(GetOppositeColor(piece.Color)).ToList();
 
-            var attacker = piece.Color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
-                 _gameBoard.GetPlayer1();
-
-            List<ChessPiece> defenders = GetDefenders(defender, piece.GetPosition());
-            List<ChessPiece> attackers = GetAttackers(attacker, piece.GetPosition());
+            List<ChessPiece> defenders = GetInfluencers(defenderPieces, piece.GetPosition());
+            List<ChessPiece> attackers = GetInfluencers(attackerPieces, piece.GetPosition());
 
             return defenders.Count - attackers.Count;
 
         }
 
+        public static Dictionary<int, ChessPiece>.ValueCollection GetPieces(PieceColor color)
+        {
+            var pieces = (color == PieceColor.WHITE ? _gameBoard.WhitePlayer :
+                _gameBoard.BlackPlayer).Pieces.Values;
+
+            return pieces;
+        }
+
         // Evaluates the safety of a piece, by the worth of the defense and attack
         public static int EvaluateSafety(PieceColor color, ulong position, int squareValue)
         {
-            var defender = color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
-                 _gameBoard.GetPlayer2();
-
-            var attacker = color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
-                 _gameBoard.GetPlayer1();
+            var defenderPieces = GetPieces(color).ToList();
+            
+            var attackerPieces = GetPieces(GetOppositeColor(color)).ToList();
 
             // Gets the defenders and attackers on the piece
-            List<ChessPiece> defenders = GetDefenders(defender, position);
-            List<ChessPiece> attackers = GetAttackers(attacker, position);
+            List<ChessPiece> defenders = GetInfluencers(defenderPieces, position);
+            List<ChessPiece> attackers = GetInfluencers(attackerPieces, position);
 
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
@@ -319,6 +327,15 @@ namespace RealChess.Model.Bitboard
 
         }
 
+        public static bool IsThreateningPiece(ChessPiece threat, ChessPiece threatened)
+        {
+            if ((_gameBoard.GetAttacksMask(threat) & threatened.GetPosition()) > 0)
+                return true;
+
+            return false;
+
+        }
+
         public static List<ChessPiece> ThreatenedPieces(Move move)
         {
             // Gets the masks for the captures, according to piece type
@@ -332,7 +349,7 @@ namespace RealChess.Model.Bitboard
                 _gameBoard.WhitePlayer).Pieces;
 
             List<ChessPiece> threatenedPieces = new List<ChessPiece>();
-
+            
             foreach(var enemyPiece in enemyPieces.Values)
             {
                 if ((enemyPiece.GetPosition() & movesMask) > 0)

@@ -46,6 +46,9 @@ namespace RealChess.Model.AI.Evaluation
             if (GameController.IsReal && move.PieceMoved.Type != PieceType.KING)
                 moveScore += RealBoardController.CalculateSuccess(move) / 10;
 
+            if (GameController.IsReal && move.IsEnPassantCapture)
+                moveScore += movePenalty;
+
             if (move.Type == Move.MoveType.Draw)
                 moveScore = 0;
 

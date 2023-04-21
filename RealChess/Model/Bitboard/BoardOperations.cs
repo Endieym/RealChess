@@ -10,7 +10,7 @@ namespace RealChess.Model.Bitboard
 {
     internal static class BoardOperations
     {
-        
+
         // Returns the bitmask of the possible en passant.
         // if en passant is not available, returns 0
         public static ulong GenerateEnPassant(Pawn pawn, Move lastMove)
@@ -31,7 +31,7 @@ namespace RealChess.Model.Bitboard
         // Returns a tuple of two rooks from the player's pieces (only rooks which haven't moved)
         public static Tuple<Rook, Rook> GetRooksCastle(Dictionary<int, ChessPiece> pieces, PieceColor color)
         {
-            var queenKey = color == PieceColor.WHITE? BitboardConstants.whiteQueenRook:
+            var queenKey = color == PieceColor.WHITE ? BitboardConstants.whiteQueenRook :
                 BitboardConstants.blackQueenRook;
             var kingKey = color == PieceColor.WHITE ? BitboardConstants.whiteKingRook :
                 BitboardConstants.blackKingRook;
@@ -40,7 +40,7 @@ namespace RealChess.Model.Bitboard
 
             if (pieces.TryGetValue(queenKey, out queenSide))
             {
-                if(queenSide.Type == PieceType.ROOK)
+                if (queenSide.Type == PieceType.ROOK)
                     firstRook = (Rook)pieces[queenKey];
 
             }
@@ -59,15 +59,15 @@ namespace RealChess.Model.Bitboard
         // Returns a tuple of two rooks from the player's pieces
         public static Tuple<Rook, Rook> GetRooks(Dictionary<int, ChessPiece> pieces, PieceColor color)
         {
-            
+
             ChessPiece queenSide, kingSide;
             Rook firstRook = null, secondRook = null;
 
-           
-            foreach(var piece in pieces)
+
+            foreach (var piece in pieces)
             {
-                
-                if(piece.Value.Type == PieceType.ROOK)
+
+                if (piece.Value.Type == PieceType.ROOK)
                 {
                     if (firstRook == null)
                         firstRook = (Rook)piece.Value;
@@ -79,63 +79,72 @@ namespace RealChess.Model.Bitboard
 
             return new Tuple<Rook, Rook>(firstRook, secondRook);
 
-
-
         }
 
-       
+
 
 
         // Returns the bitmask of a possible castle.
         // if a castle is not available, returns 0
-        public static Tuple<ulong,ulong> GenerateCastle(King king, Dictionary<int,ChessPiece> pieces, ulong blocked)
+        public static Tuple<ulong, ulong> GenerateCastle(King king, Dictionary<int, ChessPiece> pieces, ulong blocked)
         {
-
             ulong queenSide = 0;
             ulong kingSide = 0;
-            
-            if (!king.HasMoved && !king.InCheck)
+
+            if (king.HasMoved || king.InCheck)
             {
-                // Gets the pair of rooks from the player's pieces
-                Tuple<Rook, Rook> rookPair = GetRooksCastle(pieces, king.Color);
-                 if (king.Color == PieceColor.WHITE)
-                {
-                    if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
-                        (BitboardConstants.WhiteQueenSide & blocked) == 0)
-                    {
-                        queenSide |= king.GetPosition() >> 2;
-                    }
-                    if (rookPair.Item2 != null && !rookPair.Item2.HasMoved &&
-                        (BitboardConstants.WhiteKingSide & blocked) == 0)
-                    {
-                        kingSide |= king.GetPosition() << 2;
+                return new Tuple<ulong, ulong>(queenSide, kingSide);
+            }
 
-                    }
+
+            // Gets the pair of rooks from the player's pieces
+            Tuple<Rook, Rook> rookPair = GetRooksCastle(pieces, king.Color);
+            if (king.Color == PieceColor.WHITE)
+            {
+                if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
+                    (BitboardConstants.WhiteQueenSide & blocked) == 0)
+                {
+                    queenSide |= king.GetPosition() >> 2;
                 }
-                else if (king.Color == PieceColor.BLACK)
+                if (rookPair.Item2 != null && !rookPair.Item2.HasMoved &&
+                    (BitboardConstants.WhiteKingSide & blocked) == 0)
                 {
-                    if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
-                        (BitboardConstants.BlackQueenSide & blocked) == 0)
-                    {
-                        queenSide |= king.GetPosition() >> 2;
-                    }
-                    if (rookPair.Item2 != null &&!rookPair.Item2.HasMoved &&
-                        (BitboardConstants.BlackKingSide & blocked) == 0)
-                    {
-                        kingSide |= king.GetPosition() << 2;
+                    kingSide |= king.GetPosition() << 2;
 
-                    }
                 }
             }
-            
-            
-            return new Tuple<ulong,ulong>(queenSide,kingSide);
+            else if (king.Color == PieceColor.BLACK)
+            {
+                if (rookPair.Item1 != null && !rookPair.Item1.HasMoved &&
+                    (BitboardConstants.BlackQueenSide & blocked) == 0)
+                {
+                    queenSide |= king.GetPosition() >> 2;
+                }
+                if (rookPair.Item2 != null && !rookPair.Item2.HasMoved &&
+                    (BitboardConstants.BlackKingSide & blocked) == 0)
+                {
+                    kingSide |= king.GetPosition() << 2;
+
+                }
+            }
+
+
+
+            return new Tuple<ulong, ulong>(queenSide, kingSide);
         }
 
+        
 
-        public static ulong FileMask(int file)
+        public static List<Pawn> GetAllPawns(Board board, PieceColor color)
         {
-            return 0x0101010101010101UL << file;
+            var pieces = (color == PieceColor.WHITE ? board.GetPlayer1() :
+                board.GetPlayer2()).Pieces.Values.ToList();
+
+            List<Pawn> pawns = pieces.Where(p => p.Type == PieceType.PAWN)
+                         .Select(p => (Pawn)p)
+                         .ToList();
+
+            return pawns;
         }
 
         // Returns the position in chess format (a1,h7.. etc)
@@ -159,7 +168,7 @@ namespace RealChess.Model.Bitboard
 
             char color = piece.Color == PieceColor.WHITE ? 'W' : 'B';
 
-            return $"{color}{piece.Type.ToString().Substring(0,1)}{GetPositionString(row,col)}";
+            return $"{color}{piece.Type.ToString().Substring(0, 1)}{GetPositionString(row, col)}";
         }
 
         // Returns the notation for the entire chess board
@@ -172,12 +181,12 @@ namespace RealChess.Model.Bitboard
 
             foreach (var piece in blackPieces.Values)
             {
-                    boardState += GetPiecePositionString(piece);
+                boardState += GetPiecePositionString(piece);
             }
 
             foreach (var piece in whitePieces.Values)
             {
-                    boardState += GetPiecePositionString(piece);
+                boardState += GetPiecePositionString(piece);
             }
 
             return boardState;
@@ -224,7 +233,7 @@ namespace RealChess.Model.Bitboard
 
         public static ulong BishopMovesInDirection(ulong squareIndex, ulong occupiedSquares, int direction)
         {
-            
+
 
             switch (direction)
             {
@@ -243,7 +252,7 @@ namespace RealChess.Model.Bitboard
 
         public static ulong RookMovesInDirection(ulong squareIndex, ulong occupiedSquares, int direction)
         {
-            
+
 
             switch (direction)
             {
@@ -293,7 +302,7 @@ namespace RealChess.Model.Bitboard
 
                 // while not reached an occupied square
                 if ((square & blockers) != 0) break;
-     
+
             }
             return attacks;
         }
@@ -384,12 +393,12 @@ namespace RealChess.Model.Bitboard
             if ((square & BitboardConstants.AFile) != 0)
                 return 0;
 
-            while(square!=0)
+            while (square != 0)
             {
                 square >>= 1;
                 attacks |= square;
-                if((square & blockers) != 0)
-                     break;
+                if ((square & blockers) != 0)
+                    break;
 
             }
             // while not reached an occupied square, and not reached the end of the rank

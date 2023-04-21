@@ -10,6 +10,8 @@ namespace RealChess.Model.AI
 {
     internal static class PreprocessedTables
     {
+        internal static readonly PieceType[] MinorPieces = { PieceType.BISHOP, PieceType.KNIGHT };
+
         private static readonly int[] PawnTable = 
             { 0,  0,  0,  0,  0,  0,  0,  0,
             50, 50, 50, 50, 50, 50, 50, 50,

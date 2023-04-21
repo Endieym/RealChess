@@ -70,7 +70,7 @@ namespace RealChess.Model.AI
 
         public static int HangingPenalty(Move move)
         {
-            var hangingPiece = HangingValue(move.PieceMoved.Color);
+            var hangingPiece = HangingPiece(move.PieceMoved.Color);
 
             int debuff = 0;  
 
@@ -88,7 +88,7 @@ namespace RealChess.Model.AI
                     debuff = 0;
             }
 
-            else if (ThreatningValue(move) > hangingPiece.Value)
+            else if (ThreateningValue(move, hangingPiece) > hangingPiece.Value)
                 debuff = 0;
             
             return debuff;
@@ -115,7 +115,7 @@ namespace RealChess.Model.AI
         //}
 
         
-        public static ChessPiece HangingValue(PieceColor color)
+        public static ChessPiece HangingPiece(PieceColor color)
         {
             var hangingList = BoardLogic.GetHangingPieces(color);
 
@@ -123,20 +123,34 @@ namespace RealChess.Model.AI
 
         }
 
-        public static int ThreatningValue(Move move)
+        public static int ThreateningValue(Move move, ChessPiece hangingPiece)
         {
             int value = 0;
 
-            var threatned = BoardLogic.ThreatenedPieces(move);
+            var threatened = BoardLogic.ThreatenedPieces(move);
 
-            foreach(var piece in threatned)
+            foreach(var piece in threatened)
             {
-                var threatnedValue = EvaluatePieceSafety(piece);
-                if (threatnedValue < 0)
-                    value += threatnedValue;
+                value += GetThreatValue(piece, hangingPiece);
+
             }
 
             return value *-1;
+        }
+
+        public static int GetThreatValue(ChessPiece threatened,ChessPiece hangingPiece)
+        {
+            int value = 0;
+
+            var threatenedValue = EvaluatePieceSafety(threatened);
+            if (threatenedValue < 0)
+            {
+                value += threatenedValue;
+                if (BoardLogic.IsThreateningPiece(threatened, hangingPiece))
+                    value -= threatenedValue;
+            }
+
+            return value;
         }
 
 
@@ -220,7 +234,5 @@ namespace RealChess.Model.AI
         
         
         }
-
-
     }
 }
