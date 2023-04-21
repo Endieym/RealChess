@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static RealChess.Model.Bitboard.BoardOperations;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 
 namespace RealChess.Model.Bitboard
 {
@@ -335,6 +336,7 @@ namespace RealChess.Model.Bitboard
             return false;
 
         }
+
 
         public static List<ChessPiece> ThreatenedPieces(Move move)
         {

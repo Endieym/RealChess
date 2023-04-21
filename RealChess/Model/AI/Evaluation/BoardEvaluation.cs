@@ -32,8 +32,6 @@ namespace RealChess.Model.AI.Evaluation
             SubEvaluations.SetBoard(board);
         }
 
-
-
         /// <summary>
         ///  Evaluates the board for a player,      
         ///  0 is a draw,
@@ -42,25 +40,24 @@ namespace RealChess.Model.AI.Evaluation
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static double Evaluate()
+        public static double Evaluate(GamePhase phase)
         {
 
             // The difference between white's pieces and black's pieces (by value)
             double evaluation = EvaluateMaterial();
 
-
             // Evaluates the difference board control of white against black's.
             evaluation += EvaluateBoardControl();
             // Evaluates king safety
 
-            evaluation += EvaluateKingSafety();
+            evaluation += EvaluateKing(phase);
 
-            double openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 1.5 : 1;
+            double openingWeight = phase == GamePhase.Opening ? 1.5 : 1;
             // Evaluates piece development for both players
 
             evaluation += EvaluatePieceDevelopment(openingWeight);
 
-            // Evaluates safety of all player's ieces
+            // Evaluates safety of all player's pieces
             evaluation += EvaluatePiecesSafety();
 
             evaluation += EvaluatePawnStructure();
@@ -78,12 +75,24 @@ namespace RealChess.Model.AI.Evaluation
         public static double EvaluateForPlayer(PieceColor color)
         {
             
-            double evaluation = Evaluate();
+            double evaluation = TaperedEval();
 
             evaluation *= color == PieceColor.WHITE ? 1 : -1;
 
 
             return evaluation;
+        }
+
+        public static double TaperedEval()
+        {
+            double phase = PhaseEvaluation.GetPhaseWeight();
+
+            double opening = Evaluate(GamePhase.Opening);
+            double endgame = Evaluate(GamePhase.Endgame);
+
+            double eval = ((opening * (256 - phase)) + (endgame * phase)) / 256;
+
+            return eval;
         }
 
         public static int EvaluateMaterial()
@@ -97,8 +106,12 @@ namespace RealChess.Model.AI.Evaluation
 
         }
 
-        public static int EvaluateKingSafety()
+        public static int EvaluateKing(GamePhase phase)
         {
+            if(phase == GamePhase.Endgame)
+            {
+                return EvaluateKingActivity(PieceColor.WHITE) - EvaluateKingActivity(PieceColor.BLACK);
+            }
             return EvaluatePlayerKingSafety(PieceColor.WHITE) - EvaluatePlayerKingSafety(PieceColor.BLACK);
         }
 

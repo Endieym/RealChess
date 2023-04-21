@@ -50,7 +50,6 @@ namespace RealChess.Model.Bitboard
                 UpdateCaptures(move);
 
             UpdatePhase();
-            BoardEvaluation.Evaluation = BoardEvaluation.Evaluate();
             
         }
 

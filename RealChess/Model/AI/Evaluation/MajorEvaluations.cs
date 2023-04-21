@@ -34,7 +34,7 @@ namespace RealChess.Model.AI.Evaluation
             foreach (var piece in pieces.Values)
             {
                 if (!(piece.Type == PieceType.KING))// king shouldn't be active
-                    countControl += SubEvaluations.EvaluatePieceMobility(piece, _gameBoard.BitBoard);
+                    countControl += SubEvaluations.EvaluatePieceMobility(piece);
             }
 
             return countControl;
@@ -91,6 +91,20 @@ namespace RealChess.Model.AI.Evaluation
 
         }
 
+        public static int EvaluateKingActivity(PieceColor color)
+        {
+            int activity = 0;
+
+            King king = _gameBoard.GetKing(color);
+
+            activity += SubEvaluations.EvaluatePieceMobility(king);
+
+            activity += SubEvaluations.EvaluatePosition(king, GamePhase.Endgame);
+
+            return activity;
+
+        }
+
         /// <summary>
         /// Evaluates the safety of the king of a player
         /// </summary>
@@ -110,8 +124,7 @@ namespace RealChess.Model.AI.Evaluation
                 kingFront |= kingFront >> 8;
             else
                 kingFront |= kingFront << 8;
-
-
+            
             if ((kingFront & safeSides) > 0)
                 kingSafety += SubEvaluations.PawnShield(color, kingPerimeter);
 
@@ -147,7 +160,14 @@ namespace RealChess.Model.AI.Evaluation
 
             var pawns = BoardOperations.GetAllPawns(_gameBoard, color);
 
-            structure += SubEvaluations.EvaluatePawnChain(pawns) * pawnChainBuff;
+            int defendedPawnsCount = SubEvaluations.EvaluatePawnChain(pawns);
+            structure += defendedPawnsCount * pawnChainBuff;
+
+            int backwardPawnsCount = pawns.Count - defendedPawnsCount;
+
+            structure -= backwardPawnsCount * backwardPawnPenalty;
+
+
 
             return structure;
         }

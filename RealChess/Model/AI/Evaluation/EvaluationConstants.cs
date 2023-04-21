@@ -23,5 +23,6 @@ namespace RealChess.Model.AI.Evaluation
         public const int pawnShieldBuff = 3;
 
         public const int pawnChainBuff = 3;
+        public const int backwardPawnPenalty = 2;
     }
 }

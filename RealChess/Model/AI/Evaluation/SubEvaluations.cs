@@ -145,8 +145,9 @@ namespace RealChess.Model.AI.Evaluation
         /// <param name="piece"></param>
         /// <param name="ocuppied">Ocuppied board</param>
         /// <returns></returns>
-        public static int EvaluatePieceMobility(ChessPiece piece, ulong ocuppied)
+        public static int EvaluatePieceMobility(ChessPiece piece)
         {
+            ulong ocuppied = _gameBoard.BitBoard;
             // Gets the possible moves bitmask for the piece
             ulong attacks = piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures() :
                 piece.GenerateLegalMoves(ocuppied);
@@ -185,6 +186,18 @@ namespace RealChess.Model.AI.Evaluation
             }
 
             return countDefendedPawns;
+        }
+
+        public static int EvaluateBackwardPawns(List<Pawn> pawns)
+        {
+            return pawns.Count - EvaluatePawnChain(pawns);
+
+        }
+
+        public static int EvaluatePassedPawns(List<Pawn> pawns)
+        {
+            return 0;
+
         }
 
 

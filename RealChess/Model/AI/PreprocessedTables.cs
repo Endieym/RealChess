@@ -121,11 +121,10 @@ namespace RealChess.Model.AI
                     break;
 
                 case PieceType.KING:
-                    if (phase == GamePhase.Middlegame || 
-                        phase == GamePhase.Opening)
-                        squareTable = KingMiddleTable;
-                    else if (phase == GamePhase.Endgame)
+                    if (phase == GamePhase.Endgame)
                         squareTable = KingEndTable;
+                    else 
+                        squareTable = KingMiddleTable;
                     break;
             }
 
