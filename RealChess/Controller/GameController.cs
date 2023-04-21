@@ -492,7 +492,11 @@ namespace RealChess.Controller
             AiPlay = false;
             WhiteAi = false;
             BlackAi = false;
-            ((ChessForm)Application.OpenForms[1]).DisableSettings();
+            foreach(var form in Application.OpenForms)
+            {
+                (form as ChessForm)?.DisableSettings();
+
+            }
             ChessForm.DisableClicks();
             ChessForm.ResetPieceClicked();
         }
