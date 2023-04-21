@@ -147,7 +147,7 @@ namespace RealChess.Model.AI.Evaluation
 
             var pawns = BoardOperations.GetAllPawns(_gameBoard, color);
 
-
+            structure += SubEvaluations.EvaluatePawnChain(pawns) * pawnChainBuff;
 
             return structure;
         }

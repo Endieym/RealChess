@@ -63,6 +63,8 @@ namespace RealChess.Model.AI.Evaluation
             // Evaluates safety of all player's ieces
             evaluation += EvaluatePiecesSafety();
 
+            evaluation += EvaluatePawnStructure();
+
             return evaluation;
 
         }

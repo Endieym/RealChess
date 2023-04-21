@@ -176,9 +176,12 @@ namespace RealChess.Model.AI.Evaluation
         {
             int countDefendedPawns = 0;
 
+            List<ChessPiece> pawnsPieces = new List<ChessPiece>(pawns.Cast<ChessPiece>());
+
             foreach (Pawn pawn in pawns)
             {
-
+                if (GetInfluencers(pawnsPieces, pawn.GetPosition()).Count > 0)
+                    countDefendedPawns++;
             }
 
             return countDefendedPawns;
