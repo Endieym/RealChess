@@ -55,7 +55,7 @@ namespace RealChess.Model.AI.Evaluation
 
             evaluation += EvaluateKingSafety();
 
-            double openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 1 : 0.5;
+            double openingWeight = _gameBoard.CurrentPhase == GamePhase.Opening ? 1.5 : 1;
             // Evaluates piece development for both players
 
             evaluation += EvaluatePieceDevelopment(openingWeight);
@@ -108,7 +108,12 @@ namespace RealChess.Model.AI.Evaluation
 
         public static int EvaluatePiecesSafety()
         {
-            return (EvaluatePlayerDanger(PieceColor.BLACK) - EvaluatePlayerDanger(PieceColor.WHITE)) * 20;
+            return (EvaluatePlayerDanger(PieceColor.WHITE) - EvaluatePlayerDanger(PieceColor.BLACK)) * 20;
+        }
+
+        public static int EvaluatePawnStructure()
+        {
+            return EvaluatePlayerPawnStructure(PieceColor.WHITE) - EvaluatePlayerPawnStructure(PieceColor.BLACK);
         }
 
 

@@ -107,9 +107,9 @@ namespace RealChess.Model.AI.Evaluation
             ulong kingFront = _gameBoard.GetKing(color).GetPosition();
 
             if (color == PieceColor.WHITE)
-                kingFront |= kingFront >> 7 | kingFront >> 8 | kingFront >> 9;
+                kingFront |= kingFront >> 8;
             else
-                kingFront |= kingFront << 7 | kingFront << 8 | kingFront << 9;
+                kingFront |= kingFront << 8;
 
 
             if ((kingFront & safeSides) > 0)
@@ -118,8 +118,6 @@ namespace RealChess.Model.AI.Evaluation
             return kingSafety;
 
         }
-
-
 
 
         /// <summary>
@@ -137,23 +135,21 @@ namespace RealChess.Model.AI.Evaluation
 
             foreach (var piece in pieces.Values)
             {
-                if (!(currentPhase == GamePhase.Opening &&
-                     piece.Type != PieceType.PAWN &&
-                         piece.Type != PieceType.KNIGHT &&
-                         piece.Type != PieceType.BISHOP
-                         ))
-                {
-                    int index = (int)Math.Log(piece.GetPosition(), 2);
 
-                    if (piece.Color == PieceColor.BLACK)
-                        index = 63 - index;
-
-                    development += PreprocessedTables.PieceSquareTable(piece.Type, currentPhase)[index];
-                }
-
+                development += SubEvaluations.EvaluatePosition(piece, currentPhase);                               
             }
             return development;
         }
 
+        public static int EvaluatePlayerPawnStructure(PieceColor color)
+        {
+            int structure = 0;
+
+            var pawns = BoardOperations.GetAllPawns(_gameBoard, color);
+
+
+
+            return structure;
+        }
     }
 }

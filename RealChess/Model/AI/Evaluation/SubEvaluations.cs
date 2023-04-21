@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 using RealChess.Model.ChessPieces;
+using static RealChess.Model.Bitboard.BoardLogic;
 
 namespace RealChess.Model.AI.Evaluation
 {
@@ -94,6 +95,21 @@ namespace RealChess.Model.AI.Evaluation
 
         }
 
+        public static int EvaluatePosition(ChessPiece piece, GamePhase phase)
+        {
+            if (phase == GamePhase.Opening && !(piece.Type == PieceType.PAWN ||
+                PreprocessedTables.MinorPieces.Contains(piece.Type)))
+                return 0;
+
+            int index = (int)Math.Log(piece.GetPosition(), 2);
+
+            if (piece.Color == PieceColor.BLACK)
+                index = 63 - index;
+
+            return PreprocessedTables.PieceSquareTable(piece.Type, phase)[index];
+
+        }
+
         public static int PawnShield(PieceColor color ,ulong kingPerimeter)
         {
             var playerPieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
@@ -154,6 +170,18 @@ namespace RealChess.Model.AI.Evaluation
                 mobility++;
             }
             return mobility;
+        }
+
+        public static int EvaluatePawnChain(List<Pawn> pawns)
+        {
+            int countDefendedPawns = 0;
+
+            foreach (Pawn pawn in pawns)
+            {
+
+            }
+
+            return countDefendedPawns;
         }
 
 
