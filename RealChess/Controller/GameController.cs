@@ -103,32 +103,49 @@ namespace RealChess.Controller
         internal static void ShowLegalMoves(ChessPieceControl pieceSource)
         {
             // Gets both the legal moves and captures of the clicked piece control
-            List<Move> movesList = BoardController.GetMovesList(pieceSource.Piece);
-            List<Move> capturesList = BoardController.GetCapturesList(pieceSource.Piece);
-            
-            // Shows the legal moves
-            foreach(Move move in movesList)
-            {
-                LegalMoveControl legalMoveControl = new LegalMoveControl();
-                legalMoveControl.Transfer += LegalMoveControl_Move;
-                legalMoveControl.CurrentMove = move;
-                _currentPieceClicked = pieceSource;
-                _panelBoard[move.EndSquare / 8, move.EndSquare % 8].Controls.Add(legalMoveControl);
-            }
+            //List<Move> movesList = BoardController.GetMovesList(pieceSource.Piece);
+            //List<Move> capturesList = BoardController.GetCapturesList(pieceSource.Piece);
+
+            List<Move> allMoves = BoardController.GetAllMovesPiece(pieceSource.Piece);
 
             // Shows the legal captures 
-            foreach (Move capture in capturesList)
+            foreach (Move move in allMoves)
             {
                 LegalMoveControl legalMoveControl = new LegalMoveControl();
-                legalMoveControl.SetCapture();
-                legalMoveControl.CurrentMove = capture;
+
+                if(move.IsCapture)
+                    legalMoveControl.SetCapture();
+                legalMoveControl.CurrentMove = move;
                 legalMoveControl.Transfer += LegalMoveControl_Move;
                 _currentPieceClicked = pieceSource;
-                
-                _panelBoard[capture.EndSquare / 8, capture.EndSquare % 8].Controls.Add(legalMoveControl);
+
+                _panelBoard[move.EndSquare / 8, move.EndSquare % 8].Controls.Add(legalMoveControl);
                 legalMoveControl.BringToFront();
-                legalMoveControl.BackColor = Color.Transparent;
             }
+
+            //// Shows the legal moves
+            //foreach (Move move in movesList)
+            //{
+            //    LegalMoveControl legalMoveControl = new LegalMoveControl();
+            //    legalMoveControl.Transfer += LegalMoveControl_Move;
+            //    legalMoveControl.CurrentMove = move;
+            //    _currentPieceClicked = pieceSource;
+            //    _panelBoard[move.EndSquare / 8, move.EndSquare % 8].Controls.Add(legalMoveControl);
+            //}
+
+            //// Shows the legal captures 
+            //foreach (Move capture in capturesList)
+            //{
+            //    LegalMoveControl legalMoveControl = new LegalMoveControl();
+            //    legalMoveControl.SetCapture();
+            //    legalMoveControl.CurrentMove = capture;
+            //    legalMoveControl.Transfer += LegalMoveControl_Move;
+            //    _currentPieceClicked = pieceSource;
+                
+            //    _panelBoard[capture.EndSquare / 8, capture.EndSquare % 8].Controls.Add(legalMoveControl);
+            //    legalMoveControl.BringToFront();
+            //    legalMoveControl.BackColor = Color.Transparent;
+            //}
             
             if(IsReal)
                 RealController.ShowPiece(pieceSource.Piece);
@@ -492,11 +509,10 @@ namespace RealChess.Controller
             AiPlay = false;
             WhiteAi = false;
             BlackAi = false;
+
             foreach(var form in Application.OpenForms)
-            {
                 (form as ChessForm)?.DisableSettings();
 
-            }
             ChessForm.DisableClicks();
             ChessForm.ResetPieceClicked();
         }
@@ -532,7 +548,15 @@ namespace RealChess.Controller
         {
             EndGame();
             MainPage home = new MainPage();
-            Application.OpenForms[1].Close();
+
+            var openForms = Application.OpenForms;
+
+            for(int i =0; i< openForms.Count; i++)
+            {
+                (openForms[i] as ChessForm)?.Close();
+
+            }
+
             home.Show();
 
         }

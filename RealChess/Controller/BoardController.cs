@@ -80,6 +80,11 @@ namespace RealChess.Controller
             return _gameBoard.MakePromotionMove(move, piece);
         }
 
+        internal static List<Move> GetAllMovesPiece(ChessPiece piece)
+        {
+            return _gameBoard.GetAllPieceMoves(piece);
+        }
+
         /// <summary>
         /// Gets the possible moves a piece has
         /// </summary>
