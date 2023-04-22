@@ -52,15 +52,14 @@ namespace RealChess.Model.AI.Evaluation
 
             evaluation += EvaluateKing(phase);
 
-            double openingWeight = phase == GamePhase.Opening ? 1.5 : 1;
             // Evaluates piece development for both players
 
-            evaluation += EvaluatePieceDevelopment(openingWeight);
+            evaluation += EvaluatePieceDevelopment();
 
             // Evaluates safety of all player's pieces
             evaluation += EvaluatePiecesSafety();
 
-            evaluation += EvaluatePawnStructure();
+            evaluation += EvaluatePawnStructure(phase);
 
             return evaluation;
 
@@ -106,7 +105,7 @@ namespace RealChess.Model.AI.Evaluation
 
         }
 
-        public static int EvaluateKing(GamePhase phase)
+        public static double EvaluateKing(GamePhase phase)
         {
             if(phase == GamePhase.Endgame)
             {
@@ -116,10 +115,10 @@ namespace RealChess.Model.AI.Evaluation
             return EvaluatePlayerKingSafety(PieceColor.WHITE) - EvaluatePlayerKingSafety(PieceColor.BLACK);
         }
 
-        public static double EvaluatePieceDevelopment(double openingWeight)
+        public static double EvaluatePieceDevelopment()
         {
             return (EvaluatePlayerDevelopment(PieceColor.WHITE) - EvaluatePlayerDevelopment(PieceColor.BLACK))
-                * openingWeight;
+                * 1.5;
         }
 
         public static int EvaluatePiecesSafety()
@@ -127,9 +126,9 @@ namespace RealChess.Model.AI.Evaluation
             return (EvaluatePlayerDanger(PieceColor.WHITE) - EvaluatePlayerDanger(PieceColor.BLACK)) * 20;
         }
 
-        public static int EvaluatePawnStructure()
+        public static double EvaluatePawnStructure(GamePhase phase)
         {
-            return EvaluatePlayerPawnStructure(PieceColor.WHITE) - EvaluatePlayerPawnStructure(PieceColor.BLACK);
+            return EvaluatePlayerPawnStructure(PieceColor.WHITE, phase) - EvaluatePlayerPawnStructure(PieceColor.BLACK, phase);
         }
 
 

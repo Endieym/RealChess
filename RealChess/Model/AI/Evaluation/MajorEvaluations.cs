@@ -99,25 +99,28 @@ namespace RealChess.Model.AI.Evaluation
             {
                 if (piece.Type != PieceType.KING)
                 {
-                    safety += Math.Min(BoardLogic.EvaluatePieceSafety(piece),0);
+                    safety += Math.Min(BoardLogic.EvaluatePieceSafety(piece), 0);
                 }
             }
             return safety;
 
         }
 
-        public static int EvaluateKingActivity(PieceColor color)
+        public static double EvaluateKingActivity(PieceColor color)
         {
-            int activity = 0;
+            double activity = 0;
 
             King king = _gameBoard.GetKing(color);
+            var pawns = BoardOperations.GetAllPawns(_gameBoard, BoardOperations.GetOppositeColor(color));
 
             activity += SubEvaluations.EvaluatePieceMobility(king);
 
             activity += SubEvaluations.EvaluatePosition(king, GamePhase.Endgame);
 
             activity += SubEvaluations.ForceKingToCornerEndgameEval(color);
-            
+
+            activity += SubEvaluations.DistanceFromBackwardPawnsEval(pawns, color);
+
             return activity;
 
         }
@@ -141,7 +144,7 @@ namespace RealChess.Model.AI.Evaluation
                 kingFront |= kingFront >> 8;
             else
                 kingFront |= kingFront << 8;
-            
+
             if ((kingFront & safeSides) > 0)
                 kingSafety += SubEvaluations.PawnShield(color, kingPerimeter);
 
@@ -162,35 +165,38 @@ namespace RealChess.Model.AI.Evaluation
 
             int development = 0;
             GamePhase currentPhase = _gameBoard.CurrentPhase;
+            int undevelopedMinorPieces = 0;
 
             foreach (var piece in pieces.Values)
             {
+                if (PreprocessedTables.MinorPieces.Contains(piece.Type) && !piece.HasMoved)
+                    undevelopedMinorPieces += 5;
 
-                development += SubEvaluations.EvaluatePosition(piece, currentPhase);                               
+                development += SubEvaluations.EvaluatePosition(piece, currentPhase);
             }
+
+            development -= undevelopedMinorPieces;
+
             return development;
         }
 
-        public static int EvaluatePlayerPawnStructure(PieceColor color)
+        public static double EvaluatePlayerPawnStructure(PieceColor color, GamePhase phase)
         {
-            int structure = 0;
+            double structure = 0;
 
             var pawns = BoardOperations.GetAllPawns(_gameBoard, color);
             var enemyPawns = BoardOperations.GetAllPawns(_gameBoard, BoardOperations.GetOppositeColor(color));
-            
+
             ulong pawnBoard = BoardOperations.GetPiecesPositions(pawns.Cast<ChessPiece>().ToList());
             ulong enemyPawnBoard = BoardOperations.GetPiecesPositions(enemyPawns.Cast<ChessPiece>().ToList());
 
+            double endgameWeight = phase == GamePhase.Endgame ? 2 : 0.2;
 
-            int defendedPawnsCount = SubEvaluations.EvaluatePawnChain(pawns);
-            
-            structure += defendedPawnsCount * pawnChainBuff;
+            structure += SubEvaluations.EvaluatePawnChain(pawns, endgameWeight);
 
-            int backwardPawnsCount = pawns.Count - defendedPawnsCount;
+            structure += SubEvaluations.EvaluatePassedPawns(pawns, pawnBoard, enemyPawnBoard) * endgameWeight;
 
-            structure -= backwardPawnsCount * backwardPawnPenalty;
-
-
+            structure += SubEvaluations.EvaluatePawnsAdvancement(pawns) * endgameWeight;
 
             return structure;
         }

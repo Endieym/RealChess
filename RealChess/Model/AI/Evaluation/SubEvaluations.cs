@@ -46,7 +46,7 @@ namespace RealChess.Model.AI.Evaluation
             var pieces = color == PieceColor.WHITE ? whitePlayer.Pieces : blackPlayer.Pieces;
 
             int bishopCount = 0;
-            foreach(var piece in pieces.Values)
+            foreach (var piece in pieces.Values)
             {
                 if (piece.Type == PieceType.BISHOP)
                     bishopCount++;
@@ -65,7 +65,7 @@ namespace RealChess.Model.AI.Evaluation
 
             int kingSafety = 0;
 
-            
+
             foreach (var piece in player.Pieces.Values)
             {
                 if ((piece.GetPosition() & kingPerimeter) > 0)
@@ -110,24 +110,34 @@ namespace RealChess.Model.AI.Evaluation
 
         }
 
-        public static int PawnShield(PieceColor color ,ulong kingPerimeter)
+        /// <summary>
+        /// Evaluates the pawn shield in front of the king
+        /// </summary>
+        /// <param name="color">King color</param>
+        /// <param name="kingPerimeter">Perimeter of the king (squares next to him) </param>
+        /// <returns></returns>
+        public static int PawnShield(PieceColor color, ulong kingPerimeter)
         {
-            var playerPieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
-                _gameBoard.GetPlayer2().Pieces;
-
             int pawnShield = 1;
 
+            // Gets the bitmask of the pawn shield squares
             ulong pawnPos = (kingPerimeter & KingSidePawns) > 0 ? KingSidePawns : QueenSidePawns;
-           
-            if (color == PieceColor.BLACK) pawnPos >>= 40;
-            pawnPos |= color == PieceColor.WHITE ? pawnPos >> 8 : pawnPos << 8;
 
-            var pieces = playerPieces.Values.ToList();
+            
+            if (color == PieceColor.BLACK) pawnPos >>= 40;
+
+            // Pawn shield pawns should move one square max
+            pawnPos |= color == PieceColor.WHITE ? pawnPos >> 8 : pawnPos << 8;
+            
+            kingPerimeter |= color == PieceColor.WHITE? kingPerimeter >> 8 : kingPerimeter << 8;
+
+            var pieces = GetPieces(color).ToList();
             pieces.Sort();
 
             int index = 0;
 
-            while(pieces.Count > index && pieces[index].Type == PieceType.PAWN)
+            // Multiplies each time a pawn exists in the pawn shield
+            while (pieces.Count > index && pieces[index].Type == PieceType.PAWN)
             {
                 var piecePos = pieces[index++].GetPosition();
 
@@ -173,44 +183,116 @@ namespace RealChess.Model.AI.Evaluation
             return mobility;
         }
 
-        public static int EvaluatePawnChain(List<Pawn> pawns)
+        public static double EvaluatePawnChain(List<Pawn> pawns, double endgameWeight)
         {
-            int countDefendedPawns = 0;
+            double chainEval = 0;
+
+            var chain = GetPawnChain(pawns);
+
+            List<Pawn> defendedPawns = chain.defendedPawns;
+            List<Pawn> backwardPawns = chain.backwardPawns;
+
+            chainEval += defendedPawns.Count * pawnChainBuff * endgameWeight;
+
+            chainEval -= backwardPawns.Count * backwardPawnPenalty * endgameWeight;
+
+            return chainEval;
+        }
+
+        public static (List<Pawn> defendedPawns, List<Pawn> backwardPawns) GetPawnChain(List<Pawn> pawns)
+        {
+            List<Pawn> defendedPawns = new List<Pawn>();
+            List<Pawn> backwardPawns = new List<Pawn>();
 
             List<ChessPiece> pawnsPieces = new List<ChessPiece>(pawns.Cast<ChessPiece>());
 
             foreach (Pawn pawn in pawns)
             {
-                if (GetInfluencers(pawnsPieces, pawn.GetPosition()).Count > 0)
-                    countDefendedPawns++;
+                if (IsDefendedByOtherPieces(pawnsPieces, pawn))
+                    defendedPawns.Add(pawn);
+                else
+                    backwardPawns.Add(pawn);
             }
 
-            return countDefendedPawns;
+            return (defendedPawns, backwardPawns);
         }
 
-        public static int EvaluateBackwardPawns(List<Pawn> pawns)
-        {
-            return pawns.Count - EvaluatePawnChain(pawns);
 
+        public static int EvaluatePawnsAdvancement(List<Pawn> pawns)
+        {
+            int advancement = 0;
+
+
+            foreach (Pawn pawn in pawns)
+            {
+                advancement -= DistanceFromPromotion(pawn);
+            }
+
+            return advancement * 3;
+        }
+
+        public static int DistanceFromPromotion(Pawn pawn)
+        {
+            var promotionRank = pawn.Color == PieceColor.WHITE ? 7 : 0;
+
+            var rank = BoardOperations.GetRank(pawn);
+
+            return Math.Abs(promotionRank - rank);
+        }
+
+        public static int PromotionSquareDefense(Pawn pawn)
+        {
+            var promotionSquare = pawn.Color == PieceColor.WHITE ? 0 : 56;
+            promotionSquare += BoardOperations.GetFile(pawn);
+
+            return CountSafety(pawn.Color, (ulong)1 << promotionSquare) * 2;
+        }
+
+        public static bool IsDefendedByOtherPieces(List<ChessPiece> pieces, ChessPiece piece)
+        {
+            return GetInfluencers(pieces, piece.GetPosition()).Count > 0;
         }
 
         public static bool IsDoubledPawn(Pawn pawn, ulong pawnsMask)
         {
-
-            return BoardOperations.IsBlocked(pawn.Color,pawn.GetPosition(), pawnsMask);
+            return BoardOperations.IsBlocked(pawn.Color, pawn.GetPosition(), pawnsMask);
         }
 
         public static int EvaluatePassedPawns(List<Pawn> playerPawns, ulong pawnsMask, ulong enemyPawns)
         {
+            var passedPawns = GetPassedPawns(playerPawns, pawnsMask, enemyPawns);
+
             int passedPawnsEval = 0;
 
-            foreach(var pawn in playerPawns)
+            passedPawnsEval += passedPawnBuff * passedPawns.Count;
+
+            foreach (var pawn in passedPawns)
             {
-                if (IsPassed(pawn, enemyPawns) && !IsDoubledPawn(pawn, pawnsMask))
+                if (IsDefendedByOtherPieces(playerPawns.Cast<ChessPiece>().ToList(), pawn))
                     passedPawnsEval += passedPawnBuff;
+
+                passedPawnsEval += PromotionSquareDefense(pawn);
+
             }
 
             return passedPawnsEval;
+
+        }
+
+
+        public static List<Pawn> GetPassedPawns(List<Pawn> playerPawns, ulong pawnsMask, ulong enemyPawns)
+        {
+            List<Pawn> passedPawns = new List<Pawn>();
+
+            foreach (var pawn in playerPawns)
+            {
+                if (IsPassed(pawn, enemyPawns) && !IsDoubledPawn(pawn, pawnsMask))
+                {
+                    passedPawns.Add(pawn);
+                }
+            }
+
+            return passedPawns;
 
         }
 
@@ -237,15 +319,31 @@ namespace RealChess.Model.AI.Evaluation
 
             // Position will be better if we move the king closer to opponent king to help 
             // Checkmate
-            int playerKingRank = BoardOperations.GetRank(playerKing);
-            int playerKingFile = BoardOperations.GetFile(playerKing);
 
-            int dstBetweenKingsRank = Math.Abs(playerKingRank - enemyKingRank);
-            int dstBetweenKingsFile = Math.Abs(playerKingFile - enemyKingFile);
-
-            eval += 14 - dstBetweenKingsFile;
+            eval += 14 - BoardOperations.GetDistancePieces(playerKing, enemyKing);
 
             return eval * 10;
+        }
+
+        public static int DistanceFromBackwardPawnsEval(List<Pawn> pawns, PieceColor color)
+        {
+            King playerKing = _gameBoard.GetKing(color);
+
+            var chain = GetPawnChain(pawns);
+
+            var backwardPawns = chain.backwardPawns;
+
+            int minDst = 0;
+
+            foreach (var pawn in backwardPawns)
+            {
+                int dst = BoardOperations.GetDistancePieces(playerKing, pawn);
+
+                if (minDst > dst)
+                    minDst = dst;
+            }
+
+            return 14 - minDst;
         }
     }
 }

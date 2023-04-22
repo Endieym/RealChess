@@ -9,7 +9,7 @@ namespace RealChess.Model.ChessPieces
     internal class King : ChessPiece
     {
         public override PieceType Type { get; set; } = PieceType.KING;
-        public override ushort Value { get; set; } = 9999;
+        public override ushort Value { get; set; } = 999;
         public bool Castled { get; set; }
         public bool InCheck { get; set; }
 

@@ -15,6 +15,7 @@ namespace RealChess.Model.AI.Evaluation
         public const ulong QueenSidePawns = 0x7000000000000;
 
         public const int movePenalty = 50;
+        public const int tradeBonus = 3;
 
         public const int infinity = 99999999;
         public const int negativeInfinity = -infinity;
