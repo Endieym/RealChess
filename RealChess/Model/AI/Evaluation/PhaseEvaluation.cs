@@ -49,6 +49,18 @@ namespace RealChess.Model.AI.Evaluation
                 }
             }
 
+            foreach(var piece in piecesBlack)
+            {
+                if (pieceCounts.ContainsKey(piece.Type))
+                {
+                    pieceCounts[piece.Type]++;
+                }
+                else
+                {
+                    pieceCounts[piece.Type] = 1;
+                }
+            }
+
             int numBishops = pieceCounts.ContainsKey(PieceType.BISHOP) ? pieceCounts[PieceType.BISHOP] : 0;
             int numRooks = pieceCounts.ContainsKey(PieceType.ROOK) ? pieceCounts[PieceType.ROOK] : 0;
             int numKnights = pieceCounts.ContainsKey(PieceType.KNIGHT) ? pieceCounts[PieceType.KNIGHT] : 0;
