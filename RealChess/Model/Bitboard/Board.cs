@@ -436,7 +436,7 @@ namespace RealChess.Model
                         
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
 
-
+            var enemyCanMove = CanLegallyMove(GetOppositeColor(newMove.PieceMoved.Color));
             if (result)
             {
                 newMove.IsCheck = true;
@@ -448,25 +448,42 @@ namespace RealChess.Model
 
                 // If the enemy king is in check and the player has
                 // no legal moves, the original check is a checkmate
-                if (!CanLegallyMove(GetOppositeColor(newMove.PieceMoved.Color)))
+                if (!enemyCanMove)
                     newMove.Type = Move.MoveType.Checkmate;
                 else
                     newMove.Type = Move.MoveType.Check;
 
             }
-                        
-            if (BoardLogic.IsThreefoldRepetition(GetBoardStateString(this), positions))
-            {
-                newMove.IsDrawByRepetiton = true;
-                newMove.Type = Move.MoveType.Draw;
-            }
+
+            CheckDraw(newMove, enemyCanMove);
 
             // Undoes the temporary move made
-            if(result)
+            if (result)
                 GetKing(GetOppositeColor(newMove.PieceMoved.Color)).InCheck = false;
 
             UndoMove();
             return result;
+
+        }
+
+        private void CheckDraw(Move move, bool enemyCanMove)
+        {
+
+            if (BoardLogic.IsThreefoldRepetition(GetBoardStateString(this), positions))
+            {
+                move.IsDrawByRepetiton = true;
+                move.Type = Move.MoveType.Draw;
+            }
+            else if (!move.IsCheck && !enemyCanMove)
+            {
+                move.IsStalemate = true;
+                move.Type = Move.MoveType.Draw;
+            }
+            else if (IsDeadPosition())
+            {
+                move.IsDrawByDeadPosition = true;
+                move.Type = Move.MoveType.Draw;
+            }
 
         }
 

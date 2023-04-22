@@ -133,6 +133,26 @@ namespace RealChess.Model.Bitboard
             return new Tuple<ulong, ulong>(queenSide, kingSide);
         }
 
+        public static bool OnSameColor(ChessPiece pieceA, ChessPiece pieceB)
+        {
+            if (pieceA is null || pieceB is null)
+                return false;
+
+            var posA = pieceA.GetPosition();
+            var posB = pieceB.GetPosition();
+
+            bool sameColor = false;
+
+            if ((posA & BitboardConstants.lightSquares) > 0 && (posB & BitboardConstants.lightSquares) > 0)
+                sameColor = true;
+
+            else if((posA & BitboardConstants.darkSquares) > 0 && (posB & BitboardConstants.darkSquares) > 0)
+                sameColor = true;
+
+
+            return sameColor;
+        }
+
 
 
         public static List<Pawn> GetAllPawns(Board board, PieceColor color)
@@ -216,7 +236,7 @@ namespace RealChess.Model.Bitboard
 
             bool onSameFile = false;
 
-            while(pieceMask > 0 && !onSameFile)
+            while (pieceMask > 0 && !onSameFile)
             {
                 onSameFile = IsBlocked(piece.Color, pieceMask, bitmask);
                 pieceMask &= pieceMask - 1;
@@ -243,7 +263,7 @@ namespace RealChess.Model.Bitboard
 
         public static int GetRank(ChessPiece piece)
         {
-           return UInt64ToKey(piece.GetPosition()) /8;
+            return UInt64ToKey(piece.GetPosition()) / 8;
 
         }
         public static int GetFile(ChessPiece piece)

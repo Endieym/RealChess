@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using static RealChess.Model.Bitboard.BoardOperations;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
+using RealChess.Model.AI;
 
 namespace RealChess.Model.Bitboard
 {
@@ -125,6 +126,65 @@ namespace RealChess.Model.Bitboard
 
             return false; // Not a threefold repetition
         }
+
+        public static bool IsDeadPosition()
+        {
+            var whitePieces = GetPieces(PieceColor.WHITE);
+            var blackPieces = GetPieces(PieceColor.BLACK);
+
+            int whiteMinorPieces = 0;
+            int blackMinorPieces = 0;
+
+            int whiteBishops = 0;
+            int blackBishops = 0;
+            Bishop whiteBishop = null, blackBishop = null;
+
+
+            int whitePieceCount = whitePieces.Count;
+            int blackPieceCount = blackPieces.Count;
+
+            int allPieceCount = whitePieceCount + blackPieceCount;
+
+            if (allPieceCount == 2)
+                return true;
+
+            foreach(var piece in whitePieces)
+            {
+                if (PreprocessedTables.MinorPieces.Contains(piece.Type))
+                    whiteMinorPieces++;
+
+                if (piece.Type == PieceType.BISHOP)
+                {
+                    whiteBishop = (Bishop)piece;
+                    whiteBishops++;
+
+                }
+
+            }
+
+            foreach (var piece in whitePieces)
+            {
+                if (PreprocessedTables.MinorPieces.Contains(piece.Type))
+                    blackMinorPieces++;
+
+                if (piece.Type == PieceType.BISHOP)
+                {
+                    blackBishop = (Bishop)piece;
+                    blackBishops++;
+
+                }
+
+            }
+
+            if (allPieceCount == 3 && (whiteMinorPieces == 1 || blackMinorPieces == 1))
+                return true;
+
+            if (whiteBishops == 1 && blackBishops == 1)
+                return OnSameColor(whiteBishop, blackBishop);
+
+            return false;
+        }
+
 
         // Returns a list of pieces which defend a specific piece
         public static List<ChessPiece> GetDefenders(Player player, ulong position)

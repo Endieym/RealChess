@@ -26,7 +26,9 @@ namespace RealChess.Model
         public bool IsKingSideCastle { get; set; }
         public bool IsPositiveCapture { get; set; }
         public bool IsDrawByRepetiton { get; set; }
+        public bool IsDrawByDeadPosition { get; set; }
         public bool IsStalemate { get; set; }
+
 
         
         public enum MoveType
