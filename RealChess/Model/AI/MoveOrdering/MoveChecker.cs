@@ -150,7 +150,7 @@ namespace RealChess.Model.AI
             {
                 value += threatenedValue;
                 if (BoardLogic.IsThreateningPiece(threatened, hangingPiece))
-                    value -= threatenedValue *2;
+                    value -= threatenedValue;
             }
 
             return value;
@@ -163,7 +163,7 @@ namespace RealChess.Model.AI
             int value = 0;
             foreach(var pieceThreatened in threatened)
             {
-                value += EvaluatePieceSafety(pieceThreatened);
+                value += Math.Min(EvaluatePieceSafety(pieceThreatened),0);
             }
 
             return value;

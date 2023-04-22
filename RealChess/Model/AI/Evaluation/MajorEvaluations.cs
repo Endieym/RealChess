@@ -40,16 +40,6 @@ namespace RealChess.Model.AI.Evaluation
             return countControl;
         }
 
-        public static int EvaluatePlayerDanger(PieceColor color)
-        {
-            var safety = EvaluatePlayerSafety(color);
-
-            return Math.Min(safety, 0);
-
-        }
-
-        
-
         /// <summary>
         /// Counts pieces and their values of a specific coloured player
         /// </summary>
@@ -91,6 +81,25 @@ namespace RealChess.Model.AI.Evaluation
                 if (piece.Type != PieceType.KING)
                 {
                     safety += BoardLogic.EvaluatePieceSafety(piece);
+                }
+            }
+            return safety;
+
+        }
+
+        public static int EvaluatePlayerDanger(PieceColor color)
+        {
+            int safety = 0;
+
+            var pieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
+                _gameBoard.GetPlayer2().Pieces;
+
+            // Evaluates safety of every piece
+            foreach (var piece in pieces.Values)
+            {
+                if (piece.Type != PieceType.KING)
+                {
+                    safety += Math.Min(BoardLogic.EvaluatePieceSafety(piece),0);
                 }
             }
             return safety;

@@ -260,6 +260,19 @@ namespace RealChess.Model
         {                        
             return GetPsuedoLegalMoves(piece);
         }
+
+        public List<Move> GetAllPieceMoves(ChessPiece piece)
+        {
+            List<Move> allMoves = GetPsuedoLegalMoves(piece).Concat(GetCapturesPiece(piece)).ToList();
+
+            foreach(Move move in allMoves)
+            {
+                CheckMove(move);
+            }
+
+            return allMoves;
+        }
+
         
         /// <summary>
         /// Generates all legal moves a piece has
@@ -286,8 +299,6 @@ namespace RealChess.Model
                 {                 
                     if (IsKingUnderAttack(piece.Color))
                         newMove.DefendsCheck = true;
-                    CheckMove(newMove);
-
 
                     if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, finalMoves))
                         newMove.IsPromotion = true;
@@ -317,8 +328,6 @@ namespace RealChess.Model
                         Type = Move.MoveType.Castle
                     };
 
-                    CheckMove(castleMove);
-                       
                     list.Add(castleMove);
 
                 }
@@ -330,8 +339,6 @@ namespace RealChess.Model
                         Type = Move.MoveType.Castle
 
                     };
-                    CheckMove(castleMove);
-                        
 
                     list.Add(castleMove);
 
@@ -428,6 +435,7 @@ namespace RealChess.Model
             MakeTemporaryMove(newMove);
                         
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
+
 
             if (result)
             {
@@ -556,7 +564,6 @@ namespace RealChess.Model
 
 
                     // Checks if the enpassant is a check  
-                    CheckMove(enPassant);
                   
    
                     // Checks if the move is legal;
@@ -590,7 +597,6 @@ namespace RealChess.Model
                     if (IsKingUnderAttack(piece.Color))
                         newMove.DefendsCheck = true;
 
-                    CheckMove(newMove);
 
                     if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
                         newMove.IsPromotion = true;
