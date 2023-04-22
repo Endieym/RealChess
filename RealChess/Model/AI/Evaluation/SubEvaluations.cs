@@ -194,12 +194,58 @@ namespace RealChess.Model.AI.Evaluation
 
         }
 
-        public static int EvaluatePassedPawns(List<Pawn> pawns)
+        public static bool IsDoubledPawn(Pawn pawn, ulong pawnsMask)
         {
-            return 0;
+
+            return BoardOperations.IsBlocked(pawn.Color,pawn.GetPosition(), pawnsMask);
+        }
+
+        public static int EvaluatePassedPawns(List<Pawn> playerPawns, ulong pawnsMask, ulong enemyPawns)
+        {
+            int passedPawnsEval = 0;
+
+            foreach(var pawn in playerPawns)
+            {
+                if (IsPassed(pawn, enemyPawns) && !IsDoubledPawn(pawn, pawnsMask))
+                    passedPawnsEval += passedPawnBuff;
+            }
+
+            return passedPawnsEval;
 
         }
 
+        public static bool IsPassed(Pawn pawn, ulong occupation)
+        {
+            return !BoardOperations.IsAdjacentOrBlocked(pawn, occupation);
+        }
 
+        public static int ForceKingToCornerEndgameEval(PieceColor color)
+        {
+            int eval = 0;
+
+            King playerKing = _gameBoard.GetKing(color);
+            King enemyKing = _gameBoard.GetKing(BoardOperations.GetOppositeColor(color));
+
+            // Position is better when the enemy king is closer to the corner
+            int enemyKingRank = BoardOperations.GetRank(enemyKing);
+            int enemyKingFile = BoardOperations.GetFile(enemyKing);
+
+            int enemyKingDstFromCenterRank = Math.Max(3 - enemyKingRank, enemyKingRank - 4);
+            int enemyKingDstFromCenterFile = Math.Max(3 - enemyKingFile, enemyKingFile - 4);
+
+            eval += enemyKingDstFromCenterRank + enemyKingDstFromCenterFile;
+
+            // Position will be better if we move the king closer to opponent king to help 
+            // Checkmate
+            int playerKingRank = BoardOperations.GetRank(playerKing);
+            int playerKingFile = BoardOperations.GetFile(playerKing);
+
+            int dstBetweenKingsRank = Math.Abs(playerKingRank - enemyKingRank);
+            int dstBetweenKingsFile = Math.Abs(playerKingFile - enemyKingFile);
+
+            eval += 14 - dstBetweenKingsFile;
+
+            return eval * 10;
+        }
     }
 }

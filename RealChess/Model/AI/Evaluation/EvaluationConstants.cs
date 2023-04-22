@@ -19,10 +19,12 @@ namespace RealChess.Model.AI.Evaluation
         public const int infinity = 99999999;
         public const int negativeInfinity = -infinity;
 
-        public const int BishopPairBuff = 50;
+        public const int BishopPairBuff = 30;
+        public const int RooksConnectedBuff = 30;
         public const int pawnShieldBuff = 3;
 
-        public const int pawnChainBuff = 3;
-        public const int backwardPawnPenalty = 2;
+        public const int pawnChainBuff = 7;
+        public const int backwardPawnPenalty = 4;
+        public const int passedPawnBuff = 10;
     }
 }

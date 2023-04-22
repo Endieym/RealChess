@@ -111,6 +111,7 @@ namespace RealChess.Model.AI.Evaluation
             if(phase == GamePhase.Endgame)
             {
                 return EvaluateKingActivity(PieceColor.WHITE) - EvaluateKingActivity(PieceColor.BLACK);
+            
             }
             return EvaluatePlayerKingSafety(PieceColor.WHITE) - EvaluatePlayerKingSafety(PieceColor.BLACK);
         }

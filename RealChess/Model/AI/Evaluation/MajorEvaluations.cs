@@ -64,6 +64,12 @@ namespace RealChess.Model.AI.Evaluation
             if (SubEvaluations.CountBishopPair(color) >= 2)
                 MaterialEvaluation += BishopPairBuff;
 
+            var pieces = (color == PieceColor.WHITE ? _gameBoard.WhitePlayer :
+                _gameBoard.BlackPlayer).Pieces;
+
+            if (AreRooksConnected(pieces, color, _gameBoard.BitBoard))
+                MaterialEvaluation += RooksConnectedBuff;
+
             return MaterialEvaluation;
         }
 
@@ -101,6 +107,8 @@ namespace RealChess.Model.AI.Evaluation
 
             activity += SubEvaluations.EvaluatePosition(king, GamePhase.Endgame);
 
+            activity += SubEvaluations.ForceKingToCornerEndgameEval(color);
+            
             return activity;
 
         }
@@ -159,8 +167,14 @@ namespace RealChess.Model.AI.Evaluation
             int structure = 0;
 
             var pawns = BoardOperations.GetAllPawns(_gameBoard, color);
+            var enemyPawns = BoardOperations.GetAllPawns(_gameBoard, BoardOperations.GetOppositeColor(color));
+            
+            ulong pawnBoard = BoardOperations.GetPiecesPositions(pawns.Cast<ChessPiece>().ToList());
+            ulong enemyPawnBoard = BoardOperations.GetPiecesPositions(enemyPawns.Cast<ChessPiece>().ToList());
+
 
             int defendedPawnsCount = SubEvaluations.EvaluatePawnChain(pawns);
+            
             structure += defendedPawnsCount * pawnChainBuff;
 
             int backwardPawnsCount = pawns.Count - defendedPawnsCount;

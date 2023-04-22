@@ -78,6 +78,7 @@ namespace RealChess.Model.AI
                 return 0;
 
             debuff += hangingPiece.Value * 100;
+            debuff += ThreateningValue(move, hangingPiece);
 
             if (move.IsCapture && hangingPiece.Value <= move.CapturedPiece.Value)
                 debuff = 0;
@@ -86,6 +87,8 @@ namespace RealChess.Model.AI
             {
                 if (move.IsPositiveCapture || IsTrade(move))
                     debuff = 0;
+                else
+                    debuff -= GetPotentialThreatValue(move);
             }
 
             else if (ThreateningValue(move, hangingPiece) > hangingPiece.Value)
@@ -147,10 +150,25 @@ namespace RealChess.Model.AI
             {
                 value += threatenedValue;
                 if (BoardLogic.IsThreateningPiece(threatened, hangingPiece))
-                    value -= threatenedValue;
+                    value -= threatenedValue *2;
             }
 
             return value;
+        }
+
+        public static int GetPotentialThreatValue(Move move)
+        {
+            var threatened = BoardLogic.ThreatenedPieces(move);
+
+            int value = 0;
+            foreach(var pieceThreatened in threatened)
+            {
+                value += EvaluatePieceSafety(pieceThreatened);
+            }
+
+            return value;
+
+
         }
 
 

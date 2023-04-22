@@ -133,7 +133,7 @@ namespace RealChess.Model.Bitboard
             return new Tuple<ulong, ulong>(queenSide, kingSide);
         }
 
-        
+
 
         public static List<Pawn> GetAllPawns(Board board, PieceColor color)
         {
@@ -192,6 +192,66 @@ namespace RealChess.Model.Bitboard
             return boardState;
         }
 
+        public static ulong FileMask(int file)
+        {
+            return 0x0101010101010101UL << file;
+        }
+
+        public static ulong GetAdjacentAndCurrent(ulong bitmask)
+        {
+            ulong currentAndAdjacent = bitmask;
+
+            if ((bitmask & BitboardConstants.AFile) == 0)
+                currentAndAdjacent |= bitmask >> 1;
+
+            if ((bitmask & BitboardConstants.GFile) == 0)
+                currentAndAdjacent |= bitmask << 1;
+
+            return currentAndAdjacent;
+        }
+
+        public static bool IsAdjacentOrBlocked(ChessPiece piece, ulong bitmask)
+        {
+            ulong pieceMask = piece.GetPosition();
+
+            bool onSameFile = false;
+
+            while(pieceMask > 0 && !onSameFile)
+            {
+                onSameFile = IsBlocked(piece.Color, pieceMask, bitmask);
+                pieceMask &= pieceMask - 1;
+            }
+
+            return onSameFile;
+        }
+
+        public static bool IsBlocked(PieceColor pieceColor, ulong piecePosition, ulong bitmask)
+        {
+            int file = UInt64ToKey(piecePosition) % 8;
+
+            if ((FileMask(file) & bitmask) == 0)
+                return false;
+
+            ulong path = pieceColor == PieceColor.WHITE ? SlideNorth(piecePosition, 0) :
+                SlideSouth(piecePosition, 0);
+
+            if ((path & bitmask) > 0)
+                return true;
+
+            return false;
+        }
+
+        public static int GetRank(ChessPiece piece)
+        {
+           return UInt64ToKey(piece.GetPosition()) /8;
+
+        }
+        public static int GetFile(ChessPiece piece)
+        {
+            return UInt64ToKey(piece.GetPosition()) % 8;
+
+        }
+
 
         public static ulong RankMask(int rank)
         {
@@ -207,6 +267,18 @@ namespace RealChess.Model.Bitboard
         public static int UInt64ToKey(ulong position)
         {
             return (int)Math.Log(position, 2);
+        }
+
+        public static ulong GetPiecesPositions(List<ChessPiece> pieces)
+        {
+            ulong bitboard = 0;
+
+            foreach (var piece in pieces)
+            {
+                bitboard |= piece.GetPosition();
+            }
+
+            return bitboard;
         }
 
         public static ulong GenerateDiagonals(ulong position, ulong occupied)
