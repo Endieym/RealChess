@@ -124,6 +124,11 @@ namespace RealChess.Controller
             return chessPiece;
         }
 
+        /// <summary>
+        /// Generates a new piece object according to type
+        /// </summary>
+        /// <param name="pieceType"></param>
+        /// <returns></returns>
         public static ChessPiece GetPieceByType(PieceType pieceType)
         {
             ChessPiece chessPiece;

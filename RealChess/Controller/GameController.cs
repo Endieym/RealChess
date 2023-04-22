@@ -156,9 +156,7 @@ namespace RealChess.Controller
                     if (c is LegalMoveControl)
                         currentPanel.Controls.Remove(c);
                 }
-            }
-
-            
+            }            
         }
 
 
@@ -215,7 +213,7 @@ namespace RealChess.Controller
         internal static ChessPieceControl GetPieceControl(int key)
         {
             Panel piecePanel = _panelBoard[key / 8, key % 8];
-
+            
             if (piecePanel.Controls[0] is ChessPieceControl)
             {
                 return (ChessPieceControl)piecePanel.Controls[0];
@@ -291,6 +289,7 @@ namespace RealChess.Controller
 
                 else
                 {
+                    // Opens form for players to choose promotion
                     PromotionForm promotionForm = new PromotionForm
                     {
                         StartPosition = FormStartPosition.CenterParent,
@@ -300,12 +299,13 @@ namespace RealChess.Controller
                     promotionForm.ShowDialog();
                     promotedPiece = promotionForm.PieceClicked;
                 }
-                
+
+                // Switches the pawn with the chosen piece for promotion
                 SwitchPiece(pieceSource, promotedPiece, move.StartSquare);
                 move = BoardController.PromotePiece(move, pieceSource.Piece);
             }
 
-
+            // If in "Real" gamemode 
             if (IsReal)
             {
                 RealBoardController.UpdateReal(move);
@@ -510,12 +510,12 @@ namespace RealChess.Controller
 
             var openForms = Application.OpenForms;
 
+            // Closes the chess form
             for(int i =0; i< openForms.Count; i++)
             {
                 (openForms[i] as ChessForm)?.Close();
 
             }
-
             home.Show();
 
         }

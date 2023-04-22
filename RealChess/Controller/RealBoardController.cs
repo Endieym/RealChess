@@ -133,7 +133,7 @@ namespace RealChess.Controller
             else if (piece.Type == PieceType.KNIGHT)
                 successRate += Positionbuff * (8 - openFiles);
 
-            int safetyCount = BoardLogic.CountSafety(piece);
+            int safetyCount = BoardLogic.CountSafety(piece.Color, piece.GetPosition());
             
             // Buffs the piece by the number of pieces defending over attackers
             successRate += DefenseBuff * safetyCount;
