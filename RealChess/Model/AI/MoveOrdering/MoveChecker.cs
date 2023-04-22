@@ -12,13 +12,23 @@ using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Model.AI
 {
+    /// <summary>
+    /// Provides methods for checking various properties of a chess move, such as whether it is a good or bad move,
+    /// whether it allows a draw, and whether it results in a piece being left hanging.
+    /// and can guess the score of the move
+    /// </summary>
     internal static class MoveChecker
     {
-
+        /// <summary>
+        /// Calculates a bonus for a given move based on various factors.
+        /// </summary>
+        /// <param name="move">The move to evaluate.</param>
+        /// <returns>The bonus value for the move.</returns>
         public static double MoveBonus(Move move)
         {
             double buff = 0;
 
+            // Adds a bonus for a good capture
             if (move.IsCapture)
             {
                 if (IsGoodCapture(move))
@@ -27,16 +37,24 @@ namespace RealChess.Model.AI
                 }
             }
 
+            // Adds a bonus for castling
             if(move.IsKingSideCastle || move.IsQueenSideCastle)
             {
                 buff += EvaluationConstants.movePenalty;
             }
 
+            // Adds a bonus for favorable trades
             if(IsTrade(move))
                 buff += TradeBuff(move);
             
             return buff;
         }
+
+        /// <summary>
+        /// Calculates the penalty for a given move.
+        /// </summary>
+        /// <param name="move">The move to calculate the penalty for.</param>
+        /// <returns>The penalty for the move.</returns>
 
         public static int MovePenalty(Move move)
         {
@@ -49,6 +67,12 @@ namespace RealChess.Model.AI
             return debuff;
         }
 
+        /// <summary>
+        /// Calculates the penalty for a move that creates a false threat, i.e., a move that threatens an opponent's piece
+        /// but does not actually pose a serious threat and instead allows the opponent to launch a counterattack.
+        /// </summary>
+        /// <param name="move">The move to evaluate.</param>
+        /// <returns>The penalty for the move, in terms of the value of the pieces that are threatened.</returns>
         public static int FalseThreat(Move move)
         {
             int antiThreatValue = 0;
@@ -66,6 +90,12 @@ namespace RealChess.Model.AI
             return antiThreatValue;
         }
 
+
+        /// <summary>
+        /// Returns the value of a threat to a chess piece.
+        /// </summary>
+        /// <param name="piece">The chess piece to evaluate.</param>
+        /// <returns>The value of the threat.</returns>
         public static int GetThreatValue(ChessPiece piece)
         {
             var threat = 0;
@@ -80,8 +110,16 @@ namespace RealChess.Model.AI
             return threat;
         }
 
+
+        /// <summary>
+        /// Calculates the penalty for a hanging piece,
+        /// i.e. a piece that is not defended and is vulnerable to capture by an opponent's piece.
+        /// </summary>
+        /// <param name="move">The move to evaluate.</param>
+        /// <returns>The penalty for a hanging piece.</returns>
         public static int HangingPenalty(Move move)
         {
+            // Get the hanging piece for the current player
             var hangingPiece = HangingPiece(move.PieceMoved.Color);
 
             int debuff = 0;  
@@ -89,13 +127,20 @@ namespace RealChess.Model.AI
             if (hangingPiece == null)
                 return 0;
 
+            // Add the value of the hanging piece to the penalty
             debuff += hangingPiece.Value * 100;
-            
+
+            // Add the threatening value of the opponent's pieces that can capture the hanging piece to the penalty
+            // Since they can move out of the threat, and even capture
             debuff += ThreateningValue(move, hangingPiece);
            
+            // If the move made was a capture and the hanging piece's value is less than the captured
+            // then reset the penalty.
             if (move.IsCapture && hangingPiece.Value <= move.CapturedPiece.Value)
                 debuff = 0;
 
+            // Checks if the hanging piece is the piece moved, if so 
+            // Check if it made a positive capture or trade.
             else if (hangingPiece.Equals(move.PieceMoved))
             {
                 if (move.IsPositiveCapture || IsTrade(move))
@@ -104,12 +149,20 @@ namespace RealChess.Model.AI
                     debuff -= GetPotentialThreatValue(move);
             }
 
+            // If the threat made by the recent move is bigger than the hanging piece, 
+            // then don't penalize.
             else if (ThreateningValue(move, hangingPiece) > hangingPiece.Value)
                 debuff = 0;
             
             return debuff;
         }
 
+        /// <summary>
+        /// Determines if the next move allows for a draw by checking if it leads to a threefold repetition.
+        /// </summary>
+        /// <param name="board">The board.</param>
+        /// <param name="color">The color of the player whose turn it is.</param>
+        /// <returns>True if the next move allows for a draw, false otherwise.</returns>
         public static bool NextMoveAllowsDraw(Board board, PieceColor color)
         {
             var enemyMoves = board.GetAllNonCaptureMoves(BoardOperations.GetOppositeColor(color));
@@ -124,7 +177,12 @@ namespace RealChess.Model.AI
 
             return false;
         }
-        
+
+        /// <summary>
+        /// Returns the highest valued hanging piece of the given color.
+        /// </summary>
+        /// <param name="color">The color of the pieces to check for hanging pieces.</param>
+        /// <returns>The highest valued hanging piece of the given color, or null if there is none.</returns>
         public static ChessPiece HangingPiece(PieceColor color)
         {
             var hangingList = BoardLogic.GetHangingPieces(color);
@@ -232,6 +290,11 @@ namespace RealChess.Model.AI
                 
         }
 
+        /// <summary>
+        /// Determines if a move results in a trade between pieces of equal value.
+        /// </summary>
+        /// <param name="move">The move to evaluate.</param>
+        /// <returns>True if the move results in a trade of pieces of equal value, false otherwise.</returns>
         public static bool IsTrade(Move move)
         {
             if (move.IsCapture)
@@ -243,6 +306,12 @@ namespace RealChess.Model.AI
             return false;
         }
 
+        /// <summary>
+        /// Determines if a move is bad for the given game phase.
+        /// </summary>
+        /// <param name="move">The move to check.</param>
+        /// <param name="phase">The game phase to check.</param>
+        /// <returns>True if the move is bad for the given phase, false otherwise.</returns>
         public static bool IsBadForPhase(Move move, GamePhase phase) 
         { 
             if(phase == GamePhase.Opening)
@@ -250,21 +319,28 @@ namespace RealChess.Model.AI
                 if (BoardLogic.RevokesCastlingRights(move))
                     return true;
                 
-
             }
-            else if(phase == GamePhase.Middlegame)
-            {
-
-            }
-            else
-            {
-
-            }
-
             return false;
-        
-        
-        
+        }
+
+        /// <summary>
+        /// Gets the added morale after a specific move is made
+        /// multiplied by its Success Rate
+        /// </summary>
+        /// <param name="move">Move made</param>
+        /// <param name="successRate">Sucess rate of move</param>
+        /// <returns>The added morale as a double</returns>
+        public static double GetAddedMorale(Move move, double successRate)
+        {
+            double moraleBonus = 0;
+            if (move.IsEnPassantCapture)
+                moraleBonus += RealConstants.EnPassantMorale;
+            else if (move.IsCapture)
+                moraleBonus += RealConstants.SuccessfullCapture * 1.5;
+            else if (move.IsCheck)
+                moraleBonus += RealConstants.SuccessfullCapture;
+           
+            return moraleBonus * successRate;
         }
     }
 }

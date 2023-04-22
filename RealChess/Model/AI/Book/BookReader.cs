@@ -13,6 +13,10 @@ using static RealChess.Model.AI.Book.MoveTranslator;
 
 namespace RealChess.Model.AI.Book
 {
+
+    /// <summary>
+    /// A class responsible for reading and managing opening book data in PGN format.
+    /// </summary>
     internal static class BookReader
     {
         private static Database blackBook;
@@ -22,8 +26,9 @@ namespace RealChess.Model.AI.Book
 
         private static List<Game> MatchingBlackGames;
 
-        public static int GamesQuantity { get; set; }
-
+        /// <summary>
+        /// Initializes the black and white opening book databases by reading from PGN files.
+        /// </summary>
         public static void InitialiseDatabases()
         {
             var reader = new PgnReader();
@@ -38,44 +43,47 @@ namespace RealChess.Model.AI.Book
 
             MatchingBlackGames = blackBook.Games;
             MatchingWhiteGames = whiteBook.Games;
-
-            var moveTest = MatchingBlackGames[0].MoveText.GetMoves().ElementAt(0);
-            Console.WriteLine(moveTest);
-            Console.WriteLine(moveTest.TargetSquare);
-            Console.WriteLine(SquaresEqual(moveTest.TargetSquare, 36));
-
-            Console.WriteLine(MoveEqual(moveTest, new Move(36, new Pawn())));
         }
 
-
+        /// <summary>
+        /// Gets a list of book moves for a given player color and list of all moves which happened thus far.
+        /// </summary>
+        /// <param name="color">The player color for which to retrieve book moves.</param>
+        /// <param name="currentMoves">The current list of moves to match with book moves.</param>
+        /// <returns>A list of book moves</returns>
         public static List<ilf.pgn.Data.Move> GetBookMoves(PieceColor color, List<Move> currentMoves)
         {
             List<ilf.pgn.Data.Move> moves = new List<ilf.pgn.Data.Move>();
 
             var games = color == PieceColor.WHITE ? MatchingWhiteGames : MatchingBlackGames;
 
-            foreach (var game in games) 
+            foreach (var game in games)
             {
                 var masterMoves = game.MoveText.GetMoves().ToList();
 
                 if (masterMoves.ElementAtOrDefault(currentMoves.Count) == null) continue;
 
-
                 var lastMove = masterMoves.ElementAt(currentMoves.Count);
 
                 moves.Add(lastMove);
-
             }
 
             return moves;
         }
 
-        public static List<Move> GetPossibleBookMoves(PieceColor color,List<Move> currentMoves, List<Move> possibleMoves)
+        /// <summary>
+        /// Gets a list of possible book moves for a given player color, list of moves thus far, and a list of possible moves.
+        /// </summary>
+        /// <param name="color">The player color for which to retrieve possible book moves.</param>
+        /// <param name="currentMoves">The current list of moves to match against possible book moves.</param>
+        /// <param name="possibleMoves">The list of possible moves to match against book moves.</param>
+        /// <returns>A list of possible book moves.</returns>
+        public static List<Move> GetPossibleBookMoves(PieceColor color, List<Move> currentMoves, List<Move> possibleMoves)
         {
             List<Move> moves = new List<Move>();
-
             var masterMoves = GetBookMoves(color, currentMoves);
-            
+
+            // Checks for every book move if it can be played, if yes add it to the list of final moves
             foreach (var move in possibleMoves)
             {
                 foreach (var masterMove in masterMoves)
@@ -85,16 +93,14 @@ namespace RealChess.Model.AI.Book
                         moves.Add(move);
                     }
                 }
-                
             }
-
-
-            
 
             return moves;
         }
 
-
+        /// <summary>
+        /// Updates the list of matching games based on the list of moves made.
+        /// </summary>
         public static void UpdateGames(List<Move> moves)
         {
             var index = moves.Count - 1;
@@ -118,58 +124,6 @@ namespace RealChess.Model.AI.Book
                     MatchingWhiteGames.Remove(game);
 
             }
-
-            GamesQuantity = MatchingBlackGames.Count + MatchingWhiteGames.Count;
         }
-
-        //public static void PrintGames()
-        //{
-        //    Console.Clear();
-        //    foreach(var game in MatchingBlackGames)
-        //    {
-        //        Console.WriteLine(game);
-        //    }
-
-        //    foreach (var game in MatchingWhiteGames)
-        //    {
-        //        Console.WriteLine(game);
-        //    }
-
-        //    Console.WriteLine();
-        //    Console.WriteLine(GamesQuantity);
-        //}
-
-        //public static void TestGame(List<Move> moves)
-        //{
-        //    var game = MatchingBlackGames[0];
-
-        //    Console.WriteLine(GamesEqual(game, moves));
-        //}
-
-        public static bool GamesEqual(Game masterGame, List<Move> moves)
-        {
-            int index = 0;
-
-            var masterMoves = masterGame.MoveText.GetMoves();
-
-            foreach (var move in masterMoves)
-            {
-                if (!MoveEqual(move, moves[index]))
-                    return false;
-                index++;
-
-                if (moves.Count == index)
-                    break;
-            }
-
-            if (moves.Count != index)
-                return false;
-
-            return true;
-        }
-
-
-
-
     }
 }

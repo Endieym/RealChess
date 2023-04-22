@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RealChess.Model.AI.Evaluation
 {
+    /// <summary>
+    /// Contains constants used for chess board evaluation.
+    /// </summary>
     internal static class EvaluationConstants
     {
         public const ulong Center = 0x1818000000;
@@ -27,5 +30,6 @@ namespace RealChess.Model.AI.Evaluation
         public const int pawnChainBuff = 7;
         public const int backwardPawnPenalty = 4;
         public const int passedPawnBuff = 10;
+
     }
 }
