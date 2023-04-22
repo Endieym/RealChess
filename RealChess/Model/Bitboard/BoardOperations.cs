@@ -178,17 +178,24 @@ namespace RealChess.Model.Bitboard
             return $"{colLetter}{rowNumber}";
         }
 
-        // Returns piece position in chess format (Ra1, Ka5.. etc)
-        public static string GetPiecePositionString(ChessPiece piece)
+        public static string GetPositionStringByPos(PieceColor color,PieceType type, int key)
         {
-            int key = (int)Math.Log(piece.GetPosition(), 2);
 
             int row = key / 8;
             int col = key % 8;
 
-            char color = piece.Color == PieceColor.WHITE ? 'W' : 'B';
+            char colorChar = color == PieceColor.WHITE ? 'W' : 'B';
 
-            return $"{color}{piece.Type.ToString().Substring(0, 1)}{GetPositionString(row, col)}";
+            return $"{colorChar}{type.ToString().Substring(0, 1)}{GetPositionString(row, col)}";
+
+        }
+
+        // Returns piece position in chess format (Ra1, Ka5.. etc)
+        public static string GetPiecePositionString(ChessPiece piece)
+        {
+            int key = (int)Math.Log(piece.GetPosition(),2);
+
+            return GetPositionStringByPos(piece.Color, piece.Type, key);
         }
 
         // Returns the notation for the entire chess board
@@ -210,6 +217,20 @@ namespace RealChess.Model.Bitboard
             }
 
             return boardState;
+        }
+
+        public static string GetBoardStateAfterMove(Move move, Board board)
+        {
+            string boardState = GetBoardStateString(board);
+
+            var pieceMoved = move.PieceMoved;
+
+            string pieceString = GetPiecePositionString(pieceMoved);
+
+            string pieceStringAfterMove = GetPositionStringByPos(pieceMoved.Color, pieceMoved.Type, move.EndSquare);
+
+            return boardState.Replace(pieceString, pieceStringAfterMove);
+
         }
 
         public static ulong FileMask(int file)
@@ -269,6 +290,21 @@ namespace RealChess.Model.Bitboard
         public static int GetFile(ChessPiece piece)
         {
             return UInt64ToKey(piece.GetPosition()) % 8;
+
+        }
+
+        public static int GetDistancePieces(ChessPiece pieceA, ChessPiece pieceB)
+        {
+            int pieceARank = BoardOperations.GetRank(pieceA);
+            int pieceAFile = BoardOperations.GetFile(pieceA);
+
+            int pieceBRank = BoardOperations.GetRank(pieceB);
+            int pieceBFile = BoardOperations.GetFile(pieceB);
+
+            int dstBetweenPiecesRank = Math.Abs(pieceARank - pieceBRank);
+            int dstBetweenPiecesFile = Math.Abs(pieceAFile - pieceBFile);
+
+            return dstBetweenPiecesRank + dstBetweenPiecesFile;
 
         }
 

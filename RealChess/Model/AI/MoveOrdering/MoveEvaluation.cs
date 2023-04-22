@@ -49,7 +49,7 @@ namespace RealChess.Model.AI.Evaluation
             if (GameController.IsReal && move.IsEnPassantCapture)
                 moveScore += movePenalty;
 
-            if (move.Type == Move.MoveType.Draw)
+            if (move.Type == Move.MoveType.Draw ||  MoveChecker.NextMoveAllowsDraw(_gameBoard,color))
                 moveScore = 0;
 
             return moveScore;

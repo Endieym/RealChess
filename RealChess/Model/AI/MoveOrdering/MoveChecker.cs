@@ -58,14 +58,26 @@ namespace RealChess.Model.AI
             {
                 foreach (var piece in threatenedPieces)
                 {
-                    var safety = EvaluatePieceSafety(piece);
-
-                    if (safety < 0)
-                        antiThreatValue -= safety;
+                    antiThreatValue += GetThreatValue(piece);
+                    
                 }
             }
 
             return antiThreatValue;
+        }
+
+        public static int GetThreatValue(ChessPiece piece)
+        {
+            var threat = 0;
+
+           
+            var safety = EvaluatePieceSafety(piece);
+
+            if (safety < 0)
+                  threat = -safety;
+            
+
+            return threat;
         }
 
         public static int HangingPenalty(Move move)
@@ -78,8 +90,9 @@ namespace RealChess.Model.AI
                 return 0;
 
             debuff += hangingPiece.Value * 100;
+            
             debuff += ThreateningValue(move, hangingPiece);
-
+           
             if (move.IsCapture && hangingPiece.Value <= move.CapturedPiece.Value)
                 debuff = 0;
 
@@ -97,58 +110,66 @@ namespace RealChess.Model.AI
             return debuff;
         }
 
-        //// Returns if true a move is good, false if else
-        //public static bool IsBadCapture(Move move)
-        //{
-        //    bool flag = false;
+        public static bool NextMoveAllowsDraw(Board board, PieceColor color)
+        {
+            var enemyMoves = board.GetAllNonCaptureMoves(BoardOperations.GetOppositeColor(color));
 
-        //    if (IsTrade(move))
-        //        flag= false;
+            foreach(var move in enemyMoves)
+            {
 
-        //    else if (move.IsCapture && !move.IsPositiveCapture)
-        //        flag = true;
+                if (IsThreefoldRepetition(BoardOperations.GetBoardStateAfterMove(move, board),
+                    board.GetAllStates()))
+                    return true;
+            }
 
-        //    else if (move.IsPositiveCapture)
-        //        flag = false;
-          
-        //    else if (BoardLogic.EvaluatePieceSafety(move.PieceMoved) < 0)
-        //        flag = true;
-
-        //    return flag;
-        //}
-
+            return false;
+        }
         
         public static ChessPiece HangingPiece(PieceColor color)
         {
             var hangingList = BoardLogic.GetHangingPieces(color);
-
             return hangingList.Max();
 
         }
 
+        /// <summary>
+        /// Calculates the value of the threat on the pieces threatened by recent move
+        /// </summary>
+        /// <param name="move">Move made</param>
+        /// <param name="hangingPiece">Most valuable piece left hanging by move</param>
+        /// <returns>The value of the threats as a whole number </returns>
         public static int ThreateningValue(Move move, ChessPiece hangingPiece)
         {
             int value = 0;
-
             var threatened = BoardLogic.ThreatenedPieces(move);
 
             foreach(var piece in threatened)
             {
                 value += GetThreatValue(piece, hangingPiece);
-
             }
 
             return value *-1;
         }
 
+        /// <summary>
+        /// Method the gets the real threat value on a piece
+        /// </summary>
+        /// <param name="threatened">Threatened piece</param>
+        /// <param name="hangingPiece">Piece left hanging by move</param>
+        /// <returns>The value of the threat</returns>
         public static int GetThreatValue(ChessPiece threatened,ChessPiece hangingPiece)
         {
             int value = 0;
-
+            
             var threatenedValue = EvaluatePieceSafety(threatened);
+           
+            // If the piece threatened is not safe
             if (threatenedValue < 0)
             {
                 value += threatenedValue;
+
+                // If the piece threatened can capture the hanging piece, then 
+                // the threat value is zero.
                 if (BoardLogic.IsThreateningPiece(threatened, hangingPiece))
                     value -= threatenedValue;
             }
@@ -156,6 +177,11 @@ namespace RealChess.Model.AI
             return value;
         }
 
+        /// <summary>
+        /// Calculates the potential threat of a move made
+        /// </summary>
+        /// <param name="move"></param>
+        /// <returns></returns>
         public static int GetPotentialThreatValue(Move move)
         {
             var threatened = BoardLogic.ThreatenedPieces(move);
@@ -167,40 +193,27 @@ namespace RealChess.Model.AI
             }
 
             return value;
-
-
         }
 
-
-
-        //public static bool HangsPieces(Move move)
-        //{
-        //    int PiecesSafety = MajorEvaluations.EvaluatePlayerSafety(move.PieceMoved.Color); 
-
-        //    if (PiecesSafety < 0)
-        //        return true;
-
-
-        //    if (PieceMovedSafety < 0)
-        //    {
-        //        if (move.IsPositiveCapture || MoveChecker.IsTrade(move))
-        //            moveScore += PieceMovedSafety * -1;
-
-        //    }
-
-        //    return false;
-
-        //}
-
-        public static bool IsGoodCapture(Move move)
+        /// <summary>
+        /// Checks if a capture is a good one
+        /// </summary>
+        /// <param name="move"></param>
+        /// <returns></returns>
+        public static bool IsGoodCapture(Move capture)
         {
-
-            if (move.IsPositiveCapture)
+            if (capture.IsPositiveCapture)
                 return true;
 
             return false;
         }
 
+        /// <summary>
+        /// Calculates the buff a trade has. If the player is more forward in material, 
+        /// they should prioritise trades.
+        /// </summary>
+        /// <param name="move">Trade move</param>
+        /// <returns></returns>
         public static double TradeBuff(Move move)
         {
             double evaluation = BoardEvaluation.EvaluateMaterial();
@@ -210,9 +223,10 @@ namespace RealChess.Model.AI
             evaluation *= move.PieceMoved.Color == PieceColor.WHITE ? 1 : -1;
 
             if(evaluation > 100)
-            {
-                tradeBuff += EvaluationConstants.movePenalty * (evaluation / 100);
-            }
+                tradeBuff += EvaluationConstants.tradeBonus * (evaluation / 100);
+
+            if(evaluation < 100)
+                tradeBuff -= EvaluationConstants.tradeBonus * (evaluation / 100);
 
             return Math.Min(move.PieceMoved.Value * 100 - 20, tradeBuff);
                 

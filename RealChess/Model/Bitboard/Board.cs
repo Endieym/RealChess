@@ -642,20 +642,33 @@ namespace RealChess.Model
         public List<Move> GetAllPlayerMoves(PieceColor color)
         {
             List<Move> allMoves = new List<Move>();
-           
-            var pieces = color == PieceColor.WHITE ? GetPlayer1().Pieces : GetPlayer2().Pieces;
-            
-            // Iterates over every piece, and adds all moves to the general list
-            foreach(var piece in pieces.Values.ToList())
-            {
 
-                GetMovesPiece(piece).ForEach(item => allMoves.Add(item));
-                GetCapturesPiece(piece).ForEach(item => allMoves.Add(item));
-               
+            var pieces = GetPieces(color);
+
+            // Iterates over every piece, and adds all moves to the general list
+            foreach (var piece in pieces.ToList())
+            {
+                GetAllPieceMoves(piece).ForEach(item => allMoves.Add(item));
 
             }
             
             return allMoves;
+        }
+
+        public List<Move> GetAllNonCaptureMoves(PieceColor color)
+        {
+            List<Move> moves = new List<Move>();
+
+            var pieces = GetPieces(color);
+
+            // Iterates over every piece, and adds all moves to the general list
+            foreach (var piece in pieces.ToList())
+            {
+                GetPsuedoLegalMoves(piece).ForEach(item => moves.Add(item));
+
+            }
+
+            return moves;
         }
          
         /// <summary>

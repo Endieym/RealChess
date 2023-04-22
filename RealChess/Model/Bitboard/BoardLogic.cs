@@ -179,7 +179,7 @@ namespace RealChess.Model.Bitboard
             if (allPieceCount == 3 && (whiteMinorPieces == 1 || blackMinorPieces == 1))
                 return true;
 
-            if (whiteBishops == 1 && blackBishops == 1)
+            if (allPieceCount == 4 && whiteBishops == 1 && blackBishops == 1)
                 return OnSameColor(whiteBishop, blackBishop);
 
             return false;
@@ -247,13 +247,13 @@ namespace RealChess.Model.Bitboard
         }
 
         // Counts the number of pieces defending a piece minus the number of attackers
-        public static int CountSafety(ChessPiece piece)
+        public static int CountSafety(PieceColor color, ulong position)
         {
-            var defenderPieces = GetPieces(piece.Color).ToList();
-            var attackerPieces = GetPieces(GetOppositeColor(piece.Color)).ToList();
+            var defenderPieces = GetPieces(color).ToList();
+            var attackerPieces = GetPieces(GetOppositeColor(color)).ToList();
 
-            List<ChessPiece> defenders = GetInfluencers(defenderPieces, piece.GetPosition());
-            List<ChessPiece> attackers = GetInfluencers(attackerPieces, piece.GetPosition());
+            List<ChessPiece> defenders = GetInfluencers(defenderPieces, position);
+            List<ChessPiece> attackers = GetInfluencers(attackerPieces, position);
 
             return defenders.Count - attackers.Count;
 
@@ -277,6 +277,11 @@ namespace RealChess.Model.Bitboard
             // Gets the defenders and attackers on the piece
             List<ChessPiece> defenders = GetInfluencers(defenderPieces, position);
             List<ChessPiece> attackers = GetInfluencers(attackerPieces, position);
+
+            King attackerKing = _gameBoard.GetKing(GetOppositeColor(color));
+            
+            if(defenders.Count >= attackers.Count)
+                attackers.Remove(attackerKing); 
 
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
@@ -344,13 +349,15 @@ namespace RealChess.Model.Bitboard
             // Adds the value of the piece itself to the defense value, 
             // since capturing the piece will be worth the value of the piece aswell
 
-
+            
             if (attackers.Count == 0)
                 return 0;
 
             // If the piece is not under attack or defense, return 0
             if (attackers.Count == 0 && defenders.Count == 0)
                 return 0;
+
+            
 
             int originalValue = squareValue;  
             
