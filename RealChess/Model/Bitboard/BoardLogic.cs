@@ -1,31 +1,38 @@
-﻿using RealChess.Model.AI.Evaluation;
-using RealChess.Model.ChessPieces;
+﻿using RealChess.Model.ChessPieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static RealChess.Model.Bitboard.BoardOperations;
 using static RealChess.Model.ChessPieces.ChessPiece;
-using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 using RealChess.Model.AI;
 
 namespace RealChess.Model.Bitboard
 {
+
+    /// <summary>
+    /// The BoardLogic class provides utility functions for the Chess game/engine.
+    /// </summary>
     internal static class BoardLogic
-
     {
-
         private static Board _gameBoard;
 
-        // Sets the game board
+        /// <summary>
+        /// Sets the game board to be used for the rest of the class.
+        /// </summary>
+        /// <param name="board">The game board to be set.</param>
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
 
         }
-        // Gets the pieces of a specific player, and returns whether or not the rooks
-        // are connected
+        /// <summary>
+        /// Gets the pieces of a specific player, and returns whether or not the rooks
+        /// are connected
+        /// </summary>
+        /// <param name="pieces">Dictionary of pieces of the player</param>
+        /// <param name="color">Color of the player</param>
+        /// <param name="occupied">Bitboard representing all occupied squares</param>
+        /// <returns>Returns true if the rooks of the player are connected, false otherwise</returns>
         public static bool AreRooksConnected(Dictionary<int, ChessPiece> pieces, PieceColor color, ulong occupied)
         {
             // Gets the rook pair
@@ -45,8 +52,8 @@ namespace RealChess.Model.Bitboard
         /// <summary>
         /// Method which checks if a move revokes castling rights
         /// </summary>
-        /// <param name="move"></param>
-        /// <returns></returns>
+        /// <param name="move">The move to check</param>
+        /// <returns>Returns true if the move revokes castling rights, false otherwise</returns>
         public static bool RevokesCastlingRights(Move move)
         {
             // If king is already castled
@@ -64,7 +71,11 @@ namespace RealChess.Model.Bitboard
             return false;
         }
 
-
+        /// <summary>
+        /// Gets the bitboard representation of the squares surrounding the king of a given color.
+        /// </summary>
+        /// <param name="color">The color of the king</param>
+        /// <returns>A bitboard representing the squares surrounding the king</returns>
         public static ulong GetKingPerimeter(PieceColor color)
         {
             King king = _gameBoard.GetKing(color);
@@ -72,7 +83,13 @@ namespace RealChess.Model.Bitboard
 
         }
 
-        // Returns the number of open files on the board
+        /// <summary>
+        /// Returns the number of open files on the chessboard.
+        /// An open file is a file (column) without any pawns on it.
+        /// </summary>
+        /// <param name="whitePlayer">The player with the white pieces</param>
+        /// <param name="blackPlayer">The player with the black pieces</param>
+        /// <returns>The number of open files</returns>
         public static int OpenFiles(Player whitePlayer, Player blackPlayer)
         {
             var whitePieces = whitePlayer.Pieces;
@@ -103,11 +120,15 @@ namespace RealChess.Model.Bitboard
                     openFiles++;
                 }
             }
-
-
             return openFiles;
         }
 
+        /// <summary>
+        /// Method which checks if the current position has occurred three times in the game history
+        /// </summary>
+        /// <param name="currentPos">The current position</param>
+        /// <param name="positions">A list of positions from previous moves in the game</param>
+        /// <returns>True if the current position has occurred three times, false otherwise</returns>
         public static bool IsThreefoldRepetition(string currentPos, List<string> positions)
         {
             int count = 0;
@@ -123,10 +144,15 @@ namespace RealChess.Model.Bitboard
                     }
                 }
             }
-
             return false; // Not a threefold repetition
         }
 
+
+        /// <summary>
+        /// Determines if the current position is a dead position,
+        /// meaning it is not possible for either player to win.
+        /// </summary>
+        /// <returns>True if the position is a dead position, false otherwise</returns>
         public static bool IsDeadPosition()
         {
             var whitePieces = GetPieces(PieceColor.WHITE);
@@ -159,9 +185,7 @@ namespace RealChess.Model.Bitboard
                     whiteBishops++;
 
                 }
-
             }
-
             foreach (var piece in whitePieces)
             {
                 if (PreprocessedTables.MinorPieces.Contains(piece.Type))
@@ -171,9 +195,7 @@ namespace RealChess.Model.Bitboard
                 {
                     blackBishop = (Bishop)piece;
                     blackBishops++;
-
                 }
-
             }
 
             if (allPieceCount == 3 && (whiteMinorPieces == 1 || blackMinorPieces == 1))
@@ -185,49 +207,16 @@ namespace RealChess.Model.Bitboard
             return false;
         }
 
-
-        // Returns a list of pieces which defend a specific piece
-        public static List<ChessPiece> GetDefenders(Player player, ulong position)
-        {
-
-            var pieces = player.Pieces;
-
-            List<ChessPiece> defenders = new List<ChessPiece>();
-
-            //ulong pieceMask = pieceUnderDefense.GetPosition();
-
-            // Iterates over every piece of the player defending
-            // And adds the pieces which defend the given square to the list
-            foreach (var piece in pieces.Values)
-            {
-                //if (piece.Type == PieceType.KING) continue; // Kings cannot be defenders
-
-                var pieceMoves = _gameBoard.GetAttacksMask(piece);
-
-                if ((pieceMoves & position) > 0) defenders.Add(piece);
-
-            }
-
-            //Sorts by the value of the defenders
-            defenders.Sort();
-            return defenders;
-        }
-
-
-        // Returns a list of pieces which attack a specific piece
-
-        public static List<ChessPiece> GetAttackers(Player opposingPlayer, ulong position)
-        {
-
-            var pieces = opposingPlayer.Pieces;
-
-            return GetInfluencers(pieces.Values.ToList(), position);
-        }
-
+        /// <summary>
+        /// Returns a list of pieces that can attack a given position.
+        /// </summary>
+        /// <param name="pieces">List of pieces to check for attackers.</param>
+        /// <param name="position">Position to check for attackers.</param>
+        /// <returns>List of pieces that can attack the given position.</returns>
         public static List<ChessPiece> GetInfluencers(List<ChessPiece> pieces, ulong position)
         {
 
-            List<ChessPiece> attackers = new List<ChessPiece>();
+            List<ChessPiece> influencers = new List<ChessPiece>();
 
             // Iterates over every piece of the player attacking
             // And adds the pieces which attack the given square to the list
@@ -237,16 +226,20 @@ namespace RealChess.Model.Bitboard
 
                 var pieceMoves = _gameBoard.GetAttacksMask(piece);
 
-                if ((pieceMoves & position) > 0) attackers.Add(piece);
+                if ((pieceMoves & position) > 0) influencers.Add(piece);
 
             }
-            // Sorts by the value of the attackers
-            attackers.Sort();
-
-            return attackers;
+            // Sorts by the value of the influencers
+            influencers.Sort();
+            return influencers;
         }
 
-        // Counts the number of pieces defending a piece minus the number of attackers
+        /// <summary>
+        /// Counts the number of pieces defending a piece at a given position minus the number of attackers.
+        /// </summary>
+        /// <param name="color">The color of the defending pieces.</param>
+        /// <param name="position">The position of the defended piece.</param>
+        /// <returns>The difference between the number of defenders and attackers.</returns>
         public static int CountSafety(PieceColor color, ulong position)
         {
             var defenderPieces = GetPieces(color).ToList();
@@ -256,9 +249,13 @@ namespace RealChess.Model.Bitboard
             List<ChessPiece> attackers = GetInfluencers(attackerPieces, position);
 
             return defenders.Count - attackers.Count;
-
         }
 
+        /// <summary>
+        /// Returns a collection of all pieces belonging to a given color on the game board.
+        /// </summary>
+        /// <param name="color">The color of the pieces to retrieve.</param>
+        /// <returns>A collection of all pieces of the given color on the game board.</returns>
         public static Dictionary<int, ChessPiece>.ValueCollection GetPieces(PieceColor color)
         {
             var pieces = (color == PieceColor.WHITE ? _gameBoard.WhitePlayer :
@@ -267,7 +264,13 @@ namespace RealChess.Model.Bitboard
             return pieces;
         }
 
-        // Evaluates the safety of a piece, by the worth of the defense and attack
+        /// <summary>
+        /// Evaluates the safety of a piece by considering the worth of the defense and attack. The method calculates the difference between the worth of the defending and attacking pieces on the given position, with the worth of the defending pieces multiplied by -1 to indicate that more defenders make the position safer.
+        /// </summary>
+        /// <param name="color">The color of the player defending the position.</param>
+        /// <param name="position">The position being defended.</param>
+        /// <param name="squareValue">The value of the square being defended.</param>
+        /// <returns>The safety evaluation of the position.</returns>
         public static int EvaluateSafety(PieceColor color, ulong position, int squareValue)
         {
             var defenderPieces = GetPieces(color).ToList();
@@ -287,20 +290,34 @@ namespace RealChess.Model.Bitboard
             // since capturing the piece will be worth the value of the piece aswell
 
             return -CalculateExchange(attackers, defenders, squareValue);
-
         }
 
+        /// <summary>
+        /// Evaluates the control of a square for a specific color, based on the safety of the square
+        /// </summary>
+        /// <param name="color">The color of the player whose control is evaluated.</param>
+        /// <param name="position">The bitboard representing the square/s evaluated.</param>
+        /// <returns>An integer representing the evaluation score.</returns>
         public static int EvaluateSquareControl(PieceColor color, ulong position)
         {
             return EvaluateSafety(color, position, 0);
         }
 
-
+        /// <summary>
+        /// Evaluates the safety of a chess piece based on the worth of the defense and attack.
+        /// </summary>
+        /// <param name="piece">The chess piece to be evaluated for safety.</param>
+        /// <returns>An integer value representing the safety of the chess piece.</returns>
         public static int EvaluatePieceSafety(ChessPiece piece)
         {
             return EvaluateSafety(piece.Color, piece.GetPosition(), piece.Value);
         }
 
+        /// <summary>
+        /// Returns a list of pieces of a given color that are not well defended and can be captured by an opponent
+        /// </summary>
+        /// <param name="color">The color of the pieces to be evaluated</param>
+        /// <returns>List of ChessPieces that are not well defended</returns>
         public static List<ChessPiece> GetHangingPieces(PieceColor color)
         {
             var playerPieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
@@ -315,25 +332,23 @@ namespace RealChess.Model.Bitboard
             }
 
             hangingList.Sort();
-
             return hangingList;
         }
 
-        // Returns the value of the capture
+        /// <summary>
+        /// Calculates the value of the capture of a piece based on the attacking and defending pieces.
+        /// </summary>
+        /// <param name="pieceCaptured">The piece being captured.</param>
+        /// <param name="pieceAttacking">The piece that made the capture.</param>
+        /// <returns>The value of the capture.</returns>
         public static int GetCaptureValue(ChessPiece pieceCaptured, ChessPiece pieceAttacking)
         {
-
-            var defender = pieceCaptured.Color == PieceColor.WHITE ? _gameBoard.GetPlayer1() :
-                _gameBoard.GetPlayer2();
-
-            var attacker = pieceCaptured.Color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
-                 _gameBoard.GetPlayer1();
-
+            var defender = GetPieces(pieceCaptured.Color).ToList();
+            var attacker = GetPieces(pieceAttacking.Color).ToList();
 
             // Gets the defenders and attackers on the piece
-            List<ChessPiece> defenders = GetDefenders(defender, pieceCaptured.GetPosition());
-            List<ChessPiece> attackers = GetAttackers(attacker, pieceCaptured.GetPosition());
-
+            List<ChessPiece> defenders = GetInfluencers(defender, pieceCaptured.GetPosition());
+            List<ChessPiece> attackers = GetInfluencers(attacker, pieceCaptured.GetPosition());
 
             // Puts the piece attacking at the first exchange order
             attackers.Remove(pieceAttacking);
@@ -344,6 +359,13 @@ namespace RealChess.Model.Bitboard
 
         }
 
+        /// <summary>
+        /// Calculates the exchange of pieces between attackers and defenders
+        /// </summary>
+        /// <param name="attackers">List of ChessPieces attacking the square</param>
+        /// <param name="defenders">List of ChessPieces defending the square</param>
+        /// <param name="squareValue">Value of the square being attacked</param>
+        /// <returns>The value of the capture, taking into account the values of the attacking and defending pieces</returns>
         public static int CalculateExchange(List<ChessPiece> attackers, List<ChessPiece> defenders, int squareValue)
         {
             // Adds the value of the piece itself to the defense value, 
@@ -395,16 +417,25 @@ namespace RealChess.Model.Bitboard
 
         }
 
+        /// <summary>
+        /// Determines if a given chess piece is threatening another chess piece.
+        /// </summary>
+        /// <param name="threat">The chess piece that is allegedly threatening.</param>
+        /// <param name="threatened">The chess piece that is allegedly threatened.</param>
+        /// <returns>True if the threat is present, false otherwise.</returns>
         public static bool IsThreateningPiece(ChessPiece threat, ChessPiece threatened)
         {
             if ((_gameBoard.GetAttacksMask(threat) & threatened.GetPosition()) > 0)
                 return true;
 
             return false;
-
         }
 
-
+        /// <summary>
+        /// Returns a list of all enemy pieces that are threatened by a given move.
+        /// </summary>
+        /// <param name="move">The move to check for threatened pieces.</param>
+        /// <returns>A list of all enemy pieces that are threatened by the move.</returns>
         public static List<ChessPiece> ThreatenedPieces(Move move)
         {
             // Gets the masks for the captures, according to piece type
@@ -426,39 +457,9 @@ namespace RealChess.Model.Bitboard
             }
 
             return threatenedPieces;
-            
         }
 
-
-        /// <summary>
-        /// Checks if the game has transitioned to middlegame from opening - castled
-        /// </summary>
-        /// <returns>True if finished opening</returns>
-        public static bool FinishedOpening()
-        {
-
-            if (_gameBoard.GetPlayer1().GetKing().Castled && _gameBoard.GetPlayer2().GetKing().Castled)
-                return true;
-            
-            return false;
-        }
-
-        /// <summary>
-        /// Checks if the game has transitioned to endgame
-        /// </summary>
-        /// <returns>Returns true if in endgame</returns>
-        public static bool FinishedMiddleGame()
-        {
-
-            int materialOnBoard = MajorEvaluations.EvaluatePlayerMaterial(PieceColor.WHITE);
-            materialOnBoard += MajorEvaluations.EvaluatePlayerMaterial(PieceColor.BLACK);
-
-            if (materialOnBoard <= 24)
-                return true;
-
-            return false;
-        }
-
+        // Enum representing the game phase
         public enum GamePhase
         {
             Opening,
@@ -466,8 +467,5 @@ namespace RealChess.Model.Bitboard
             Endgame
 
         }
-
-
-
     }
 }

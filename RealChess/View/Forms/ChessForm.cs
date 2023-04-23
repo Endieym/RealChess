@@ -4,17 +4,11 @@ using static RealChess.Controller.BoardController;
 using static RealChess.Controller.GameController;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using RealChess.Model;
 using RealChess.Controller;
 using static RealChess.Model.ChessPieces.ChessPiece;
-using System.IO;
 
 namespace RealChess
 {
@@ -28,9 +22,6 @@ namespace RealChess
         private static ChessPieceControl _currentPieceClicked = null;
 
         private static bool InProcess = false;
-
-        private static bool IsWhiteAi = false;
-        private static bool IsBlackAi = false;
         
         private const int tileSize = 65;
         private const int gridSize = 8;
@@ -125,16 +116,11 @@ namespace RealChess
                 RealBoardController.SetBoard(chessBoard);
 
             GenerateSideBar();
-
-
         }
 
-
-        public static bool IsColorAi(PieceColor color)
-        {
-            return color == PieceColor.WHITE ? IsWhiteAi: IsBlackAi;
-        }
-
+        /// <summary>
+        /// Generates side bar
+        /// </summary>
         public void GenerateSideBar()
         {
             // Add the control to the form's controls
@@ -317,22 +303,35 @@ namespace RealChess
 
             }
         }
+
+        /// <summary>
+        /// Disables clicks for user
+        /// </summary>
         public static void DisableClicks()
         {
             InProcess = true;
             
         }
+
+        /// <summary>
+        /// Enables clicks for user
+        /// </summary>
         public static void EnableClicks()
         {
             InProcess = false;
         }
 
+        /// <summary>
+        /// Disable settings for user
+        /// </summary>
         public void DisableSettings()
         {
             SettingsToolStripMenuItem.Enabled = false;
         }
 
-        // Resets the current piece clicked to null
+        /// <summary>
+        /// Resets the currentpiececlicked to null
+        /// </summary>
         public static void ResetPieceClicked()
         {
             // Resets the piece control's color to transparent
@@ -348,11 +347,16 @@ namespace RealChess
             _currentPieceClicked = null;
 
         }
+        /// <summary>
+        /// Gets the current piece clicked
+        /// </summary>
+        /// <returns></returns>
         public static ChessPieceControl GetCurrentPiece()
         {
             return _currentPieceClicked;
         }
 
+        // Event handler when whiteAi checkbox was clicked
         private void whiteAI_CheckedChanged(object sender, EventArgs e)
         {
             if (whiteAI.Checked)
@@ -367,6 +371,7 @@ namespace RealChess
 
         }
 
+        // Event handler when blackAi checkbox was clicked
         private void blackAI_CheckedChanged(object sender, EventArgs e)
         {
             if (blackAI.Checked)
@@ -432,56 +437,13 @@ namespace RealChess
             }
         }
 
-        //private void ClearColor()
-        //{
-        //    for(int row = 0; row < gridSize; row++)
-        //    {
-        //        for(int col = 0; col < gridSize; col++)
-        //        {
-        //            foreach (ChessPieceControl c in _chessBoardPanels[row, col].Controls)
-        //            {
-        //                c.BackColor = Color.Transparent;
-                        
-
-        //            }
-        //        }
-        //    }
-        //}
-        
         // Event handler when a panel is clicked
         private void Panel_Click(object sender, EventArgs e)
         {   
             if(_currentPieceClicked != null)
                 GameController.ClearLegalMoves(_currentPieceClicked);
             ResetPieceClicked();
-            //MouseEventArgs mouseArgs = e as MouseEventArgs;
-
-            //if (mouseArgs.Button != MouseButtons.Left)
-            //    return;
-
-            //if (_currentPieceClicked is null)
-            //    return;
-
-            
-            ////MessageBox.Show("Target");
-
-            //// Get the clicked panel
-            //Panel myPanel = sender as Panel;           
-
-            //if (!IsLegalMove(_currentPieceClicked, myPanel))
-            //{
-            //    ClearColor();
-            //    _currentPieceClicked = null;
-            //    return;
-            //}
-            //MovePiece(_currentPieceClicked, myPanel);
-
-            //// Reset the selected ChessPieceControl
-            //_currentPieceClicked = null;
             
         }
-
-      
     }
-
 }

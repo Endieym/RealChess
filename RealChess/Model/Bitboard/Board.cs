@@ -2,11 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.Bitboard.BoardOperations;
-using System.Collections.Specialized;
 using RealChess.Model.Bitboard;
 using static RealChess.Model.Bitboard.BoardLogic;
 using RealChess.Model.AI.Book;
@@ -14,62 +11,32 @@ using RealChess.Model.AI.Book;
 namespace RealChess.Model
 {
     /// <summary>
-    /// This class represents the game board data structure
+    /// Represents the chess board sized 8*8
     /// </summary>
     public class Board
     {
         public const int SIZE = 8;
 
         internal Player WhitePlayer {
-            set
-            {
-                player1 = value;
-            }
-            get
-            {
-                return this.player1;
-            }
+            set { player1 = value; }
+            get { return this.player1; }
         }
         internal Player BlackPlayer {
-            set
-            {
-                player2 = value;
-            }
-            get
-            {
-                return this.player2;
-            }
+            set { player2 = value; }
+            get { return this.player2; }
         }
 
         internal ulong BlackBoard {
-            set
-            {
-                blackBoard = value;
-            }
-            get
-            {
-                return blackBoard;
-            }
+            set { blackBoard = value; }
+            get { return blackBoard; }
         }
         internal ulong WhiteBoard {
-            set
-            {
-                whiteBoard = value;
-            }
-            get
-            {
-                return whiteBoard;
-            }
+            set { whiteBoard = value; }
+            get { return whiteBoard; }
         }
         internal ulong BitBoard {
-            set
-            {
-                bitBoard = value;
-            }
-            get
-            {
-                return bitBoard;
-            }
+            set { bitBoard = value; }
+            get { return bitBoard; }
         }
 
 
@@ -78,7 +45,6 @@ namespace RealChess.Model
         UInt64 bitBoard;
         UInt64 whiteBoard;
         UInt64 blackBoard;
-        internal GamePhase CurrentPhase { get; set; }
 
         List<Move> movesList;
         List<string> positions;
@@ -97,7 +63,6 @@ namespace RealChess.Model
             this.whiteBoard = 0;
             this.blackBoard = 0;
 
-            CurrentPhase = GamePhase.Opening;
             movesList = new List<Move>();
             positions = new List<string>();
 
@@ -114,122 +79,103 @@ namespace RealChess.Model
         }
 
         /// <summary>
-        /// Gets the morale of a specific coloured player
+        /// Gets the morale of a specific colored player.
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
+        /// <param name="color">The color of the player whose morale is being retrieved.</param>
+        /// <returns>The morale value of the specified player.</returns>
         public int GetMorale(PieceColor color)
         {
             return color == PieceColor.WHITE ? player1.Morale : player2.Morale;
         }
 
-        
+
         /// <summary>
-        /// Checks if a king of specific color is under attack
+        /// Checks if a king of specific color is under attack.
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
+        /// <param name="color">The color of the king to check.</param>
+        /// <returns>True if the king of the specified color is under attack, false otherwise.</returns>
         public bool IsKingUnderAttack(PieceColor color)
         {
             ulong attackingSquares = GetPlayerAttack(color);
 
             return color == PieceColor.WHITE ? player1.InCheck(attackingSquares) :
                 player2.InCheck(attackingSquares);
-           
         }
 
         /// <summary>
-        /// Function to return king of a specific color
+        /// Gets the king piece of a specific colored player.
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
+        /// <param name="color">The color of the player whose king is to be retrieved.</param>
+        /// <returns>The king piece of the specified player.</returns>
         internal King GetKing(PieceColor color)
         {
             return color == PieceColor.WHITE ? player1.GetKing() :
                 player2.GetKing();
         }
-        
+
+        /// <summary>
+        /// Function to return the position of the king of a specific color
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns>The position of the king as an integer</returns>
         public int GetKingPos(PieceColor color)
         {
             return color == PieceColor.WHITE ? player1.GetKingPos() :
                 player2.GetKingPos();
         }
-        
-        //public bool IsInCheck(PieceColor color)
-        //{
-        //    return color == PieceColor.WHITE ? player1.InCheck(attackingSquares) :
-        //        player2.InCheck(attackingSquares);
-        //}
 
+        /// <summary>
+        /// Calculates and returns the attack bitboard for the specified player's pieces of the given color.
+        /// </summary>
+        /// <param name="color">The color of the player to get the attack bitboard for.</param>
+        /// <returns>The attack bitboard of the specified player's pieces.</returns>
         public ulong GetPlayerAttack(PieceColor color)
         {
             return color == PieceColor.WHITE ? player2.GetAttacks(whiteBoard, bitBoard) :
                player1.GetAttacks(blackBoard, bitBoard);
-            
         }
-        
+
+        /// <summary>
+        /// Returns the possible move positions of a player of a given color.
+        /// </summary>
+        /// <param name="color">The color of the player.</param>
+        /// <returns>An unsigned 64-bit integer representing the bitboard of possible moves.</returns>
         public ulong GetPlayerMove(PieceColor color)
         {
             return color == PieceColor.WHITE ? player1.GetMoves(whiteBoard, bitBoard) :
                player2.GetMoves(blackBoard, bitBoard);
-
         }
 
-
-        public ulong GetPlayerAttacksAndOcuppied(PieceColor color)
-        {
-            ulong mask = GetPlayerMove(color);
-            mask |= color == PieceColor.WHITE ? whiteBoard : blackBoard;
-            return mask;
-        }
-
-        //public List<ulong> GetMovesMaskList(PieceColor color)
-        //{
-        //    var pieces = color == PieceColor.WHITE ? player1.Pieces : player2.Pieces;
-        //    List<ulong> movesMasks = new List<ulong>();
-
-            
-        //    foreach (var piece in pieces.Values)
-        //    {
-        //        movesMasks.Add(piece.GenerateLegalMoves(bitBoard));
-        //    }
-
-        //    return movesMasks;
-        //}
-
-
-        // Updates the board according to a move made      
+        /// <summary>
+        /// Updates the board according to a move made and updates the movesList and bookReader.
+        /// </summary>
+        /// <param name="move">The move to be made.</param>  
         public void UpdateBoard(Move move)
         {
 
             BoardUpdate.UpdateBoard(move);
             BookReader.UpdateGames(movesList);
-
-            //BookReader.PrintGames();
-            
-
-
         }
+
         /// <summary>
-        /// This move turns a move into a promotion move
+        /// This method creates a promotion move from a regular pawn move and a chosen promotion piece.
         /// </summary>
         /// <param name="move">The original pawn move</param>
-        /// <param name="chessPiece">The piece chosen to change to</param>
-        /// <returns></returns>
+        /// <param name="chessPiece">The piece chosen for promotion</param>
+        /// <returns>A new move object representing the promotion move</returns>
         public Move MakePromotionMove(Move move, ChessPiece chessPiece)
         {
             var endKey = move.EndSquare;
             var beforeKey = move.StartSquare;
-            
+
+            // Switch the pawn to the promotion piece
             if (chessPiece.Color == PieceColor.WHITE)
-            {
                 player1.SwitchPiece(beforeKey, chessPiece);
 
-            }
             else
-            {
                 player2.SwitchPiece(beforeKey, chessPiece);
-            }
+
+            // Create the promotion move
 
             Move promotion = new Move(endKey, chessPiece)
             {
@@ -245,25 +191,20 @@ namespace RealChess.Model
             // Checks for special properties of the move
             // Check, Checkmate or draw
             CheckMove(promotion);
-           
 
             return promotion;
-
         }
 
         /// <summary>
-        /// Gets the possible moves of a piece
+        /// This method gets all the moves of a given chess piece, including legal moves and captures.
+        /// It also checks each move for special properties such as check, checkmate or draw.
         /// </summary>
-        /// <param name="piece"></param>
-        /// <returns></returns>
-        public virtual List<Move> GetMovesPiece(ChessPiece piece)
-        {                        
-            return GetPsuedoLegalMoves(piece);
-        }
+        /// <param name="piece">The chess piece to get the moves for</param>
+        /// <returns>A list of all possible moves for the given chess piece</returns>
 
         public List<Move> GetAllPieceMoves(ChessPiece piece)
         {
-            List<Move> allMoves = GetPsuedoLegalMoves(piece).Concat(GetCapturesPiece(piece)).ToList();
+            List<Move> allMoves = GetLegalMoves(piece).Concat(GetCapturesPiece(piece)).ToList();
 
             foreach(Move move in allMoves)
             {
@@ -273,13 +214,13 @@ namespace RealChess.Model
             return allMoves;
         }
 
-        
+
         /// <summary>
         /// Generates all legal moves a piece has
         /// </summary>
-        /// <param name="piece"></param>
-        /// <returns></returns>
-        public List<Move> GetPsuedoLegalMoves(ChessPiece piece)
+        /// <param name="piece">The chess piece to generate legal moves for</param>
+        /// <returns>A list of all legal moves the chess piece can make</returns>
+        public List<Move> GetLegalMoves(ChessPiece piece)
         {
             ulong finalMoves = piece.GenerateLegalMoves(this.bitBoard);
             // Initialize the moves list
@@ -319,6 +260,8 @@ namespace RealChess.Model
                 var Castle = GenerateCastle((King)piece, pieces, boardAndEnemyMoves);
                 ulong castleQueen = Castle.Item1;
                 ulong castleKing = Castle.Item2;
+
+                // Add queen-side castling move
                 if (castleQueen > 0)
                 {
 
@@ -329,8 +272,9 @@ namespace RealChess.Model
                     };
 
                     list.Add(castleMove);
-
                 }
+
+                // Add king-side castling move
                 if (castleKing > 0)
                 {
                     Move castleMove = new Move((int)Math.Log(castleKing, 2), piece)
@@ -339,12 +283,9 @@ namespace RealChess.Model
                         Type = Move.MoveType.Castle
 
                     };
-
                     list.Add(castleMove);
-
                 }
             }
-
             return list;
         }
 
@@ -360,7 +301,7 @@ namespace RealChess.Model
         /// <summary>
         /// Returns a list of all moves made until now
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of all moves made until now</returns>
         public List<Move> GetAllMoves()
         {
             return movesList;
@@ -369,7 +310,7 @@ namespace RealChess.Model
         /// <summary>
         /// Returns the list of all positions achieved until now
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The list of string positions</returns>
         public List<string> GetAllStates()
         {
             return positions;
@@ -379,21 +320,19 @@ namespace RealChess.Model
         /// <summary>
         /// Returns the attack bitmask for a specific piece
         /// </summary>
-        /// <param name="piece"></param>
-        /// <returns></returns>
+        /// <param name="piece">The piece whose attack bitmask is returned</param>
+        /// <returns>The attacks mask of the piece</returns>
         public ulong GetAttacksMask(ChessPiece piece)
         {
-
             return piece.Type == PieceType.PAWN ? ((Pawn)piece).GetCaptures():
                 piece.GenerateLegalMoves(bitBoard);
-
         }
 
         /// <summary>
         /// Checks if a move is legal ie the king is not under attack after the move
         /// </summary>
-        /// <param name="newMove"></param>
-        /// <returns></returns>
+        /// <param name="newMove">The move being checked</param>
+        /// <returns>True if the move is legal, false otherwise</returns>
         public bool IsMoveLegal(Move newMove)
         {
             MakeTemporaryMove(newMove);
@@ -405,7 +344,6 @@ namespace RealChess.Model
             bool result = IsKingUnderAttack(newMove.PieceMoved.Color);
 
             UndoMove();
-
             return !result;
         }
 
@@ -413,7 +351,7 @@ namespace RealChess.Model
         /// Makes a temporary move on the board 
         /// (only data without graphics)
         /// </summary>
-        /// <param name="move"></param>
+        /// <param name="move">The move being played</param>
         public void MakeTemporaryMove(Move move)
         {
             BoardUpdate.UpdateDataStructures(move);
@@ -427,11 +365,9 @@ namespace RealChess.Model
         /// Checks if a move results in checking the enemy king,
         /// checkmate or a draw
         /// </summary>
-        /// <param name="newMove"></param>
-        /// <returns></returns>
-        public bool CheckMove(Move newMove)
+        /// <param name="newMove">The move being checked</param>
+        public void CheckMove(Move newMove)
         {
-          
             MakeTemporaryMove(newMove);
                         
             bool result = IsKingUnderAttack(GetOppositeColor(newMove.PieceMoved.Color));
@@ -445,7 +381,6 @@ namespace RealChess.Model
                 
                 GetKing(GetOppositeColor(newMove.PieceMoved.Color)).InCheck = true;
                 
-
                 // If the enemy king is in check and the player has
                 // no legal moves, the original check is a checkmate
                 if (!enemyCanMove)
@@ -462,10 +397,14 @@ namespace RealChess.Model
                 GetKing(GetOppositeColor(newMove.PieceMoved.Color)).InCheck = false;
 
             UndoMove();
-            return result;
-
         }
 
+        /// <summary>
+        /// Checks if a draw has occurred by threefold repetition,
+        /// stalemate or dead position
+        /// </summary>
+        /// <param name="move">The move that triggered the draw check</param>
+        /// <param name="enemyCanMove">A boolean representing whether the enemy player can make a move or not</param>
         private void CheckDraw(Move move, bool enemyCanMove)
         {
 
@@ -484,16 +423,14 @@ namespace RealChess.Model
                 move.IsDrawByDeadPosition = true;
                 move.Type = Move.MoveType.Draw;
             }
-
         }
 
         /// <summary>
-        /// Checks if the given bitboard for the mask results
-        /// in a promotion
+        /// Checks if the given bitboard for the mask results in a promotion
         /// </summary>
-        /// <param name="color"></param>
-        /// <param name="movePosition"></param>
-        /// <returns></returns>
+        /// <param name="color">The color of the piece that is making the move</param>
+        /// <param name="movePosition">The position of the move represented as a bitboard</param>
+        /// <returns>True if the move results in a promotion, false otherwise</returns>
         public bool IsMovePromotion(PieceColor color ,ulong movePosition)
         {
             movePosition &= color == PieceColor.WHITE ? BitboardConstants.RankEight:
@@ -508,23 +445,17 @@ namespace RealChess.Model
         /// </summary>
         public void UndoMove()
         {
-
             BoardUpdate.UndoMove();
-
             // Updates bitboard to before move
             bitBoard = blackBoard | whiteBoard;
 
-
         }
-
-        
-
 
         /// <summary>
         /// Checks if a player has any legal moves
         /// </summary>
         /// <param name="color">player color</param>
-        /// <returns>True if has legal moves</returns>
+        /// <returns>True if has legal moves, false otherwise</returns>
         public bool CanLegallyMove(PieceColor color)
         {
             var pieces = color == PieceColor.WHITE?
@@ -537,18 +468,17 @@ namespace RealChess.Model
             {
                 if (GetCapturesPiece(piece).Count > 0)
                     return true;
-                if (GetPsuedoLegalMoves(piece).Count > 0)
+                if (GetLegalMoves(piece).Count > 0)
                     return true;
             }
-
             return false;
         }
 
         /// <summary>
-        /// Generates a list of possible captures for a single piece
+        /// Generates a list of all possible captures for a given chess piece.
         /// </summary>
-        /// <param name="piece"></param>
-        /// <returns>The list of captures</returns>
+        /// <param name="piece">The piece to generate captures for.</param>
+        /// <returns>The list of possible captures.</returns>
         public List<Move> GetCapturesPiece(ChessPiece piece)
         {
             List<Move> captureList = new List<Move>();
@@ -579,16 +509,12 @@ namespace RealChess.Model
                     else
                         enPassant.CapturedPiece = player1.Pieces[capturedPieceIndex];
 
-
-                    // Checks if the enpassant is a check  
-                  
    
                     // Checks if the move is legal;
                     // meaning that the king isn't in under attack after the move
                     if (IsMoveLegal(enPassant))
                         captureList.Add(enPassant);
 
-                    
                     movesMask &= ~(enPassantMask);
                 }
             }
@@ -608,16 +534,19 @@ namespace RealChess.Model
                 else
                     newMove.CapturedPiece = player1.Pieces[bitIndex];
 
-
+                // Checks if the move is legal;
+                // meaning that the king isn't in under attack after the move
                 if (IsMoveLegal(newMove))
                 {
                     if (IsKingUnderAttack(piece.Color))
                         newMove.DefendsCheck = true;
 
 
+                    // Checks if the capture results in a promotion
                     if (piece.Type == PieceType.PAWN && IsMovePromotion(piece.Color, movesMask))
                         newMove.IsPromotion = true;
 
+                    // Checks if the capture is a positive capture
                     if (BoardLogic.GetCaptureValue(newMove.CapturedPiece, piece) > 0)
                         newMove.IsPositiveCapture = true;
 
@@ -625,20 +554,15 @@ namespace RealChess.Model
 
                 }
                 movesMask &= movesMask - 1; // reset LS1B
-
             }
-
             return captureList;           
         }
 
-        
-
         /// <summary>
-        /// Returns a list of every single legal move/
-        /// capture a player has ( by color)
+        /// Returns a list of every single legal move/capture a player has (by color)
         /// </summary>
-        /// <param name="color">Player color</param>
-        /// <returns></returns>
+        /// <param name="color">The color of the player</param>
+        /// <returns>A list of all the possible moves and captures for the player</returns>
         public List<Move> GetAllPlayerMoves(PieceColor color)
         {
             List<Move> allMoves = new List<Move>();
@@ -655,6 +579,11 @@ namespace RealChess.Model
             return allMoves;
         }
 
+        /// <summary>
+        /// Generates a list of all the legal non-capture moves for a given player color.
+        /// </summary>
+        /// <param name="color">Player color</param>
+        /// <returns>List of legal non-capture moves</returns>
         public List<Move> GetAllNonCaptureMoves(PieceColor color)
         {
             List<Move> moves = new List<Move>();
@@ -664,8 +593,7 @@ namespace RealChess.Model
             // Iterates over every piece, and adds all moves to the general list
             foreach (var piece in pieces.ToList())
             {
-                GetPsuedoLegalMoves(piece).ForEach(item => moves.Add(item));
-
+                GetLegalMoves(piece).ForEach(item => moves.Add(item));
             }
 
             return moves;
@@ -674,7 +602,7 @@ namespace RealChess.Model
         /// <summary>
         /// Gets the first player (white)
         /// </summary>
-        /// <returns></returns>
+        /// <returns>White player object</returns>
         public Player GetPlayer1()
         {
             return this.player1;
@@ -683,12 +611,10 @@ namespace RealChess.Model
         /// <summary>
         /// Gets the second player (black)
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Black player object</returns>
         public Player GetPlayer2()
         {
             return this.player2;
         }
-
-
     }
 }

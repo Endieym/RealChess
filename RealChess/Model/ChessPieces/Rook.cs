@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static RealChess.Model.Bitboard.BoardOperations;
+﻿using static RealChess.Model.Bitboard.BoardOperations;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -15,17 +10,14 @@ namespace RealChess.Model.ChessPieces
 
         public Rook(int key) : base(key) { }
 
-        public Rook(int row, int col) : base(row, col) { }
-
+        /// <summary>
+        /// Generates a mask of all possible moves for the rook piece.
+        /// </summary>
+        /// <returns>A mask of all possible moves for the rook piece.</returns>
         public override ulong GenerateLegalMoves(ulong occupied)
         {
             return GenerateLines(this.bitBoard, occupied);
                 
-        }
-
-        public ulong GenerateMovesMask()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -15,14 +11,15 @@ namespace RealChess.Model.ChessPieces
 
         public King() { }
         
-        public King(int row, int col) : base(row, col) { }
-        
-
         public override ulong GenerateLegalMoves(ulong occupied)
         {
             return GenerateMovesMask();
         }
 
+        /// <summary>
+        /// Generates a mask of all possible moves for the king piece.
+        /// </summary>
+        /// <returns>A mask of all possible moves for the king piece.</returns>
         public ulong GenerateMovesMask()
         {
             ulong east = 0, west = 0, northeast = 0, northwest = 0,
@@ -52,9 +49,6 @@ namespace RealChess.Model.ChessPieces
             moveMask = north | south | east | west | northeast | northwest | southeast | southwest;
 
             return moveMask;
-
         }
-
-
     }
 }

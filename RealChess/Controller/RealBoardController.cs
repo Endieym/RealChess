@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.RealConstants;
-using RealChess.Model.Bitboard;
 
 namespace RealChess.Controller
 {
@@ -115,7 +114,7 @@ namespace RealChess.Controller
         /// <summary>
         /// Returns the morale of the piece
         /// </summary>
-        /// <param name="piece"></param>
+        /// <param name="piece">Chess piece whose morale is being evaluated</param>
         /// <returns>Piece morale as a number</returns>
         internal static int GetPieceMorale(ChessPiece piece)
         {
@@ -178,7 +177,7 @@ namespace RealChess.Controller
         /// <summary>
         /// Returns the success rate of a specific attack
         /// </summary>
-        /// <param name="move">Attack</param>
+        /// <param name="move">Capture about to be made</param>
         /// <returns>The success rate as a number</returns>
         internal static int CalculateSuccess(Move move)
         {

@@ -186,13 +186,12 @@ namespace RealChess.Model.AI.Evaluation
         /// </summary>
         /// <param name="color">The color of the player to evaluate</param>
         /// <returns>The evaluation score as an integer</returns>
-        public static int EvaluatePlayerDevelopment(PieceColor color)
+        public static int EvaluatePlayerDevelopment(PieceColor color, GamePhase currentPhase)
         {
             var pieces = color == PieceColor.WHITE ? _gameBoard.GetPlayer1().Pieces :
                 _gameBoard.GetPlayer2().Pieces;
 
             int development = 0;
-            GamePhase currentPhase = _gameBoard.CurrentPhase;
             int undevelopedMinorPieces = 0;
 
             // Evaluate each piece's position and check for undeveloped minor pieces

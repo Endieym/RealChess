@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RealChess.View.Forms
@@ -24,6 +17,7 @@ namespace RealChess.View.Forms
 
         }
 
+        // Event handler when normal chess picture was clicked
         private void normalChess_Click(object sender, EventArgs e)
         {
             ChoseReal = false;
@@ -31,6 +25,7 @@ namespace RealChess.View.Forms
             this.Close();
         }
 
+        // Event handler when real chess picture was clicked
         private void realChess_Click(object sender, EventArgs e)
         {
             ChoseReal = true;
@@ -39,6 +34,7 @@ namespace RealChess.View.Forms
 
         }
 
+        // Event handler when close button was clicked
         private void CloseButton_Click(object sender, EventArgs e)
         {
             Clicked = false;

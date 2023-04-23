@@ -1,27 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static RealChess.Model.ChessPieces.ChessPiece;
+﻿using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.Bitboard.BoardOperations;
 using RealChess.Model.ChessPieces;
-using RealChess.Model.AI.Evaluation;
 
 namespace RealChess.Model.Bitboard
 {
+    /// <summary>
+    /// The BoardUpdate class provides functionality for updating the state of a chess game board,
+    /// including methods for making and undoing moves, captures, promotions, and castling.
+    /// </summary>
     internal static class BoardUpdate
     {
 
         private static Board _gameBoard;
 
-        // Sets the game board
+        /// <summary>
+        /// Sets the game board.
+        /// </summary>
+        /// <param name="board">The game board to set.</param>
         public static void SetBoard(Board board)
         {
             _gameBoard = board;
         }
 
-
+        /// <summary>
+        /// Updates the game board after a move is made, including setting the HasMoved attribute of the moved piece to true,
+        /// checking and updating the king's InCheck attribute, updating the position of the moved piece in the data structures,
+        /// and removing a captured piece if necessary.
+        /// </summary>
+        /// <param name="move">The move made.</param>
         public static void UpdateBoard(Move move)
         {
             // Checks if the piece has moved before, if not, change the attribute
@@ -48,12 +54,16 @@ namespace RealChess.Model.Bitboard
             // If the move was a capture, remove the piece
             if (move.IsCapture)
                 UpdateCaptures(move);
-
-            UpdatePhase();
             
         }
 
-        // Updates the board class according to the move played
+        /// <summary>
+        /// Updates the game board according to the move played by updating the position of the piece moved,
+        /// removing the previous position, and adding the new position. If the move was a castle move,
+        /// it also updates the position of the rook. If the move was a capture, it removes the captured piece from the board.
+        /// Finally, it adds the move to the list of all moves and the current board state to the list of all states.
+        /// </summary>
+        /// <param name="move">The move played</param>
         public static void UpdateDataStructures(Move move)
         {
             var playerColor = move.PieceMoved.Color;
@@ -113,7 +123,10 @@ namespace RealChess.Model.Bitboard
 
         }
 
-        // Updates player's dictionaries in the case of a captured piece
+        /// <summary>
+        /// Updates the player's and the enemy's board and dictionary in the case of a captured piece.
+        /// </summary>
+        /// <param name="move">The capture made.</param>
         public static void UpdateCaptures(Move move)
         {
             var playerColor = move.PieceMoved.Color;
@@ -144,7 +157,6 @@ namespace RealChess.Model.Bitboard
                 newKey += playerColor == PieceColor.WHITE? 8: -8;
 
 
-            player.AddCapture(enemy.Pieces[newKey]);
             enemy.DeletePiece(newKey); // Delets from enemy's dictionary
             enemyBoard ^= (ulong)1 << newKey; // Updates enemy's board
 
@@ -158,7 +170,13 @@ namespace RealChess.Model.Bitboard
 
         }
 
-        // Undos the last move made
+        /// <summary>
+        /// Undos the last move made. This method removes the last move made from the gameBoard's list of moves,
+        /// the last state made from the gameBoard's list of positions, and calls the UpdateDataStructures method
+        /// to undo the last move made. If the move being undone was a capture move, the UndoCapture method is called
+        /// to update the gameBoard's data structures accordingly. If the move being undone was a castling move,
+        /// this method undos the castling by moving the rook back to its original position.
+        /// </summary>
         public static void UndoMove()
         {
             var movesList = _gameBoard.GetAllMoves();
@@ -211,7 +229,10 @@ namespace RealChess.Model.Bitboard
 
         }
 
-        // Undoes a capture made by a move
+        /// <summary>
+        /// Undoes a capture made by a move by adding the captured piece back to the opponent player's dictionary and board.
+        /// </summary>
+        /// <param name="oldCapture">The move that resulted in the capture.</param>
         public static void UndoCapture(Move oldCapture)
         {
             var playerColor = oldCapture.PieceMoved.Color;
@@ -236,6 +257,10 @@ namespace RealChess.Model.Bitboard
 
         }
 
+        /// <summary>
+        /// This method undoes a promotion made by a move. It replaces the promoted piece back to a pawn and updates the player's list of pieces.
+        /// </summary>
+        /// <param name="move">The move to undo the promotion for.</param>
         public static void UndoPromotion(Move move)
         {
             move.PieceMoved = new Pawn(move.EndSquare)
@@ -250,17 +275,5 @@ namespace RealChess.Model.Bitboard
             player.SwitchPiece(move.EndSquare, move.PieceMoved);
 
         }
-
-        // Updates the game phase indicator
-        public static void UpdatePhase()
-        {
-            if (_gameBoard.CurrentPhase == BoardLogic.GamePhase.Opening)
-                if (BoardLogic.FinishedOpening()) _gameBoard.CurrentPhase = BoardLogic.GamePhase.Middlegame;
-
-            else if (_gameBoard.CurrentPhase == BoardLogic.GamePhase.Middlegame)
-                    if (BoardLogic.FinishedMiddleGame()) _gameBoard.CurrentPhase = BoardLogic.GamePhase.Endgame;
-        
-        }
-
     }
 }

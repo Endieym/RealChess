@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static RealChess.Model.Bitboard.BoardLogic;
+﻿using static RealChess.Model.Bitboard.BoardLogic;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Model.AI

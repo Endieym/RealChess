@@ -1,12 +1,5 @@
 ﻿using RealChess.Model.ChessPieces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RealChess.View
@@ -19,6 +12,11 @@ namespace RealChess.View
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Sets the Image of picture box according to piece parameter
+        /// </summary>
+        /// <param name="piece">The piece</param>
         public void SetPiece(ChessPiece piece)
         {
             Piece = piece;
@@ -28,6 +26,11 @@ namespace RealChess.View
            
         }
 
+        /// <summary>
+        /// Generates an image from resources according to piece type
+        /// </summary>
+        /// <param name="piece">The piece</param>
+        /// <returns>The image of the piece. </returns>
         private Image LoadPieceImage(ChessPiece piece)
         {
             string imageName = $"{piece.Color.ToString().ToLower()}_{piece.Type.ToString().ToLower()}";

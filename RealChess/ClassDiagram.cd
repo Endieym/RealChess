@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="RealChess.Controller.BoardController">
+    <Position X="13" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAEAAAIAAAIAAAAAAAAIAAAgAAgAAEiQAAAIAAAAgA=</HashCode>
+      <FileName>Controller\BoardController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Controller.GameController">
+    <Position X="15" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAQEAIAFAIAggQAAJBGIAAIIBAAAECAAIAAAAQAQA=</HashCode>
+      <FileName>Controller\GameController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Controller.RealBoardController">
+    <Position X="13" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAASCIAAACAAAAAAEAAAAAAAAAQAAAAAAAAiA=</HashCode>
+      <FileName>Controller\RealBoardController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Controller.RealController">
+    <Position X="17" Y="8.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>ABCAAAgAxQBAAAIEAA4AFGACEAAgAAQAAAIAQBgABCA=</HashCode>
+      <FileName>Controller\RealController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Book.BookReader">
+    <Position X="18.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEACAAAAAAAAIAAABAAAAAAAAAAAAAAAQAAAAAQBAQ=</HashCode>
+      <FileName>Model\AI\Book\BookReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Book.MoveTranslator">
+    <Position X="19" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQCAAAAAIAAAAAACAAAAAAAAAAAAAQAAAAICAAAA=</HashCode>
+      <FileName>Model\AI\Book\MoveTranslator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.ComputerPlay">
+    <Position X="18.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAABAAKAAAAAAAAAAABAAAAAAAAQQAAAAAAAAA=</HashCode>
+      <FileName>Model\AI\ComputerPlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.MoveChecker">
+    <Position X="20.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAABBAAAACAAQRBAACAAAAAAAAEAEAAAAQAAAgAAA=</HashCode>
+      <FileName>Model\AI\MoveOrdering\MoveChecker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.PreprocessedTables">
+    <Position X="25.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAQAAACAAgAAAAAAAAAAABAAQAIAAAACBAAAAA=</HashCode>
+      <FileName>Model\AI\PreprocessedTables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Evaluation.BoardEvaluation">
+    <Position X="23.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAgCABAgAIAAAAAAAAQgAAAAAAYAAAQAAAgAAAACA=</HashCode>
+      <FileName>Model\AI\Evaluation\BoardEvaluation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Evaluation.EvaluationConstants">
+    <Position X="31" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAEEAAIAAgAQAAIAgIQAAAAAEAAAAAACAAAACAIAAA=</HashCode>
+      <FileName>Model\AI\Evaluation\EvaluationConstants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Evaluation.MajorEvaluations">
+    <Position X="25.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAIAAAAAgAAAAgAIAQgAAAAhAAAg=</HashCode>
+      <FileName>Model\AI\Evaluation\MajorEvaluations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Evaluation.PhaseEvaluation">
+    <Position X="27" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAIAAAAAQAAAAAQAAAEAAAAAAABAAAAA=</HashCode>
+      <FileName>Model\AI\Evaluation\PhaseEvaluation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Evaluation.SubEvaluations">
+    <Position X="23.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SCQAQIAEEAAIAAAAAAgIIAAAAMBAABEAQAAAIBAgCAA=</HashCode>
+      <FileName>Model\AI\Evaluation\SubEvaluations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.AI.Evaluation.MoveEvaluation">
+    <Position X="20.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAACAAAAAAAAAAAAAQAAAAAAAIAA=</HashCode>
+      <FileName>Model\AI\MoveOrdering\MoveEvaluation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.BitboardConstants">
+    <Position X="29.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABIhAABZAJEAAAAAIAAACAAAAFAAAAQAAAAAAQQ=</HashCode>
+      <FileName>Model\Bitboard\BitboardConstants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.Board">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wCAAQAAEgEAIAACEIoAAJVAEAAACAAAkYAIAAMAAJgQ=</HashCode>
+      <FileName>Model\Bitboard\Board.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.Move">
+    <Position X="0.75" Y="8.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="RealChess.Model.Move.MoveType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Move.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QAAAAEAABCAAAAAAAAAABRAAAQAAAAABAeAAEAIAIAA=</HashCode>
+      <FileName>Model\Move.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.Player">
+    <Position X="11" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAUAgAAAAAAAAAIAQAAEAAAAAAASIgwAQCIAAABAA=</HashCode>
+      <FileName>Model\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.RealConstants">
+    <Position X="31" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAACEAEQAAAggAAgAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RealConstants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.Bitboard.BoardLogic">
+    <Position X="5" Y="8.75" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="RealChess.Model.Bitboard.BoardLogic.GamePhase" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Bitboard\BoardLogic.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQAAACIBAEgYQAAgAIgAAAAAAAAAIEAAQAAAAAAEgAo=</HashCode>
+      <FileName>Model\Bitboard\BoardLogic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.Bitboard.BoardOperations">
+    <Position X="3.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAQAAFIACBIAAISEQAGBgBABQAAAwAQ0EIEAAAAEAE=</HashCode>
+      <FileName>Model\Bitboard\BoardOperations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.Bitboard.BoardUpdate">
+    <Position X="6.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAIAAAAAACAAQAAAAAAAAAAYAAABAIAAAA=</HashCode>
+      <FileName>Model\Bitboard\BoardUpdate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.Bishop">
+    <Position X="4.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAgAAAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\Bishop.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.ChessPiece">
+    <Position X="0.75" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="RealChess.Model.ChessPieces.ChessPiece.PieceColor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\ChessPieces\ChessPiece.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="RealChess.Model.ChessPieces.ChessPiece.PieceType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\ChessPieces\ChessPiece.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AACBAAAAACAAACQAAAAAAAAAAAAAAAAQAQAggEAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\ChessPiece.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.422" />
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.King">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAACCQAQAgAAAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\King.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.Knight">
+    <Position X="6" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAQAgAAAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\Knight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.Pawn">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAGQAQAgAAAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\Pawn.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.Queen">
+    <Position X="0.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAQAQAgAAAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\Queen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Model.ChessPieces.Rook">
+    <Position X="2.5" Y="5.25" Width="1.5" />
+    <InheritanceLine Type="RealChess.Model.ChessPieces.ChessPiece" FixedToPoint="true">
+      <Path>
+        <Point X="1.906" Y="0.5" />
+        <Point X="1.906" Y="0.125" />
+        <Point X="3.25" Y="0.125" />
+        <Point X="3.25" Y="5.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAgAAAAAAA=</HashCode>
+      <FileName>Model\ChessPieces\Rook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.Program" Collapsed="true">
+    <Position X="14.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.ChessForm" Collapsed="true">
+    <Position X="15.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQAECAAIASAAgAABIIKEiAQCAAAAAxAAIgAAgCAAAAA=</HashCode>
+      <FileName>View\Forms\ChessForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.MainPage" Collapsed="true">
+    <Position X="15.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAEICAAAkAAAAAAAAAABAAAA=</HashCode>
+      <FileName>View\Forms\MainPage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.View.ChessPieceControl" Collapsed="true">
+    <Position X="13.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAIAAACAAAACAAAiAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>View\Controls\ChessPieceControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.View.Controls.LegalMoveControl" Collapsed="true">
+    <Position X="13.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAIAAAGAARECAACAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>View\Controls\LegalMoveControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.View.Controls.TransferEventArgs" Collapsed="true">
+    <Position X="15.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\Controls\TransferEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.View.Forms.ChooseGame" Collapsed="true">
+    <Position X="13.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAJBBAACQAAAAAAACAAAgCCAEAAKAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\Forms\ChooseGame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RealChess.View.Forms.PromotionForm" Collapsed="true">
+    <Position X="13.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAKAAAEAAAACAAAACAAAAggAAAAAAAAAAIBA=</HashCode>
+      <FileName>View\Forms\PromotionForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

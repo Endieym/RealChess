@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace RealChess.Model
 {
+
+    /// <summary>
+    /// A static class containing various constants related to bitboards used in the chess engine.
+    /// </summary>
     internal static class BitboardConstants
     {
         public const ulong NotAFile = 0xfefefefefefefefeUL;
@@ -30,9 +29,6 @@ namespace RealChess.Model
         public const int blackKingRook = 7;
         public const int whiteQueenRook = 56;
         public const int whiteKingRook = 63;
-
-        
-   
         
     }
 }

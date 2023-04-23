@@ -2,11 +2,7 @@
 using RealChess.Model.Bitboard;
 using RealChess.Model.ChessPieces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
 using static RealChess.Model.Bitboard.BoardLogic;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
@@ -64,7 +60,10 @@ namespace RealChess.Model.AI
 
             debuff += HangingPenalty(move);
 
-            return debuff;
+            if (BoardLogic.RevokesCastlingRights(move))
+                debuff += EvaluationConstants.movePenalty;
+
+           return debuff;
         }
 
         /// <summary>

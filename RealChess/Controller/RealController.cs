@@ -1,13 +1,9 @@
 ﻿using RealChess.Model;
 using RealChess.Model.ChessPieces;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
@@ -30,9 +26,6 @@ namespace RealChess.Controller
         private static ProgressBar whiteBar;
         private static ProgressBar blackBar;
         private static PictureBox vsPic;
-
-        
-        
 
 
         /// <summary>

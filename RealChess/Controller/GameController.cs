@@ -6,10 +6,6 @@ using RealChess.View.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.Bitboard.BoardOperations;
@@ -97,7 +93,7 @@ namespace RealChess.Controller
         }
 
         /// <summary>
-        /// Highlights the legal squares the current piece can traverse to
+        /// Highlights the legal squares the current piece clicked can traverse to
         /// </summary>
         /// <param name="pieceSource">Piece clicked</param>
         internal static void ShowLegalMoves(ChessPieceControl pieceSource)
@@ -213,14 +209,17 @@ namespace RealChess.Controller
         internal static ChessPieceControl GetPieceControl(int key)
         {
             Panel piecePanel = _panelBoard[key / 8, key % 8];
-            
-            if (piecePanel.Controls[0] is ChessPieceControl)
+
+            if (piecePanel.Controls.Count == 0 || piecePanel.Controls[0] is null)
+                return null;
+
+            if (piecePanel.Controls[0] is ChessPieceControl control)
             {
-                return (ChessPieceControl)piecePanel.Controls[0];
+                return control;
             }
             return null;
         }
-
+        
         /// <summary>
         /// Initiates the move of a piece,
         /// according to the control clicked
@@ -232,6 +231,8 @@ namespace RealChess.Controller
             Panel targetPanel = _panelBoard[key / 8, key % 8];
 
             ChessPieceControl pieceSource = GetPieceControl(move.StartSquare);
+            if (pieceSource is null)
+                return;
             ClearLegalMoves(pieceSource);
            
             if (move.IsEnPassantCapture)
@@ -325,7 +326,6 @@ namespace RealChess.Controller
             // Remove the dots indicating which squares are legal to move to.
 
             FinalizeMove(move);
-            
         }
 
         /// <summary>

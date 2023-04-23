@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace RealChess.Model
 {
+    /// <summary>
+    /// A static class that contains various constants used in the "RealChess" game mode.
+    /// </summary>
     internal static class RealConstants
     {
         public const int SuccessfullCapture = 3;

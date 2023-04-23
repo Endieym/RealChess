@@ -1,11 +1,6 @@
 ﻿using RealChess.Controller;
-using RealChess.Model.AI.Evaluation;
 using RealChess.Model.Bitboard;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
 
@@ -45,9 +40,6 @@ namespace RealChess.Model.AI.Evaluation
             // Adds bonuses and penalties according to MoveChecker
             moveScore += MoveChecker.MoveBonus(move);
             moveScore -= MoveChecker.MovePenalty(move);
-
-            if (MoveChecker.IsBadForPhase(move, _gameBoard.CurrentPhase))
-                moveScore -= movePenalty;
 
             // If in "Real" gamemode, add the success rate to the evaluation
             if (GameController.IsReal)
@@ -94,7 +86,6 @@ namespace RealChess.Model.AI.Evaluation
                     {
                         bestPromotionScore = infinity;
                         bestPromotion = tempMove;
-
                     }
                     if (tempScore > bestPromotionScore)
                     {
@@ -105,8 +96,6 @@ namespace RealChess.Model.AI.Evaluation
                     BoardUpdate.UndoPromotion(move);
                     _gameBoard.UndoMove();
                 }
-
-                
             }
             _gameBoard.MakePromotionMove(bestPromotion, bestPromotion.PieceMoved);
             return bestPromotion;

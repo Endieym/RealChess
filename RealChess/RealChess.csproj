@@ -168,6 +168,7 @@
     <EmbeddedResource Include="View\Forms\PromotionForm.resx">
       <DependentUpon>PromotionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ClassDiagram.cd" />
     <None Include="Model\AI\Book\BlackGames.pgn" />
     <None Include="Model\AI\Book\WhiteGames.pgn" />
     <None Include="packages.config" />

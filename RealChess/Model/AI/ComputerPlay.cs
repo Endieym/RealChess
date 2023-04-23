@@ -5,10 +5,6 @@ using RealChess.Model.Bitboard;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Evaluation.EvaluationConstants;
@@ -41,7 +37,7 @@ namespace RealChess.Model.AI
             BoardEvaluation.SetBoard(board);
             MoveEvaluation.SetBoard(board);
         }
-
+        
         /// <summary>
         /// Plays a move for a specific color.
         /// </summary>
@@ -120,9 +116,7 @@ namespace RealChess.Model.AI
                     tempMove = MoveEvaluation.ChooseBestPromotion(move);
                 
                 _gameBoard.MakeTemporaryMove(tempMove);
-                if (move.EndSquare == 36)
-                    Console.Write("helo");
-
+              
                 moveScore = MoveEvaluation.GetEvaluationForMove(tempMove);
                 
                 if (moveScore > bestMoveScore)

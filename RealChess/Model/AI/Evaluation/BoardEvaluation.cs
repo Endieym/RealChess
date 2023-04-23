@@ -31,7 +31,7 @@ namespace RealChess.Model.AI.Evaluation
         }
 
         /// <summary>
-        /// Evaluates the chess board for a both players.
+        /// Evaluates the chess board for both players.
         /// A positive number means better for white, negative for black
         /// and zero is a draw.
         /// </summary>
@@ -50,7 +50,7 @@ namespace RealChess.Model.AI.Evaluation
             evaluation += EvaluateKing(phase);
 
             // Evaluates piece development for both players
-            evaluation += EvaluatePieceDevelopment();
+            evaluation += EvaluatePieceDevelopment(phase);
 
             // Evaluates safety of all player's pieces
             evaluation += EvaluatePiecesSafety();
@@ -133,9 +133,9 @@ namespace RealChess.Model.AI.Evaluation
             return EvaluatePlayerKingSafety(PieceColor.WHITE) - EvaluatePlayerKingSafety(PieceColor.BLACK);
         }
 
-        public static double EvaluatePieceDevelopment()
+        public static double EvaluatePieceDevelopment(GamePhase phase)
         {
-            return (EvaluatePlayerDevelopment(PieceColor.WHITE) - EvaluatePlayerDevelopment(PieceColor.BLACK))
+            return (EvaluatePlayerDevelopment(PieceColor.WHITE, phase) - EvaluatePlayerDevelopment(PieceColor.BLACK, phase))
                 * 1.5;
         }
 

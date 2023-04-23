@@ -2,14 +2,7 @@
 using RealChess.Model.AI;
 using RealChess.Model.Bitboard;
 using RealChess.Model.ChessPieces;
-using RealChess.View;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
 namespace RealChess.Controller
@@ -92,7 +85,7 @@ namespace RealChess.Controller
         /// <returns>List of moves</returns>
         internal static List<Move> GetMovesList(ChessPiece piece)
         {
-            return _gameBoard.GetMovesPiece(piece);
+            return _gameBoard.GetLegalMoves(piece);
         }
 
         /// <summary>

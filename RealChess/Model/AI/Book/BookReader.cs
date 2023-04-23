@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ilf.pgn;
 using ilf.pgn.Data;
-using RealChess.Model.ChessPieces;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.AI.Book.MoveTranslator;
 
