@@ -266,17 +266,18 @@ namespace RealChess.Model.AI.Evaluation
         /// </summary>
         /// <param name="pawns">List of pawns to evaluate.</param>
         /// <returns>Advancement score for the given list of pawns.</returns>
-        public static int EvaluatePawnsAdvancement(List<Pawn> pawns)
+        public static int EvaluatePawnsAdvancement(List<Pawn> pawns, ulong pawnMask, ulong enemyPawn)
         {
             int advancement = 0;
 
+            var passed = GetPassedPawns(pawns, pawnMask, enemyPawn);
 
-            foreach (Pawn pawn in pawns)
+            foreach (Pawn pawn in passed)
             {
-                advancement -= DistanceFromPromotion(pawn);
+                advancement += 7-DistanceFromPromotion(pawn);
             }
 
-            return advancement * 3;
+            return advancement * 6;
         }
 
         /// <summary>

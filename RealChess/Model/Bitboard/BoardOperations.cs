@@ -318,7 +318,7 @@ namespace RealChess.Model.Bitboard
         /// <returns>The rank of the chess piece.</returns>
         public static int GetRank(ChessPiece piece)
         {
-            return UInt64ToKey(piece.GetPosition()) / 8;
+            return 7-UInt64ToKey(piece.GetPosition()) / 8;
         }
 
         /// <summary>

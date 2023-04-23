@@ -236,7 +236,7 @@ namespace RealChess.Model.AI.Evaluation
             structure += SubEvaluations.EvaluatePassedPawns(pawns, pawnBoard, enemyPawnBoard) * endgameWeight;
 
             // Evaluate pawn advancement
-            structure += SubEvaluations.EvaluatePawnsAdvancement(pawns) * endgameWeight;
+            structure += SubEvaluations.EvaluatePawnsAdvancement(pawns, pawnBoard, enemyPawnBoard) * endgameWeight;
 
             return structure;
         }
