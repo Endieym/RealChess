@@ -218,6 +218,17 @@ namespace RealChess.Controller
             label.Text = first + text.Substring(1);
         }
 
+        public static void ShowMessage(string text, string caption)
+        {
+            Thread t = new Thread(() => MyMessageBox(text, caption));
+            t.Start();
+        }
+
+        private static void MyMessageBox(object text, object caption)
+        {
+            MessageBox.Show((string)text, (string)caption);
+        }
+
         public static void ChangePicture(ChessPiece piece)
         {
             var picBox = piece.Color == ChessPiece.PieceColor.WHITE ? whitePic :

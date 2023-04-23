@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using static RealChess.Model.ChessPieces.ChessPiece;
 using static RealChess.Model.RealConstants;
+using RealChess.Model.Bitboard;
 
 namespace RealChess.Controller
 {
@@ -37,12 +38,17 @@ namespace RealChess.Controller
 
             var decreasedPlayer = move.PieceMoved.Color == PieceColor.WHITE ? _gameBoard.GetPlayer2() :
                 _gameBoard.GetPlayer1();
-            
+
+            var color = move.PieceMoved.Color;
+
             // Adds morale for an en passant capture
             if (move.IsEnPassantCapture)
             {
                 increasedPlayer.EnPassant();
                 decreasedPlayer.DecreaseMorale();
+                RealController.ShowMessage("En passanted!! +" + EnPassantMorale, color.ToString() + " MORALE");
+                RealController.ShowMessage("En passanted on... +" + Captured, BoardOperations.GetOppositeColor(color).ToString() + " MORALE");
+
 
             }
             // Adds morale for a normal capture
@@ -50,16 +56,22 @@ namespace RealChess.Controller
             {
                 increasedPlayer.IncreaseMorale();
                 decreasedPlayer.DecreaseMorale();
+
                 if (move.PieceMoved.Type == PieceType.QUEEN)
                     ((Queen)move.PieceMoved).SacrificeBuff = false;
+                RealController.ShowMessage("Capture! +"+SuccessfullCapture, color.ToString() + " MORALE");
+                RealController.ShowMessage("Captured... -" + Captured,BoardOperations.GetOppositeColor(color).ToString() + " MORALE");
+
             }
 
             // Adds morale for a check
             else if (move.IsCheck)
             {
                 increasedPlayer.IncreaseMorale();
+                RealController.ShowMessage("Check! +" + SuccessfullCapture, color.ToString() + " MORALE");
+
             }
-            
+
         }
 
         /// <summary>
@@ -84,6 +96,8 @@ namespace RealChess.Controller
             {
                 player1.Morale -= (player2.Morale / 10);
                 player2.Morale += player2.Morale / 10;
+                RealController.ShowMessage("Balanced players!" , " MORALE");
+
             }
             else if (player2.Morale > player1.Morale + 15)
             {
