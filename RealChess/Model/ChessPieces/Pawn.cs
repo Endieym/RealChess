@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -11,8 +7,8 @@ namespace RealChess.Model.ChessPieces
         public override PieceType Type { get; set; } = PieceType.PAWN;
         public override ushort Value { get; set; } = 1;
         public Pawn() { }
-
-        public Pawn(int row, int col) : base(row, col) { }
+        
+        public Pawn(int key): base(key) { }
 
         public override ulong GenerateLegalMoves(ulong occupied)
         {
@@ -44,6 +40,11 @@ namespace RealChess.Model.ChessPieces
                 this.bitBoard >> 8;
         }
 
+
+        /// <summary>
+        /// Generates a mask of possible captures for the pawn.
+        /// </summary>
+        /// <returns>A bitboard representing possible captures for the pawn.</returns>
         public ulong GetCaptures()
         {
             // The bitmask which represents the move
@@ -73,6 +74,10 @@ namespace RealChess.Model.ChessPieces
         
         }
 
+        /// <summary>
+        /// Generates a mask of all possible non-capture moves for the pawn.
+        /// </summary>
+        /// <returns>A mask of all possible non-capture moves for the pawn.</returns>
         public ulong GenerateMovesMask()
         {
             // The bitmask which represents the move
@@ -90,7 +95,6 @@ namespace RealChess.Model.ChessPieces
                 doubleMoveMask = this.Color == PieceColor.WHITE ? moveMask >> 16 :
                 moveMask << 16;
             }
-
             return singleMoveMask | doubleMoveMask;
         }
     }

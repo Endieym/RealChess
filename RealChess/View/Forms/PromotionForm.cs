@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
 
@@ -25,6 +18,7 @@ namespace RealChess.View.Forms
             rookPic.Click += PictureBox_Click;
         }
 
+        // Event handler for when a picture box was clicked
         private void PictureBox_Click(object sender, EventArgs e)
         {
             PictureBox pictureBox = (PictureBox)sender;
@@ -53,7 +47,6 @@ namespace RealChess.View.Forms
                     this.Close();
 
                     break;
-                
             }
         }
     }

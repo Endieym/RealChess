@@ -6,83 +6,126 @@ using RealChess.View.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RealChess.Model.ChessPieces.ChessPiece;
+using static RealChess.Model.Bitboard.BoardOperations;
+using RealChess.Model.AI;
 
 namespace RealChess.Controller
 {
+    /// <summary>
+    /// Controller responsible for player interacts
+    /// and updating the chess game according to moves
+    /// </summary>
     internal static class GameController
     {
+        public static bool IsReal { get; set; }
+
+        public static bool WhiteAi { get; set; }
+        public static bool BlackAi { get; set; }
+
+        private static bool AiPlay;
         // Current chess piece clicked
         private static ChessPieceControl _currentPieceClicked = null;
 
         // The panel board
         private static Panel[,] _panelBoard;
 
-        private static int _tileSize;
-
-        private static int _gridSize;
-
         private static PieceColor turnColor = PieceColor.WHITE;
 
         // Sets the panel board which represents all the squares on the chessboard
         public static void SetBoard(Panel[,] panelBoard, int tileSize, int gridSize)
         {
-            _gridSize = gridSize;
-            _tileSize = tileSize;
             _panelBoard = panelBoard;
+            if (WhiteAi)
+                ComputerPlay.PlayMove(PieceColor.WHITE);
+
+            turnColor = PieceColor.WHITE;
         }
 
-        // Checks if a move is legal
-        internal static bool IsLegalMove(ChessPieceControl pieceSource, Panel targetPanel)
+        /// <summary>
+        /// Sets the Ai of a specific color
+        /// </summary>
+        /// <param name="color">Ai color</param>
+        public static void SetAi(PieceColor color)
         {
-            foreach (ChessPieceControl c in targetPanel.Controls)
-                if (c.Equals(pieceSource) || c.Piece.Color == pieceSource.Piece.Color)
-                    return false;
-            return true;
+            if(ChessForm.GetCurrentPiece() != null)
+                ClearLegalMoves(ChessForm.GetCurrentPiece());
+            if (color == PieceColor.WHITE)
+                WhiteAi = true;
+            else
+                BlackAi = true;
+            AiPlay = true;
+            if (turnColor == color)
+                ComputerPlay.PlayMove(color);
         }
 
+        /// <summary>
+        /// Disables Ai play
+        /// </summary>
+        /// <param name="color">Ai color</param>
+        public static void DisableAi(PieceColor color)
+        {
+            if (color == PieceColor.WHITE)
+                WhiteAi = false;
+            else
+                BlackAi = false;
+        }
+
+        //// Checks if a move is legal
+        //internal static bool IsLegalMove(ChessPieceControl pieceSource, Panel targetPanel)
+        //{
+        //    foreach (ChessPieceControl c in targetPanel.Controls)
+        //        if (c.Equals(pieceSource) || c.Piece.Color == pieceSource.Piece.Color)
+        //            return false;
+        //    return true;
+        //}
+
+        /// <summary>
+        /// Checks if the piece clicked on the board 
+        /// is its turn to play
+        /// </summary>
+        /// <param name="pieceSource">Piece control clicked</param>
+        /// <returns></returns>
         internal static bool IsTurn(ChessPieceControl pieceSource)
         {
             return pieceSource.Piece.Color == turnColor;
         }
 
-        // Highlights the legal squares the current piece can traverse to
+        /// <summary>
+        /// Highlights the legal squares the current piece clicked can traverse to
+        /// </summary>
+        /// <param name="pieceSource">Piece clicked</param>
         internal static void ShowLegalMoves(ChessPieceControl pieceSource)
         {
             // Gets both the legal moves and captures of the clicked piece control
-            List<Move> movesList = BoardController.GetMovesList(pieceSource.Piece);
-            List<Move> capturesList = BoardController.GetCapturesList(pieceSource.Piece);
-            
-            // Shows the legal moves
-            foreach(Move move in movesList)
-            {
-                LegalMoveControl legalMoveControl = new LegalMoveControl();
-                legalMoveControl.Transfer += LegalMoveControl_Move;
-                legalMoveControl.CurrentMove = move;
-                _currentPieceClicked = pieceSource;
-                _panelBoard[move.EndSquare / 8, move.EndSquare % 8].Controls.Add(legalMoveControl);
-            }
+
+            List<Move> allMoves = BoardController.GetAllMovesPiece(pieceSource.Piece);
 
             // Shows the legal captures 
-            foreach (Move capture in capturesList)
+            foreach (Move move in allMoves)
             {
                 LegalMoveControl legalMoveControl = new LegalMoveControl();
-                legalMoveControl.SetCapture();
-                legalMoveControl.CurrentMove = capture;
+
+                if(move.IsCapture)
+                    legalMoveControl.SetCapture();
+                legalMoveControl.CurrentMove = move;
                 legalMoveControl.Transfer += LegalMoveControl_Move;
                 _currentPieceClicked = pieceSource;
-                
-                _panelBoard[capture.EndSquare / 8, capture.EndSquare % 8].Controls.Add(legalMoveControl);
+
+                _panelBoard[move.EndSquare / 8, move.EndSquare % 8].Controls.Add(legalMoveControl);
                 legalMoveControl.BringToFront();
-                legalMoveControl.BackColor = Color.Transparent;
             }
+
+            if(IsReal)
+                RealController.ShowPiece(pieceSource.Piece);
             
         }
 
+        /// <summary>
+        /// Clears the legal moves a clicked piece has
+        /// </summary>
+        /// <param name="pieceSource">Piece clicked</param>
         internal static void ClearLegalMoves(ChessPieceControl pieceSource)
         {
             // Gets both the legal moves and captures of the clicked piece control
@@ -109,18 +152,27 @@ namespace RealChess.Controller
                     if (c is LegalMoveControl)
                         currentPanel.Controls.Remove(c);
                 }
-            }
+            }            
         }
 
 
-
+        /// <summary>
+        /// Event handler responsible for transferring move info
+        /// </summary>
+        /// <param name="sender">Legal move control clicked</param>
+        /// <param name="e">Event info</param>
         private static void LegalMoveControl_Move(object sender, TransferEventArgs e)
         {
             // Transfer the selected piece to the clicked panel
-            MovePiece(_currentPieceClicked, e.CurrentMove);           
+            MovePiece(e.CurrentMove);           
         }
 
-        // Changes the pawn to the selected piece
+        /// <summary>
+        /// Changes the pawn to the selected piece
+        /// </summary>
+        /// <param name="pieceSource">Original pawn control</param>
+        /// <param name="type">New piece type</param>
+        /// <param name="key">New piece location</param>
         internal static void SwitchPiece(ChessPieceControl pieceSource, PieceType type, int key)
         {
             var colorBefore = pieceSource.Piece.Color;
@@ -142,33 +194,47 @@ namespace RealChess.Controller
                     pieceSource.Piece = new Bishop(key);
                     break;
             }
+
             pieceSource.Piece.Color = colorBefore;
             pieceSource.Piece.UpdatePosition(key);
             pieceSource.SetPiece(pieceSource.Piece);
 
         }
 
-        internal static void MovePiece(ChessPieceControl pieceSource, Move move)
+        /// <summary>
+        /// Gets a piece control according to key (0-63)
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>The piece control</returns>
+        internal static ChessPieceControl GetPieceControl(int key)
+        {
+            Panel piecePanel = _panelBoard[key / 8, key % 8];
+
+            if (piecePanel.Controls.Count == 0 || piecePanel.Controls[0] is null)
+                return null;
+
+            if (piecePanel.Controls[0] is ChessPieceControl control)
+            {
+                return control;
+            }
+            return null;
+        }
+        
+        /// <summary>
+        /// Initiates the move of a piece,
+        /// according to the control clicked
+        /// </summary>
+        /// <param name="move">Move made</param>
+        internal static void MovePiece(Move move)
         {
             int key = move.EndSquare;
             Panel targetPanel = _panelBoard[key / 8, key % 8];
+
+            ChessPieceControl pieceSource = GetPieceControl(move.StartSquare);
+            if (pieceSource is null)
+                return;
             ClearLegalMoves(pieceSource);
-            if (move.IsPromotion)
-            {
-
-                PromotionForm frms2 = new PromotionForm
-                {
-                    StartPosition = FormStartPosition.CenterParent,
-                    Location = targetPanel.Location
-                };
-
-                frms2.ShowDialog();
-
-                SwitchPiece(pieceSource, frms2.PieceClicked,move.StartSquare);               
-                move = BoardController.PromotePiece(move, pieceSource.Piece);
-
-
-            }
+           
             if (move.IsEnPassantCapture)
                 key += pieceSource.Piece.Color == PieceColor.WHITE ? 8 : -8;
 
@@ -180,8 +246,8 @@ namespace RealChess.Controller
                 ChessPieceControl chessPieceControl = null;
                 foreach(Control c in castlePanel.Controls)
                 {
-                    if(c is ChessPieceControl)
-                        chessPieceControl = (ChessPieceControl)c;   
+                    if(c is ChessPieceControl control)
+                        chessPieceControl = control;   
                 }
                 chessPieceControl.Parent.Controls.Clear();
                 targetCastle.Controls.Add(chessPieceControl);
@@ -196,38 +262,60 @@ namespace RealChess.Controller
                 ChessPieceControl chessPieceControl = null;
                 foreach (Control c in castlePanel.Controls)
                 {
-                    if (c is ChessPieceControl)
-                        chessPieceControl = (ChessPieceControl)c;
+                    if (c is ChessPieceControl control)
+                        chessPieceControl = control;
                 }
                 chessPieceControl.Parent.Controls.Clear();
                 targetCastle.Controls.Add(chessPieceControl);
             }
-            Console.Write(pieceSource.Piece);
 
             Panel capturedPanel = _panelBoard[key / 8, key % 8];
+            if(IsReal && move.IsCapture )
+            {
+                RealController.ShowMove(move);
+                if(RealBoardController.TryMove(move) == false)
+                {
+                    RealController.ResetToMorale();
+                    EndTurn();
+                    return;
+                }
+                
+            }          
+            if (move.IsPromotion)
+            {
+                PieceType promotedPiece;
 
-            //foreach (Control c in targetPanel.Controls)
-            //{
-            //    if (c is ChessPieceControl)
-            //        move.CapturedPiece = ((ChessPieceControl)c).Piece;
-            //}
+                if((WhiteAi && turnColor == PieceColor.WHITE) || (BlackAi && turnColor == PieceColor.BLACK))
+                    promotedPiece = move.PromotedPiece;
+
+                else
+                {
+                    // Opens form for players to choose promotion
+                    PromotionForm promotionForm = new PromotionForm
+                    {
+                        StartPosition = FormStartPosition.CenterParent,
+                        Location = targetPanel.Location
+                    };
+
+                    promotionForm.ShowDialog();
+                    promotedPiece = promotionForm.PieceClicked;
+                }
+
+                // Switches the pawn with the chosen piece for promotion
+                SwitchPiece(pieceSource, promotedPiece, move.StartSquare);
+                move = BoardController.PromotePiece(move, pieceSource.Piece);
+            }
+
+            // If in "Real" gamemode 
+            if (IsReal)
+            {
+                RealBoardController.UpdateReal(move);
+                RealBoardController.BalancePlayers();
+                RealController.ResetToMorale();
+            }
 
             // Clear controls of selected panel
             capturedPanel.Controls.Clear();
-
-            
-
-            //// Get pieces' current location on the board
-            //var oldRow = (pieceSource.Parent.Location.Y - 30) / _tileSize;
-            //var oldCol = (pieceSource.Parent.Location.X - 10) / _tileSize;
-            //move.StartSquare = oldRow * _gridSize + oldCol;  //tileSize * col + 10, tileSize * row + 30
-
-            //// Finds the new location of the piece
-            //var row = (targetPanel.Location.Y - 30) / _tileSize;
-            //var col = (targetPanel.Location.X - 10) / _tileSize;
-            //move.EndSquare = row *_gridSize +col;  //tileSize * col + 10, tileSize * row + 30
-
-            
 
             // Remove control from previous panel
             pieceSource.Parent.Controls.Remove(pieceSource);
@@ -238,8 +326,12 @@ namespace RealChess.Controller
             // Remove the dots indicating which squares are legal to move to.
 
             FinalizeMove(move);
-            
         }
+
+        /// <summary>
+        /// Removes the highlight over the king of a player
+        /// </summary>
+        /// <param name="color">Player color</param>
         internal static void RemoveHighlight(PieceColor color)
         {
             int key = BoardController.GetKingPos(color);
@@ -248,6 +340,11 @@ namespace RealChess.Controller
                 c.BackColor = Color.Transparent;
             }
         }
+
+        /// <summary>
+        /// Highlights the check made over a player's king
+        /// </summary>
+        /// <param name="color">Player color</param>
         internal static void HighlightCheck(PieceColor color)
         {
             int key = BoardController.GetKingPos(color);
@@ -256,19 +353,19 @@ namespace RealChess.Controller
                 c.BackColor = Color.Red;
             }
         }
+
+        /// <summary>
+        /// Finalizes the move made,
+        /// Updating data structure, playing move sound and 
+        /// ending the turn
+        /// </summary>
+        /// <param name="move">Move made</param>
         internal static void FinalizeMove(Move move)
         {
 
             // Updates the data structure
             BoardController.UpdateBoard(move);
 
-            var color = move.PieceMoved.Color == PieceColor.WHITE ?
-                PieceColor.BLACK : PieceColor.WHITE;
-            if (!BoardController.HasLegalMoves(color)&&
-                move.IsCheck)
-            {
-                move.Type = Move.MoveType.Checkmate;
-            }
             System.Media.SoundPlayer player;
             switch (move.Type)
             {
@@ -284,22 +381,36 @@ namespace RealChess.Controller
                     else
                         HighlightCheck(PieceColor.WHITE);
                     break;
+
                 case Move.MoveType.Checkmate:
-                    player = new System.Media.SoundPlayer(Properties.Resources.Check);
+                    player = new System.Media.SoundPlayer(Properties.Resources.Checkmate);
 
-                    if (move.PieceMoved.Color == PieceColor.WHITE)
-                    {
-                        HighlightCheck(PieceColor.BLACK);
-                        MessageBox.Show("Checkmate by WHITE!");
+                    player.Play();
 
-                    }
-                    else 
-                    {
-                        HighlightCheck(PieceColor.WHITE);
-                        MessageBox.Show("Checkmate by BLACK!");
-
-                    }
+                    Checkmate(move.PieceMoved.Color);
                     break;
+                    
+                case Move.MoveType.Draw:
+                    player = new System.Media.SoundPlayer(Properties.Resources.Checkmate);
+
+                    player.Play();
+
+                    if (move.IsStalemate)
+                        Draw("Stalemate");
+                    else if (move.IsDrawByRepetiton)
+                        Draw("Repetition");
+                    else if (move.IsDrawByDeadPosition)
+                        Draw("Dead Position");
+
+                    break;
+
+                case Move.MoveType.Castle:
+                    player = new System.Media.SoundPlayer(Properties.Resources.Castling);
+
+                    player.Play();
+
+                    break;
+
                 default:
                     player = new System.Media.SoundPlayer(Properties.Resources.move);
                     
@@ -313,16 +424,100 @@ namespace RealChess.Controller
             }
 
 
-            turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
-                PieceColor.WHITE;
 
-            player.Play();
+            if (move.Type != Move.MoveType.Checkmate && move.Type != Move.MoveType.Draw)
+            {
+                player.Play();
+                EndTurn();
+
+            }
+
+
+        }
+
+        /// <summary>
+        /// Makes a checkmate message appear and ends the game
+        /// </summary>
+        /// <param name="color">Player won</param>
+        public static void Checkmate(PieceColor color)
+        {
             
-            ChessForm.ResetPieceClicked();
+            HighlightCheck(GetOppositeColor(color));
 
+            MessageBox.Show(String.Format("{0} won!",color.ToString()), "CHECKMATE");
+            EndGame();
+
+        }
+
+        /// <summary>
+        /// Makes a draw message appear and ends the game
+        /// </summary>
+        /// <param name="reason">Reason for draw</param>
+        public static void Draw(string reason)
+        {
+            MessageBox.Show("By "+reason,"DRAW");
+            EndGame();
+        }
+
+        /// <summary>
+        /// Ends the game, closes the form
+        /// </summary>
+        public static void EndGame()
+        {
+
+            AiPlay = false;
+            WhiteAi = false;
+            BlackAi = false;
+
+            foreach(var form in Application.OpenForms)
+                (form as ChessForm)?.DisableSettings();
+
+            ChessForm.DisableClicks();
+            ChessForm.ResetPieceClicked();
         }
 
 
 
+        /// <summary>
+        /// Ends the turn, updates turncolor
+        /// </summary>
+        public static void EndTurn()
+        {
+            turnColor = turnColor == PieceColor.WHITE ? PieceColor.BLACK :
+                PieceColor.WHITE;
+
+            ChessForm.ResetPieceClicked();
+
+            if (AiPlay)
+            {
+                if(WhiteAi && turnColor == PieceColor.WHITE)
+                    ComputerPlay.PlayMove(turnColor);
+                else if(BlackAi && turnColor == PieceColor.BLACK)
+                    ComputerPlay.PlayMove(turnColor);
+
+            }
+
+        }
+
+        /// <summary>
+        /// Returns to the main form
+        /// and disables Ai
+        /// </summary>
+        public static void ReturnHomepage()
+        {
+            EndGame();
+            MainPage home = new MainPage();
+
+            var openForms = Application.OpenForms;
+
+            // Closes the chess form
+            for(int i =0; i< openForms.Count; i++)
+            {
+                (openForms[i] as ChessForm)?.Close();
+
+            }
+            home.Show();
+
+        }
     }
 }

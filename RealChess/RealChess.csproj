@@ -12,6 +12,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +47,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="pgn.net, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\pgn.net.1.2.1\lib\net45\pgn.net.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -52,17 +73,33 @@
   <ItemGroup>
     <Compile Include="Controller\BoardController.cs" />
     <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\RealBoardController.cs" />
+    <Compile Include="Controller\RealController.cs" />
+    <Compile Include="Model\AI\Book\BookReader.cs" />
+    <Compile Include="Model\AI\Book\MoveTranslator.cs" />
+    <Compile Include="Model\AI\Evaluation\EvaluationConstants.cs" />
+    <Compile Include="Model\AI\Evaluation\MajorEvaluations.cs" />
+    <Compile Include="Model\AI\Evaluation\PhaseEvaluation.cs" />
+    <Compile Include="Model\AI\Evaluation\SubEvaluations.cs" />
+    <Compile Include="Model\AI\MoveOrdering\MoveChecker.cs" />
+    <Compile Include="Model\AI\MoveOrdering\MoveEvaluation.cs" />
+    <Compile Include="Model\AI\PreprocessedTables.cs" />
     <Compile Include="Model\Bitboard\BitboardConstants.cs" />
     <Compile Include="Model\Bitboard\Board.cs" />
+    <Compile Include="Model\AI\Evaluation\BoardEvaluation.cs" />
+    <Compile Include="Model\Bitboard\BoardLogic.cs" />
     <Compile Include="Model\Bitboard\BoardOperations.cs" />
+    <Compile Include="Model\Bitboard\BoardUpdate.cs" />
     <Compile Include="Model\ChessPieces\Bishop.cs" />
     <Compile Include="Model\ChessPieces\King.cs" />
     <Compile Include="Model\ChessPieces\Rook.cs" />
     <Compile Include="Model\ChessPieces\Queen.cs" />
     <Compile Include="Model\ChessPieces\Knight.cs" />
     <Compile Include="Model\ChessPieces\Pawn.cs" />
+    <Compile Include="Model\AI\ComputerPlay.cs" />
     <Compile Include="Model\Move.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\RealConstants.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -88,6 +125,12 @@
     <Compile Include="View\Forms\ChessForm.Designer.cs">
       <DependentUpon>ChessForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\ChooseGame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\ChooseGame.Designer.cs">
+      <DependentUpon>ChooseGame.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\MainPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +154,9 @@
     <EmbeddedResource Include="View\Forms\ChessForm.resx">
       <DependentUpon>ChessForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\ChooseGame.resx">
+      <DependentUpon>ChooseGame.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\MainPage.resx">
       <DependentUpon>MainPage.cs</DependentUpon>
     </EmbeddedResource>
@@ -122,6 +168,10 @@
     <EmbeddedResource Include="View\Forms\PromotionForm.resx">
       <DependentUpon>PromotionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ClassDiagram.cd" />
+    <None Include="Model\AI\Book\BlackGames.pgn" />
+    <None Include="Model\AI\Book\WhiteGames.pgn" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -215,6 +265,45 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\RealChessLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RealLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KingLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CloseIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vsLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fightGif.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Checkmate.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Castling.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GameStart.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\setting.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

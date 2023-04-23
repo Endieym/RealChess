@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static RealChess.Model.BoardOperations;
+using static RealChess.Model.Bitboard.BoardOperations;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -12,21 +8,15 @@ namespace RealChess.Model.ChessPieces
         public override PieceType Type { get; set; } = PieceType.BISHOP;
         public override ushort Value { get; set; } = 3;
         public Bishop() { }
-
         public Bishop(int key) : base(key) { }
 
-        public Bishop(int row, int col) : base(row, col) { }
-
+        /// <summary>
+        /// Generates a mask of all possible moves for the bishop piece.
+        /// </summary>
+        /// <returns>A mask of all possible moves for the bishop piece.</returns>
         public override ulong GenerateLegalMoves(ulong occupied)
         {
             return GenerateDiagonals(this.bitBoard, occupied);
         }
-
-        public ulong GenerateMovesMask()
-        {
-            throw new NotImplementedException();
-        }
-
-       
     }
 }

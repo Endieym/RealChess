@@ -1,28 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealChess.Model.ChessPieces
 {
     internal class King : ChessPiece
     {
         public override PieceType Type { get; set; } = PieceType.KING;
-        public override ushort Value { get; set; } = 9999;
-
+        public override ushort Value { get; set; } = 999;
+        public bool Castled { get; set; }
         public bool InCheck { get; set; }
 
         public King() { }
         
-        public King(int row, int col) : base(row, col) { }
-        
-
         public override ulong GenerateLegalMoves(ulong occupied)
         {
             return GenerateMovesMask();
         }
 
+        /// <summary>
+        /// Generates a mask of all possible moves for the king piece.
+        /// </summary>
+        /// <returns>A mask of all possible moves for the king piece.</returns>
         public ulong GenerateMovesMask()
         {
             ulong east = 0, west = 0, northeast = 0, northwest = 0,
@@ -52,9 +49,6 @@ namespace RealChess.Model.ChessPieces
             moveMask = north | south | east | west | northeast | northwest | southeast | southwest;
 
             return moveMask;
-
         }
-
-
     }
 }

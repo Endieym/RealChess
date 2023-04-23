@@ -31,13 +31,18 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChessForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menu_home = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blackAI = new System.Windows.Forms.ToolStripMenuItem();
+            this.whiteAI = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menu_home});
+            this.menu_home,
+            this.SettingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(854, 27);
@@ -52,6 +57,37 @@
             this.menu_home.Size = new System.Drawing.Size(81, 23);
             this.menu_home.Text = "Home";
             this.menu_home.Click += new System.EventHandler(this.home_Click);
+            // 
+            // SettingsToolStripMenuItem
+            // 
+            this.SettingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aIToolStripMenuItem});
+            this.SettingsToolStripMenuItem.Font = new System.Drawing.Font("Stencil", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SettingsToolStripMenuItem.Image = global::RealChess.Properties.Resources.setting;
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(95, 23);
+            this.SettingsToolStripMenuItem.Text = "SETTINGS";
+            // 
+            // aIToolStripMenuItem
+            // 
+            this.aIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.blackAI,
+            this.whiteAI});
+            this.aIToolStripMenuItem.Name = "aIToolStripMenuItem";
+            this.aIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aIToolStripMenuItem.Text = "AI";
+            // 
+            // blackAI
+            // 
+            this.blackAI.Name = "blackAI";
+            this.blackAI.Size = new System.Drawing.Size(116, 22);
+            this.blackAI.Text = "BLACK";
+            // 
+            // whiteAI
+            // 
+            this.whiteAI.Name = "whiteAI";
+            this.whiteAI.Size = new System.Drawing.Size(116, 22);
+            this.whiteAI.Text = "WHITE";
             // 
             // ChessForm
             // 
@@ -76,5 +112,9 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menu_home;
+        private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blackAI;
+        private System.Windows.Forms.ToolStripMenuItem whiteAI;
     }
 }

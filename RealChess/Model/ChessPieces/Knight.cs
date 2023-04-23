@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static RealChess.Model.BitboardConstants;
+﻿using static RealChess.Model.BitboardConstants;
 
 namespace RealChess.Model.ChessPieces
 {
@@ -15,13 +10,15 @@ namespace RealChess.Model.ChessPieces
 
         public Knight(int key) : base(key) { }
 
-        public Knight(int row, int col) : base(row, col) { }
-
         public override ulong GenerateLegalMoves(ulong occupied)
         {
             return GenerateMovesMask();
         }
 
+        /// <summary>
+        /// Generates a mask of all possible moves for the knight piece.
+        /// </summary>
+        /// <returns>A mask of all possible moves for the knight piece.</returns>
         public ulong GenerateMovesMask()
         {
             ulong attacks = 0;
@@ -38,7 +35,6 @@ namespace RealChess.Model.ChessPieces
                     attacks |= bitBoard >> 10; // move 1 up, 2 left
                     attacks |= bitBoard << 6; // move 1 down, 2 left
                     }
-
             }
  
             // check if knight is not on H-file and can move to the right
@@ -54,9 +50,7 @@ namespace RealChess.Model.ChessPieces
                     attacks |= bitBoard << 10; // move 1 down, 2 right
 
                 }
-
             }
-            
             return attacks;
         }
 
